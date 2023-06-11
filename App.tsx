@@ -1,9 +1,10 @@
-import * as React from 'react';
 import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Navigator from './routers/stack';
 import { PaperProvider } from 'react-native-paper';
+import SplashScreen from 'react-native-splash-screen'
+import { useEffect } from 'react';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -11,6 +12,9 @@ function App(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  useEffect(() => {
+    SplashScreen.hide();
+  }, [])
 
   return (
     <PaperProvider>

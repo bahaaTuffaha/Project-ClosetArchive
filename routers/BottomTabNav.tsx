@@ -4,14 +4,16 @@ import { Settings } from "../screens/bottomNav/Settings";
 import { HomeBottom } from "../screens/bottomNav/HomeBottom";
 import { Image, Pressable, View } from "react-native";
 import closetIcon from '../assets/images/closet.png';
+import closetUnselectedIcon from '../assets/images/closetUnselected.png';
 import addIcon from '../assets/images/add.png';
 import settingsIcon from '../assets/images/settings.png';
+import settingsUnselectedIcon from '../assets/images/settingsUnselected.png';
 const Tab = createBottomTabNavigator();
 
 const CustomTabButton = ({ children, onPress }: { children: any, onPress?: any }) => {
     return (
         <Pressable onPress={onPress} style={{ top: -30, justifyContent: "center", alignItems: "center" }}>
-            <View style={{ width: 70, height: 70, backgroundColor: "#77AEBB", borderRadius: 50, borderColor: "white", borderWidth: 5 }}>
+            <View style={{ width: 70, height: 70, backgroundColor: "#77AEBB", borderRadius: 50, borderColor: "#ffffff", borderWidth: 5 }}>
                 {children}
             </View>
         </Pressable>
@@ -23,15 +25,17 @@ export default function MyTabs() {
             headerShown: false, tabBarStyle: {
                 // backgroundColor: 'rgba(34,36,40,1)',
                 height: "10%",
-                backgroundColor: "#77AEBB", borderTopLeftRadius: 20, borderTopRightRadius: 20
+                backgroundColor: "#77AEBB", borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 5
             },
         }} initialRouteName="My closet">
             <Tab.Screen name="My closet" component={HomeBottom} options={{
-                tabBarActiveTintColor: "black",
-                tabBarLabelStyle: { fontSize: 14 },
+                tabBarActiveTintColor: "white",
+                tabBarLabelStyle: {
+                    fontSize: 14, fontStyle: "italic"
+                },
                 tabBarIcon: ({ focused }) => {
                     return <View>
-                        <Image resizeMode="contain" source={closetIcon} style={{ height: 50, width: 50 }} />
+                        <Image resizeMode="contain" source={focused ? closetIcon : closetUnselectedIcon} style={{ height: 50, width: 50 }} />
                     </View>
                 }
             }} />
@@ -46,11 +50,11 @@ export default function MyTabs() {
                 }
             }} />
             <Tab.Screen name="Settings" component={Settings} options={{
-                tabBarActiveTintColor: "black",
+                tabBarActiveTintColor: "white",
                 tabBarLabelStyle: { fontSize: 14, fontStyle: "italic" },
                 tabBarIcon: ({ focused }) => {
                     return <View>
-                        <Image resizeMode="contain" source={settingsIcon} style={{ height: 50, width: 50 }} />
+                        <Image resizeMode="contain" source={focused ? settingsIcon : settingsUnselectedIcon} style={{ height: 50, width: 50 }} />
                     </View>
                 }
             }} />

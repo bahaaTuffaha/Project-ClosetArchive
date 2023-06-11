@@ -12,13 +12,13 @@ export function HomeBottom() {
   }, [])
 
   return (
-    <View className='flex-1 px-5'>
-      <View className='flex flex-col justify-center'>
-        <Text className='font-light text-lg italic'>Welcome back, {"bahaa"}</Text>
+    <View className='flex-1 px-5 bg-white'>
+      <View className='flex flex-col'>
+        <Text className='font-light text-lg italic pt-5'>Welcome back, {"bahaa"}</Text>
         <>
           <Lottie
             ref={animationRef}
-            style={{ width: "100%" }}
+            style={{ width: "100%", alignSelf: 'center', }}
             source={require('../../assets/jsonAnimations/cloths1.json')}
           />
           <Text className='self-center'>Your closet history is empty</Text>
