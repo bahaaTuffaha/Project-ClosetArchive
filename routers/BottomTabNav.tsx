@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AddNewCloths } from "../screens/bottomNav/AddNewCloths";
 import { Settings } from "../screens/bottomNav/Settings";
 import { HomeBottom } from "../screens/bottomNav/HomeBottom";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, View, useColorScheme } from "react-native";
 import closetIcon from '../assets/images/closet.png';
 import closetUnselectedIcon from '../assets/images/closetUnselected.png';
 import addIcon from '../assets/images/add.png';
@@ -11,9 +11,10 @@ import settingsUnselectedIcon from '../assets/images/settingsUnselected.png';
 const Tab = createBottomTabNavigator();
 
 const CustomTabButton = ({ children, onPress }: { children: any, onPress?: any }) => {
+    const isDarkMode = useColorScheme() === 'dark';
     return (
         <Pressable onPress={onPress} style={{ top: -30, justifyContent: "center", alignItems: "center" }}>
-            <View style={{ width: 70, height: 70, backgroundColor: "#77AEBB", borderRadius: 50, borderColor: "#ffffff", borderWidth: 5 }}>
+            <View style={{ width: 70, height: 70, backgroundColor: "#77AEBB", borderRadius: 50, borderColor: isDarkMode ? "gray" : "#ffffff", borderWidth: 5 }}>
                 {children}
             </View>
         </Pressable>
@@ -41,6 +42,9 @@ export default function MyTabs() {
             }} />
             <Tab.Screen name="Add" component={AddNewCloths} options={{
                 tabBarLabelStyle: { display: "none" },
+                tabBarStyle: {
+                    display: "none" //hiding bottomNav
+                },
                 tabBarIcon: ({ focused }) => {
                     return <View>
                         <Image resizeMode="contain" source={addIcon} style={{ height: 25, width: 25 }} />

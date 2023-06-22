@@ -1,7 +1,8 @@
-import { Text, View } from 'react-native';
+import { Text, View, useColorScheme } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import Lottie from 'lottie-react-native';
 export function HomeBottom() {
+  const isDarkMode = useColorScheme() === 'dark';
   //this is the main page
   const animationRef = useRef<Lottie>(null)
   useEffect(() => {
@@ -12,7 +13,7 @@ export function HomeBottom() {
   }, [])
 
   return (
-    <View className='flex-1 px-5 bg-white'>
+    <View className='flex-1 px-5' style={{ backgroundColor: isDarkMode ? "gray" : "white" }}>
       <View className='flex flex-col'>
         <Text className='font-light text-lg italic pt-5'>Welcome back, {"bahaa"}</Text>
         <>
