@@ -1,7 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Home } from "../screens/stackNav/Home";
-import { AddNewItem } from "../screens/stackNav/AddNewItem";
+import { Category } from "../screens/stackNav/Category";
+import { CategoryForm } from "../screens/stackNav/CategoryForm";
 export default function Navigator() {
   const Stack = createNativeStackNavigator();
   return (
@@ -13,8 +14,13 @@ export default function Navigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="AddNewItem"
-          component={AddNewItem}
+          name="Category"
+          component={Category}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CategoryForm"
+          component={CategoryForm}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

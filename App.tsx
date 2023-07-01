@@ -3,6 +3,7 @@ import Navigator from './routers/stack';
 import { PaperProvider } from 'react-native-paper';
 import SplashScreen from 'react-native-splash-screen'
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -15,15 +16,17 @@ function App(): JSX.Element {
   }, [])
 
   return (
-    <PaperProvider>
-      <SafeAreaView className='flex-1'>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <Navigator />
-      </SafeAreaView>
-    </PaperProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider>
+        <SafeAreaView className='flex-1'>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={backgroundStyle.backgroundColor}
+          />
+          <Navigator />
+        </SafeAreaView>
+      </PaperProvider>
+    </GestureHandlerRootView>
   );
 }
 
