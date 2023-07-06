@@ -2,6 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Home } from "../screens/stackNav/Home";
 import { Category } from "../screens/stackNav/Category";
+import { ItemForm } from "../screens/stackNav/ItemForm";
 import { CategoryForm } from "../screens/stackNav/CategoryForm";
 export default function Navigator() {
   const Stack = createNativeStackNavigator();
@@ -21,6 +22,11 @@ export default function Navigator() {
         <Stack.Screen
           name="CategoryForm"
           component={CategoryForm}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ItemForm"
+          component={ItemForm}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

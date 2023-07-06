@@ -1,8 +1,8 @@
 // import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, View } from "react-native";
-import { BackButton } from "../../components/backButton";
+import { SafeAreaView } from "react-native";
 import { TextInput } from "react-native-paper";
 import { useState } from "react";
+import { BackButton } from "../../components/BackButton";
 
 export const CategoryForm = () => {
     // const navigation = useNavigation<any>();
@@ -20,6 +20,15 @@ export const CategoryForm = () => {
                 label="Name"
                 value={name}
                 onChangeText={text => setName(text)} />
+            {/* <TextInput
+                mode="outlined"
+                outlineColor="#BB77AE"
+                textColor="#BB77AE"
+                activeOutlineColor="#BB77AE"
+                textContentType="name"
+                label="Name"
+                value={name}
+                onChangeText={text => setName(text)} /> */}
         </SafeAreaView>
     );
 };

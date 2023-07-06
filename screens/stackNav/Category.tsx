@@ -1,10 +1,12 @@
 import { Dimensions, Pressable, Text, View, ViewStyle, useColorScheme } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import ImageSequence from 'react-native-image-sequence-2';
-import { trousers, tshirt } from './images';
 import { AnimatedStyleProp, interpolate } from 'react-native-reanimated';
 import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { trousers } from './images';
 const centerIndex = Math.round(36);
 export type TAnimationStyle = (value: number) => AnimatedStyleProp<ViewStyle>;
 
@@ -13,7 +15,7 @@ export function Category() {
     const { width, height } = Dimensions.get('window');
     const navigation = useNavigation<any>();
 
-
+    const categoriesState = useSelector((state: RootState) => state.CategoryList)
     const animationStyle: TAnimationStyle = useCallback(
         (value: number) => {
             "worklet";
@@ -46,7 +48,7 @@ export function Category() {
                 width={width}
                 height={height}
                 autoPlay={false} // do redux + array for 
-                data={[{ name: "T-Shirts", sprites: tshirt, press: () => navigation.navigate("CategoryForm", { category: 0 }) }, { name: "Trousers", sprites: trousers, press: () => navigation.navigate("CategoryForm", { category: 1 }) }]} // spread to add custom cate.. that are stored in redux ,at the last you should add "Add new category", add on press
+                data={[...categoriesState.Categories, { name: "Add New Category", sprites: trousers, screen: "CategoryForm" },]} // spread to add custom cate.. that are stored in redux ,at the last you should add "Add new category", add on press
                 scrollAnimationDuration={1000}
                 customAnimation={animationStyle}
                 onSnapToItem={(index: any) => console.log('current index:', index)}
@@ -58,7 +60,7 @@ export function Category() {
                             alignItems: 'center',
                         }}
                     >
-                        <Pressable onPress={() => { item.press() }}>
+                        <Pressable onPress={() => navigation.navigate(item.screen, { category: 1 })}>
                             <Text className='text-3xl mt-10 uppercase mx-auto font-bold'>{item.name}</Text>
                             <ImageSequence
                                 framesPerSecond={24}

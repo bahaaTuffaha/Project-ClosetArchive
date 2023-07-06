@@ -25,7 +25,8 @@ export default function MyTabs() {
         <Tab.Navigator screenOptions={{
             headerShown: false, tabBarStyle: {
                 // backgroundColor: 'rgba(34,36,40,1)',
-                height: 80,
+                marginHorizontal: 5,
+                height: 85,
                 backgroundColor: "#77AEBB", borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 5
             },
         }} initialRouteName="My closet">
