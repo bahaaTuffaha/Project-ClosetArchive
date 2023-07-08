@@ -4,7 +4,7 @@ import uuid from "react-native-uuid";
 export type item = {
   id: string;
   name: string;
-  size?: number;
+  type?: number;
   collection?: [];
   purchaseDate?: string;
   image: string;
@@ -18,12 +18,16 @@ export type itemsList = {
   collectionTags: CollectionTag[];
 };
 export type CollectionTag = {
-  name: string;
+  label: string;
+  value: string;
 };
 
 const initialState: itemsList = {
   items: [],
-  collectionTags: [],
+  collectionTags: [
+    { label: "GreenCollection", value: "GreenCollection" },
+    { label: "GoldCollection", value: "GoldCollection" },
+  ],
 };
 
 const itemsSlice = createSlice({
@@ -35,7 +39,7 @@ const itemsSlice = createSlice({
         id: uuid.v4(),
         name: action.payload.name,
         image: action.payload.image,
-        size: action.payload.size || 0,
+        type: action.payload.type || 0,
         collection:
           action.payload.collection.length == 0
             ? []
@@ -46,6 +50,12 @@ const itemsSlice = createSlice({
         secondaryColor: action.payload.secondaryColor,
         tertiaryColor: action.payload.tertiaryColor,
       } as item);
+    },
+    addCollection: (state, action) => {
+      state.collectionTags.push({
+        value: String(action),
+        label: String(action),
+      });
     },
   },
 });
