@@ -15,6 +15,8 @@ import { RootState } from "../../redux/store";
 import DropDownPicker from "react-native-dropdown-picker";
 import CustomModal from "../../components/CustomModal";
 import { getAllSwatches } from "react-native-palette";
+import { ThemeView } from "../../components/ThemeView";
+import { ThemeText } from "../../components/ThemeText";
 
 function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -136,23 +138,24 @@ export const ItemForm = () => {
   };
 
   const colorsExtractor = (imageUrl: string) => {
-    getAllSwatches({}, imageUrl, (error: any, swatches: any) => {
-      if (error) {
-        console.log(error);
-      } else {
-        swatches.sort((a: any, b: any) => {
-          return b.population - a.population;
-        });
-        setColors([
-          swatches[0].hex.slice(0, -2),
-          swatches[1].hex.slice(0, -2),
-          swatches[2].hex.slice(0, -2),
-        ]);
-        // swatches.slice(0, 3).forEach((swatch: any) => {
-        //   console.log(swatch.hex);
-        // });
-      }
-    });
+    getAllSwatches(
+      { quality: "medium" },
+      imageUrl,
+      (error: any, swatches: any) => {
+        if (error) {
+          console.log(error);
+        } else {
+          swatches.sort((a: any, b: any) => {
+            return b.population - a.population;
+          });
+          setColors([
+            swatches[0].hex.slice(0, -2),
+            swatches[1].hex.slice(0, -2),
+            swatches[2].hex.slice(0, -2),
+          ]);
+        }
+      },
+    );
   };
   const handleImagePicker = async (type: number) => {
     if (type == 0) {
@@ -206,38 +209,39 @@ export const ItemForm = () => {
           </Button>
         </View>
       </CustomModal>
-      <View className="flex-1 bg-white">
-        <BackButton />
-        <View className="flex items-center space-y-3">
-          <TouchableOpacity
-            onPress={() => {
-              setImageModalVisible(true);
-            }}
-          >
-            <Image
-              style={{ resizeMode: "contain" }}
-              source={imageUrl == "" ? addImage : { uri: imageUrl }}
-              className="w-20 h-20 rounded-md object-contain"
+      <ThemeView>
+        <>
+          <BackButton />
+          <View className="flex items-center space-y-3">
+            <TouchableOpacity
+              onPress={() => {
+                setImageModalVisible(true);
+              }}
+            >
+              <Image
+                style={{ resizeMode: "contain" }}
+                source={imageUrl == "" ? addImage : { uri: imageUrl }}
+                className="w-20 h-20 rounded-md object-contain"
+              />
+            </TouchableOpacity>
+            <CustomInput
+              mode="outlined"
+              outlineColor="#AEBB77"
+              selectionColor="#C0C0C0"
+              activeOutlineColor="#AEBB77"
+              textContentType="name"
+              style={styles.customWidth}
+              theme={{ roundness: 10, colors: { background: "white" } }}
+              label="Name"
+              value={name}
+              onChange={(text) => setName(text.nativeEvent.text)}
+              right={
+                <Pressable onPress={() => setName(get_random(RandomNamesP1))}>
+                  <Icon name="dice" size={15} color="#77AEBB" />
+                </Pressable>
+              }
             />
-          </TouchableOpacity>
-          <CustomInput
-            mode="outlined"
-            outlineColor="#AEBB77"
-            selectionColor="#C0C0C0"
-            activeOutlineColor="#AEBB77"
-            textContentType="name"
-            style={styles.customWidth}
-            theme={{ roundness: 10, colors: { background: "white" } }}
-            label="Name"
-            value={name}
-            onChange={(text) => setName(text.nativeEvent.text)}
-            right={
-              <Pressable onPress={() => setName(get_random(RandomNamesP1))}>
-                <Icon name="dice" size={15} color="#77AEBB" />
-              </Pressable>
-            }
-          />
-          {/* <TextInput
+            {/* <TextInput
               mode="outlined"
               outlineColor="#AEBB77"
               // textColor="#BB77AE"
@@ -251,123 +255,125 @@ export const ItemForm = () => {
               value={size}
               onChange={(text) => setSize(text.nativeEvent.text)}
             /> */}
-          <View style={[{ zIndex: 2 }, styles.customWidth]}>
-            <DropDownPicker
-              open={openType}
-              value={type}
-              items={types}
-              setOpen={setOpenType}
-              setValue={setType}
-              theme="LIGHT"
-              mode="BADGE"
-              placeholder="Type - (optional)"
-              style={{ borderColor: "#AEBB77" }}
-              dropDownContainerStyle={{ borderColor: "#AEBB77" }}
-            />
-          </View>
-          <View style={[{ zIndex: 1 }, styles.customWidth]}>
-            <DropDownPicker
-              open={openCollection}
-              value={collection}
-              items={collectionState}
-              setOpen={setOpenCollection}
-              setValue={setCollection}
-              multiple={true}
-              theme="LIGHT"
-              mode="BADGE"
-              placeholder="Collection"
-              style={{ borderColor: "#AEBB77" }}
-              dropDownContainerStyle={{ borderColor: "#AEBB77" }}
-            />
-          </View>
-
-          <View className="flex flex-row">
-            <Icon name="info-circle" size={15} color="#77AEBB" />
-            <Text className="text-xs ml-2">
-              You can add this Item under a collection
-            </Text>
-          </View>
-
-          <View className="flex-row items-center">
-            <Text>Automatic color selection</Text>
-            <Switch
-              color="#77AEBB"
-              value={isAutoOn}
-              onValueChange={onToggleSwitch}
-            />
-          </View>
-
-          {!isAutoOn && (
-            <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-              <Text>Primary color</Text>
-              <Pressable
-                onPress={() => {
-                  setVisible(true);
-                  setColorSelection(0);
-                }}
-              >
-                <View
-                  className="h-5 w-5 border-[0.2px]"
-                  style={{ backgroundColor: colors[0] || "gray" }}
-                />
-              </Pressable>
+            <View style={[{ zIndex: 2 }, styles.customWidth]}>
+              <DropDownPicker
+                open={openType}
+                value={type}
+                items={types}
+                setOpen={setOpenType}
+                setValue={setType}
+                theme="LIGHT"
+                mode="BADGE"
+                placeholder="Type"
+                style={{ borderColor: "#AEBB77" }}
+                dropDownContainerStyle={{ borderColor: "#AEBB77" }}
+              />
             </View>
-          )}
-          {!isAutoOn && (
-            <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-              <Text>Secondary</Text>
-              <Pressable
-                onPress={() => {
-                  setVisible(true);
-                  setColorSelection(1);
-                }}
-              >
-                <View
-                  className="h-5 w-5 border-[0.2px]"
-                  style={{ backgroundColor: colors[1] || "gray" }}
-                />
-              </Pressable>
+            <View style={[{ zIndex: 1 }, styles.customWidth]}>
+              <DropDownPicker
+                open={openCollection}
+                value={collection}
+                items={collectionState}
+                setOpen={setOpenCollection}
+                setValue={setCollection}
+                multiple={true}
+                theme="LIGHT"
+                mode="BADGE"
+                placeholder="Collection"
+                style={{ borderColor: "#AEBB77" }}
+                dropDownContainerStyle={{ borderColor: "#AEBB77" }}
+              />
             </View>
-          )}
-          {!isAutoOn && (
-            <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-              <Text>Tertiary color</Text>
-              <Pressable
-                onPress={() => {
-                  setVisible(true);
-                  setColorSelection(2);
-                }}
-              >
-                <View
-                  className="h-5 w-5 border-[0.2px]"
-                  style={{ backgroundColor: colors[2] || "gray" }}
-                />
-              </Pressable>
-            </View>
-          )}
 
-          {errorsList.length && (
-            <View>
-              {errorsList.map((error, index) => {
-                return (
-                  <Text key={index} className="text-[#C70039]">
-                    {error}
-                  </Text>
-                );
-              })}
+            <View className="flex flex-row">
+              <Icon name="info-circle" size={15} color="#77AEBB" />
+              <ThemeText classNameStyle="text-xs ml-2">
+                You can add this Item under a collection
+              </ThemeText>
             </View>
-          )}
 
-          <Button
-            // className="mb-5"
-            mode="contained"
-            buttonColor="#77AEBB"
-            onPress={addItemHandler}
-          >
-            Save
-          </Button>
-        </View>
-      </View>
+            <View className="flex-row items-center">
+              <ThemeText>Automatic color selection</ThemeText>
+              <Switch
+                color="#77AEBB"
+                value={isAutoOn}
+                onValueChange={onToggleSwitch}
+              />
+            </View>
+
+            {!isAutoOn && (
+              <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
+                <ThemeText>Primary color</ThemeText>
+                <Pressable
+                  onPress={() => {
+                    setVisible(true);
+                    setColorSelection(0);
+                  }}
+                >
+                  <View
+                    className="h-5 w-5 border-[0.2px]"
+                    style={{ backgroundColor: colors[0] || "gray" }}
+                  />
+                </Pressable>
+              </View>
+            )}
+            {!isAutoOn && (
+              <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
+                <ThemeText>Secondary</ThemeText>
+                <Pressable
+                  onPress={() => {
+                    setVisible(true);
+                    setColorSelection(1);
+                  }}
+                >
+                  <View
+                    className="h-5 w-5 border-[0.2px]"
+                    style={{ backgroundColor: colors[1] || "gray" }}
+                  />
+                </Pressable>
+              </View>
+            )}
+            {!isAutoOn && (
+              <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
+                <ThemeText>Tertiary color</ThemeText>
+                <Pressable
+                  onPress={() => {
+                    setVisible(true);
+                    setColorSelection(2);
+                  }}
+                >
+                  <View
+                    className="h-5 w-5 border-[0.2px]"
+                    style={{ backgroundColor: colors[2] || "gray" }}
+                  />
+                </Pressable>
+              </View>
+            )}
+
+            {errorsList.length && (
+              <View>
+                {errorsList.map((error, index) => {
+                  return (
+                    <Text key={index} className="text-[#C70039]">
+                      {error}
+                    </Text>
+                  );
+                })}
+              </View>
+            )}
+
+            <Button
+              // className="mb-5"
+              mode="contained"
+              buttonColor="#77AEBB"
+              textColor="white"
+              onPress={addItemHandler}
+            >
+              Save
+            </Button>
+          </View>
+        </>
+      </ThemeView>
     </>
   );
 };
