@@ -1,6 +1,14 @@
 import { CommonActions, useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import { Dimensions } from "react-native";
 import Animated, {
   useSharedValue,
@@ -129,19 +137,25 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
           }}
         />
       </View>
-      <Pressable
+      <TouchableOpacity
         onPress={() => {
           navigation.dispatch(CommonActions.goBack());
         }}
-        style={[
-          { transform: [{ rotate: "-" + (angleB + 270) + "deg" }] },
-          styles.backButton,
-        ]}
+        // style={[
+        //    { transform: [{ rotate: "-" + (angleB + 270) + "deg" }] },
+        //   styles.backButton,
+        // ]}
+        style={{
+          backgroundColor: useColorScheme() == "dark" ? "gray" : "white",
+        }}
+        className="w-16 absolute top-2 left-1 rounded-md justify-center items-center"
       >
-        <Text className="text-center">
-          <Icon name="caret-back" /> Back
-        </Text>
-      </Pressable>
+        <Icon
+          color={useColorScheme() == "dark" ? "white" : "black"}
+          name="caret-back"
+          size={30}
+        />
+      </TouchableOpacity>
     </>
   );
 };
@@ -159,8 +173,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: "absolute",
-    top: "45%",
-    right: "45%",
+    top: 5,
+    left: 5,
     backgroundColor: "white",
     padding: 5,
     borderRadius: 10,

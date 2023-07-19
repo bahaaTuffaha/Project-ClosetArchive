@@ -24,6 +24,8 @@ import CustomModal from "../../components/CustomModal";
 import { getAllSwatches } from "react-native-palette";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import dayjs from "dayjs";
 
 function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -190,6 +192,20 @@ export const ItemForm = () => {
       });
     }
   };
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setPurchaseDate(date);
+    hideDatePicker();
+  };
 
   // const itemsState = useSelector((state: RootState) => state.itemsList)
   // console.log(itemsState.items)
@@ -238,12 +254,6 @@ export const ItemForm = () => {
               activeOutlineColor="#AEBB77"
               textContentType="name"
               style={styles.customWidth}
-              theme={{
-                roundness: 10,
-                colors: {
-                  background: useColorScheme() == "light" ? "white" : "#2B2E3D",
-                },
-              }}
               label="Name"
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
@@ -267,6 +277,32 @@ export const ItemForm = () => {
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
               />
             </View>
+
+            <Pressable
+              className="w-4/5 h-12 border rounded-md border-mainGreen flex flex-row justify-between px-2 items-center"
+              onPress={showDatePicker}
+              style={{
+                backgroundColor:
+                  useColorScheme() == "dark" ? "#2B2E3D" : "white",
+              }}
+            >
+              <ThemeText customStyle={{ color: "black" }}>
+                Purchase Date:
+              </ThemeText>
+              <ThemeText>
+                {purchaseDate
+                  ? dayjs(purchaseDate).format("DD/MM/YYYY")
+                  : "Select Date"}
+              </ThemeText>
+            </Pressable>
+
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              display="spinner"
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
             <View style={[{ zIndex: 1 }, styles.customWidth]}>
               <DropDownPicker
                 open={openCollection}
