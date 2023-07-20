@@ -10,12 +10,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^7.4.0",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/react-native-vector-icons": "^6.4.13",
     "@types/react-redux": "^7.1.25",
+    "dayjs": "^1.11.9",
     "lottie-ios": "^3.4.0",
     "lottie-react-native": "^5.1.6",
     "nativewind": "^2.0.11",
@@ -25,6 +27,7 @@
     "react-native-gesture-handler": "^2.12.0",
     "react-native-image-picker": "^5.6.0",
     "react-native-image-sequence-2": "^0.9.1",
+    "react-native-modal-datetime-picker": "^17.0.0",
     "react-native-palette": "^1.2.1",
     "react-native-paper": "^5.8.0",
     "react-native-reanimated": "^3.3.0",

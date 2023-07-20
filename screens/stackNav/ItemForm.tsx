@@ -1,5 +1,12 @@
 // import { useNavigation } from "@react-navigation/native";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+} from "react-native";
 import { Button, Switch } from "react-native-paper";
 import { useState } from "react";
 import addImage from "../../assets/images/addImage.png";
@@ -12,11 +19,13 @@ import ColorModal from "../../components/ColorModal";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { CustomInput } from "../../components/CustomInput";
 import { RootState } from "../../redux/store";
-import DropDownPicker from "react-native-dropdown-picker";
+import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import CustomModal from "../../components/CustomModal";
 import { getAllSwatches } from "react-native-palette";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import dayjs from "dayjs";
 
 function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -183,6 +192,20 @@ export const ItemForm = () => {
       });
     }
   };
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setPurchaseDate(date);
+    hideDatePicker();
+  };
 
   // const itemsState = useSelector((state: RootState) => state.itemsList)
   // console.log(itemsState.items)
@@ -231,7 +254,6 @@ export const ItemForm = () => {
               activeOutlineColor="#AEBB77"
               textContentType="name"
               style={styles.customWidth}
-              theme={{ roundness: 10, colors: { background: "white" } }}
               label="Name"
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
@@ -241,20 +263,6 @@ export const ItemForm = () => {
                 </Pressable>
               }
             />
-            {/* <TextInput
-              mode="outlined"
-              outlineColor="#AEBB77"
-              // textColor="#BB77AE"
-              selectionColor="#C0C0C0"
-              activeOutlineColor="#AEBB77"
-              textContentType="name"
-              style={styles.customWidth}
-              theme={{ roundness: 10, colors: { background: "white" } }}
-              // keyboardType="numeric"
-              label="Size"
-              value={size}
-              onChange={(text) => setSize(text.nativeEvent.text)}
-            /> */}
             <View style={[{ zIndex: 2 }, styles.customWidth]}>
               <DropDownPicker
                 open={openType}
@@ -262,13 +270,39 @@ export const ItemForm = () => {
                 items={types}
                 setOpen={setOpenType}
                 setValue={setType}
-                theme="LIGHT"
                 mode="BADGE"
                 placeholder="Type"
                 style={{ borderColor: "#AEBB77" }}
                 dropDownContainerStyle={{ borderColor: "#AEBB77" }}
+                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
               />
             </View>
+
+            <Pressable
+              className="w-4/5 h-12 border rounded-md border-mainGreen flex flex-row justify-between px-2 items-center"
+              onPress={showDatePicker}
+              style={{
+                backgroundColor:
+                  useColorScheme() == "dark" ? "#2B2E3D" : "white",
+              }}
+            >
+              <ThemeText customStyle={{ color: "black" }}>
+                Purchase Date:
+              </ThemeText>
+              <ThemeText>
+                {purchaseDate
+                  ? dayjs(purchaseDate).format("DD/MM/YYYY")
+                  : "Select Date"}
+              </ThemeText>
+            </Pressable>
+
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              display="spinner"
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
             <View style={[{ zIndex: 1 }, styles.customWidth]}>
               <DropDownPicker
                 open={openCollection}
@@ -277,7 +311,8 @@ export const ItemForm = () => {
                 setOpen={setOpenCollection}
                 setValue={setCollection}
                 multiple={true}
-                theme="LIGHT"
+                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+                badgeColors={["#77AEBB"]}
                 mode="BADGE"
                 placeholder="Collection"
                 style={{ borderColor: "#AEBB77" }}
