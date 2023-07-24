@@ -5,7 +5,7 @@ export type item = {
   id: string;
   name: string;
   type?: number;
-  collection?: [];
+  collection?: string[];
   purchaseDate?: string;
   image: string;
   automaticColorPicking?: boolean;

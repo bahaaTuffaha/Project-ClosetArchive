@@ -26,11 +26,12 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import dayjs from "dayjs";
+import { CommonActions } from "@react-navigation/native";
 
 function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
 }
-export const ItemForm = () => {
+export const ItemForm = ({ navigation }: { navigation: any }) => {
   // const navigation = useNavigation<any>();
   const collectionState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
@@ -40,7 +41,6 @@ export const ItemForm = () => {
   const [type, setType] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [automaticColor, setAutomaticColor] = useState("");
   const [errorsList, setErrorsList] = useState<string[]>([]);
   const [colors, setColors] = useState(["", "", ""]);
   const [colorSelection, setColorSelection] = useState(0);
@@ -128,14 +128,16 @@ export const ItemForm = () => {
         name: name,
         collection: collection,
         type: type,
-        purchaseDate: purchaseDate,
+        purchaseDate: JSON.stringify(purchaseDate),
         image: imageUrl,
-        automaticColorPicking: automaticColor,
+        automaticColorPicking: isAutoOn,
         primaryColor: colors[0],
         secondaryColor: colors[1],
         tertiaryColor: colors[2],
       }),
     );
+    navigation.popToTop("Category");
+    navigation.dispatch(CommonActions.goBack());
   }
   const onToggleSwitch = () => {
     if (imageUrl) {
@@ -202,7 +204,7 @@ export const ItemForm = () => {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date) => {
+  const handleConfirm = (date: any) => {
     setPurchaseDate(date);
     hideDatePicker();
   };
@@ -286,7 +288,7 @@ export const ItemForm = () => {
                   useColorScheme() == "dark" ? "#2B2E3D" : "white",
               }}
             >
-              <ThemeText customStyle={{ color: "black" }}>
+              <ThemeText lightColor="black" customStyle={{ color: "black" }}>
                 Purchase Date:
               </ThemeText>
               <ThemeText>
