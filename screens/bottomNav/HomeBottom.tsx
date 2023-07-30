@@ -60,10 +60,14 @@ export function HomeBottom() {
               onChange={(text) => setSearch(text.nativeEvent.text)}
             />
           )}
-          <View className="w-full h-3/4 bg-gray mt-[1%]">
-            {itemsState.collectionTags.map((collection) => {
+          <View className="w-full h-3/4 flex flex-row flex-wrap px-[5%] bg-gray mt-[1%] pt-2">
+            {itemsState.collectionTags.map((collection, index) => {
               return (
-                <CollectionContainer label={collection.label}>
+                <CollectionContainer
+                  key={index}
+                  color={collection.color}
+                  label={collection.label}
+                >
                   <>
                     {itemsState.items.map((item) => {
                       if (item.collection?.includes(collection.value)) {
@@ -75,6 +79,7 @@ export function HomeBottom() {
                             key={item.id}
                             image={item.image}
                             name={item.name}
+                            categoryNumber={item.category}
                           />
                         );
                       }
@@ -93,6 +98,7 @@ export function HomeBottom() {
                     key={item.id}
                     image={item.image}
                     name={item.name}
+                    categoryNumber={item.category}
                   />
                 );
             })}

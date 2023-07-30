@@ -1,25 +1,37 @@
-import { ReactElement } from "react";
-import { View, Text } from "react-native";
+import { ReactElement, useState } from "react";
+import { Pressable, View, useColorScheme } from "react-native";
 import { ThemeText } from "./ThemeText";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export const CollectionContainer = ({
   label,
   children,
-  color,
+  color = "gray",
 }: {
   label: string;
   children: ReactElement;
-  color: string;
+  color?: string;
 }) => {
+  const [isFolded, setIsFolded] = useState(false);
   return (
     <View
       style={{ backgroundColor: color }}
-      className="flex flex-row flex-wrap w-4/5 h-auto self-center"
+      className="flex flex-row flex-wrap w-full h-auto self-center border-[0.4px]"
     >
-      <View className="w-full h-8 bg-white flex flex-row items-center">
+      <Pressable
+        onPress={() => {
+          setIsFolded((prev) => !prev);
+        }}
+        className="w-full h-8 bg-white flex flex-row items-center justify-between pr-5"
+      >
         <ThemeText classNameStyle="px-2 font-medium italic">{label}</ThemeText>
-      </View>
-      {children}
+        <Icon
+          color={useColorScheme() == "dark" ? "white" : "black"}
+          name={isFolded ? "chevron-down" : "chevron-up"}
+          size={20}
+        />
+      </Pressable>
+      {isFolded && children}
     </View>
   );
 };

@@ -8,7 +8,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { Button, Switch } from "react-native-paper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import addImage from "../../assets/images/addImage.png";
 import { BackButton } from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +31,14 @@ import { CommonActions } from "@react-navigation/native";
 function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
 }
-export const ItemForm = ({ navigation }: { navigation: any }) => {
+export const ItemForm = ({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) => {
+  const { selectedCategory } = route.params;
   // const navigation = useNavigation<any>();
   const collectionState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
@@ -47,6 +54,7 @@ export const ItemForm = ({ navigation }: { navigation: any }) => {
   const [openType, setOpenType] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(false);
+  const [CollectionColors, setCollectionColors] = useState<{ color: string }>();
   const RandomNamesP1 = [
     "Wildfire",
     "Sunshine Spirit",
@@ -99,6 +107,14 @@ export const ItemForm = ({ navigation }: { navigation: any }) => {
       label: "Loose Fit",
     },
   ];
+  useEffect(() => {
+    // separating the color collection
+    let colorCollector = [];
+    for (let i = 0; i < collectionState.length; i++) {
+      colorCollector.unshift(collectionState[i].color);
+    }
+    setCollectionColors(colorCollector);
+  }, [collectionState]);
 
   const dispatch = useDispatch();
 
@@ -127,6 +143,7 @@ export const ItemForm = ({ navigation }: { navigation: any }) => {
       addItem({
         name: name,
         collection: collection,
+        category: selectedCategory,
         type: type,
         purchaseDate: JSON.stringify(purchaseDate),
         image: imageUrl,
@@ -288,9 +305,7 @@ export const ItemForm = ({ navigation }: { navigation: any }) => {
                   useColorScheme() == "dark" ? "#2B2E3D" : "white",
               }}
             >
-              <ThemeText lightColor="black" customStyle={{ color: "black" }}>
-                Purchase Date:
-              </ThemeText>
+              <ThemeText lightColor="black">Purchase Date:</ThemeText>
               <ThemeText>
                 {purchaseDate
                   ? dayjs(purchaseDate).format("DD/MM/YYYY")
@@ -314,7 +329,8 @@ export const ItemForm = ({ navigation }: { navigation: any }) => {
                 setValue={setCollection}
                 multiple={true}
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
-                badgeColors={["#77AEBB"]}
+                badgeDotColors={CollectionColors}
+                badgeTextStyle={{ color: "black" }}
                 mode="BADGE"
                 placeholder="Collection"
                 style={{ borderColor: "#AEBB77" }}

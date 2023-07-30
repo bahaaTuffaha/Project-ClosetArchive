@@ -5,6 +5,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { categoryLayoutImages } from "../utils/data";
 
 export const ItemBox = ({
   image,
@@ -12,12 +13,14 @@ export const ItemBox = ({
   secondary,
   tertiary,
   name,
+  categoryNumber,
 }: {
   image: string;
   name: string;
   primary: string;
   secondary: string;
   tertiary: string;
+  categoryNumber: number;
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
   const layout = require("../assets/images/layout1.png");
@@ -38,7 +41,10 @@ export const ItemBox = ({
     <Animated.View style={animatedStyle}>
       <GestureDetector gesture={scaleHandler}>
         <View className={`m-2 relative ${boxStyle}`}>
-          <Image className="absolute z-20 rounded-lg" source={layout} />
+          <Image
+            className="absolute z-20 rounded-lg"
+            source={categoryLayoutImages[categoryNumber] ?? layout}
+          />
           <Text
             style={{
               textShadowColor: "black",

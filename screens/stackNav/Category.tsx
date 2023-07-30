@@ -46,6 +46,7 @@ export function Category() {
               name: "Add New Category",
               sprites: newCategory,
               screen: "CategoryForm",
+              index: -1,
             },
           ]} // spread to add custom cate.. that are stored in redux ,at the last you should add "Add new category", add on press
           scrollAnimationDuration={1000}
@@ -61,7 +62,9 @@ export function Category() {
             >
               <Pressable
                 onPress={() =>
-                  navigation.navigate(item.screen, { category: 1 })
+                  navigation.navigate(item.screen, {
+                    selectedCategory: item.index,
+                  })
                 }
               >
                 <ThemeText classNameStyle="text-3xl mt-10 uppercase mx-auto font-bold">
