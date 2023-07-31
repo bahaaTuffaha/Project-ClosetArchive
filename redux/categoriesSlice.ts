@@ -5,14 +5,15 @@ export type Category = {
   name: string;
   sprites: NodeRequire[];
   screen: string;
+  index: number;
 };
 export type CategoryList = {
   Categories: Category[];
 };
 const initialState: CategoryList = {
   Categories: [
-    { name: "T-Shirts", sprites: tshirt, screen: "ItemForm" },
-    { name: "Trousers", sprites: trousers, screen: "ItemForm" },
+    { name: "T-Shirts", sprites: tshirt, screen: "ItemForm", index: 0 },
+    { name: "Trousers", sprites: trousers, screen: "ItemForm", index: 1 },
   ],
 };
 const categoriesSlice = createSlice({
@@ -24,6 +25,7 @@ const categoriesSlice = createSlice({
         name: action.payload.name,
         screen: "ItemForm",
         sprites: trousers,
+        index: action.payload.index,
       } as Category);
     },
   },

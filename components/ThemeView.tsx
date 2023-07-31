@@ -13,7 +13,7 @@ export const ThemeView = ({
   return (
     <View
       className={classNameStyle}
-      style={{ flex: 1, backgroundColor: isDarkMode ? "gray" : "white" }}
+      style={{ flex: 1, backgroundColor: isDarkMode ? "#444444" : "white" }}
     >
       {children}
     </View>

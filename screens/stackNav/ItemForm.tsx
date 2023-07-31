@@ -8,7 +8,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { Button, Switch } from "react-native-paper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import addImage from "../../assets/images/addImage.png";
 import { BackButton } from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,11 +26,19 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import dayjs from "dayjs";
+import { CommonActions } from "@react-navigation/native";
 
 function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
 }
-export const ItemForm = () => {
+export const ItemForm = ({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) => {
+  const { selectedCategory } = route.params;
   // const navigation = useNavigation<any>();
   const collectionState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
@@ -40,13 +48,13 @@ export const ItemForm = () => {
   const [type, setType] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [automaticColor, setAutomaticColor] = useState("");
   const [errorsList, setErrorsList] = useState<string[]>([]);
   const [colors, setColors] = useState(["", "", ""]);
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(false);
+  const [CollectionColors, setCollectionColors] = useState<{ color: string }>();
   const RandomNamesP1 = [
     "Wildfire",
     "Sunshine Spirit",
@@ -99,6 +107,14 @@ export const ItemForm = () => {
       label: "Loose Fit",
     },
   ];
+  useEffect(() => {
+    // separating the color collection
+    let colorCollector = [];
+    for (let i = 0; i < collectionState.length; i++) {
+      colorCollector.unshift(collectionState[i].color);
+    }
+    setCollectionColors(colorCollector);
+  }, [collectionState]);
 
   const dispatch = useDispatch();
 
@@ -127,15 +143,18 @@ export const ItemForm = () => {
       addItem({
         name: name,
         collection: collection,
+        category: selectedCategory,
         type: type,
-        purchaseDate: purchaseDate,
+        purchaseDate: JSON.stringify(purchaseDate),
         image: imageUrl,
-        automaticColorPicking: automaticColor,
+        automaticColorPicking: isAutoOn,
         primaryColor: colors[0],
         secondaryColor: colors[1],
         tertiaryColor: colors[2],
       }),
     );
+    navigation.popToTop("Category");
+    navigation.dispatch(CommonActions.goBack());
   }
   const onToggleSwitch = () => {
     if (imageUrl) {
@@ -202,7 +221,7 @@ export const ItemForm = () => {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date) => {
+  const handleConfirm = (date: any) => {
     setPurchaseDate(date);
     hideDatePicker();
   };
@@ -286,9 +305,7 @@ export const ItemForm = () => {
                   useColorScheme() == "dark" ? "#2B2E3D" : "white",
               }}
             >
-              <ThemeText customStyle={{ color: "black" }}>
-                Purchase Date:
-              </ThemeText>
+              <ThemeText lightColor="black">Purchase Date:</ThemeText>
               <ThemeText>
                 {purchaseDate
                   ? dayjs(purchaseDate).format("DD/MM/YYYY")
@@ -312,7 +329,8 @@ export const ItemForm = () => {
                 setValue={setCollection}
                 multiple={true}
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
-                badgeColors={["#77AEBB"]}
+                badgeDotColors={CollectionColors}
+                badgeTextStyle={{ color: "black" }}
                 mode="BADGE"
                 placeholder="Collection"
                 style={{ borderColor: "#AEBB77" }}

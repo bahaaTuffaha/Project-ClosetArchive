@@ -5,7 +5,8 @@ export type item = {
   id: string;
   name: string;
   type?: number;
-  collection?: [];
+  category: number;
+  collection?: string[];
   purchaseDate?: string;
   image: string;
   automaticColorPicking?: boolean;
@@ -20,13 +21,14 @@ export type itemsList = {
 export type CollectionTag = {
   label: string;
   value: string;
+  color?: string;
 };
 
 const initialState: itemsList = {
   items: [],
   collectionTags: [
-    { label: "GreenCollection", value: "GreenCollection" },
-    { label: "GoldCollection", value: "GoldCollection" },
+    { label: "GreenCollection", value: "GreenCollection", color: "#008000" },
+    { label: "GoldCollection", value: "GoldCollection", color: "#FFD700" },
   ],
 };
 
@@ -44,6 +46,7 @@ const itemsSlice = createSlice({
           action.payload.collection.length == 0
             ? []
             : action.payload.collection,
+        category: action.payload.category,
         automaticColorPicking: action.payload.automaticColor || false,
         purchaseDate: action.payload.purchaseDate,
         primaryColor: action.payload.primaryColor,

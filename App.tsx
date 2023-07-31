@@ -1,28 +1,28 @@
-import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
-import Navigator from './routers/stack';
-import { PaperProvider } from 'react-native-paper';
-import SplashScreen from 'react-native-splash-screen'
-import { useEffect } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Provider as ReduxProvider } from 'react-redux'
-import store from './redux/store';
+import { SafeAreaView, StatusBar, useColorScheme } from "react-native";
+import Navigator from "./routers/stack";
+import { PaperProvider } from "react-native-paper";
+import SplashScreen from "react-native-splash-screen";
+import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Provider as ReduxProvider } from "react-redux";
+import store from "./redux/store";
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === "dark";
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? "black" : "white",
   };
   useEffect(() => {
     SplashScreen.hide();
-  }, [])
+  }, []);
 
   return (
     <ReduxProvider store={store}>
       <PaperProvider>
-        <SafeAreaView className='flex-1'>
+        <SafeAreaView className="flex-1">
           <StatusBar
-            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            barStyle={isDarkMode ? "light-content" : "dark-content"}
             backgroundColor={backgroundStyle.backgroundColor}
           />
           <GestureHandlerRootView style={{ flex: 1 }}>
@@ -31,7 +31,6 @@ function App(): JSX.Element {
         </SafeAreaView>
       </PaperProvider>
     </ReduxProvider>
-
   );
 }
 
