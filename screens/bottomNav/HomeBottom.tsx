@@ -9,6 +9,20 @@ import { RootState } from "../../redux/store";
 import { ItemBox } from "../../components/ItemBox";
 import { CollectionContainer } from "../../components/CollectionContainer";
 import { item } from "../../redux/itemsSlice";
+
+export function filterCategories(array: item[][], search: string) {
+  let newAllCategories = [];
+  for (let i in array) {
+    newAllCategories.push(
+      array[i].filter((x) => x.name.toLowerCase().includes(search)),
+    );
+  }
+  return newAllCategories;
+}
+export function filter(array: item[], search: string) {
+  return array.filter((x) => x.name.toLowerCase().includes(search));
+}
+
 export function HomeBottom() {
   //this is the main page
   const itemsState = useSelector((state: RootState) => state.itemsList);
@@ -19,20 +33,6 @@ export function HomeBottom() {
   const [nonCategorized, setNonCategorized] = useState<item[]>([]);
   const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
   const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
-
-  function filterCategories(array: item[][], search: string) {
-    let newAllCategories = [];
-    console.log("test6");
-    for (let i in array) {
-      newAllCategories.push(
-        array[i].filter((x) => x.name.toLowerCase().includes(search)),
-      );
-    }
-    return newAllCategories;
-  }
-  function filter(array: item[], search: string) {
-    return array.filter((x) => x.name.toLowerCase().includes(search));
-  }
 
   useEffect(() => {
     let cat = [];
@@ -114,7 +114,7 @@ export function HomeBottom() {
               onClearIconPress={() => setSearch("")}
             />
           )}
-          <View className="w-full h-3/4 flex flex-row flex-wrap px-[5%] bg-gray mt-[1%] pt-2">
+          <View className="w-full h-3/4 flex flex-row flex-wrap bg-gray mt-[1%]">
             {itemsState.collectionTags.map((collection, index) => {
               if (!search) {
                 if (allCategories[index]?.length ?? 0 != 0) {

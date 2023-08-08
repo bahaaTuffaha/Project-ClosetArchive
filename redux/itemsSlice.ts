@@ -1,5 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import uuid from "react-native-uuid";
+import "react-native-get-random-values";
+import { nanoid } from "nanoid";
+
+export type logsType = {
+  id: string; //common ID for any combined items.
+  eventDate: string;
+  eventTime?: string;
+  eventName: string;
+  logTime: string; //iso??
+};
 
 export type item = {
   id: string;
@@ -13,6 +22,7 @@ export type item = {
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
+  logs?: logsType[];
 };
 export type itemsList = {
   items: item[];
@@ -38,7 +48,7 @@ const itemsSlice = createSlice({
   reducers: {
     addItem: (state, action) => {
       state.items.push({
-        id: uuid.v4(),
+        id: nanoid(),
         name: action.payload.name,
         image: action.payload.image,
         type: action.payload.type || 0,
@@ -58,6 +68,18 @@ const itemsSlice = createSlice({
       state.collectionTags.push({
         value: String(action),
         label: String(action),
+      });
+    },
+    addLog: (state, action) => {
+      const itemIndex = state.items.findIndex(
+        (x) => x.id === action.payload.selectedId,
+      );
+      state.items[itemIndex].logs?.push({
+        eventDate: action.payload.eventDate,
+        eventName: action.payload.eventName,
+        id: nanoid(),
+        logTime: action.payload.logTime,
+        eventTime: action.payload.eventTime,
       });
     },
   },
