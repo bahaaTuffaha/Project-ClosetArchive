@@ -5,6 +5,7 @@ import { Category } from "../screens/stackNav/Category";
 import { ItemForm } from "../screens/stackNav/ItemForm";
 import { CategoryForm } from "../screens/stackNav/CategoryForm";
 import { ItemSelector } from "../screens/stackNav/ItemSelector";
+import { EventLogForm } from "../screens/stackNav/EventLogForm";
 export default function Navigator() {
   const Stack = createNativeStackNavigator();
   return (
@@ -33,6 +34,11 @@ export default function Navigator() {
         <Stack.Screen
           name="ItemForm"
           component={ItemForm}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EventLogForm"
+          component={EventLogForm}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

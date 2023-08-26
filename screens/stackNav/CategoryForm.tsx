@@ -1,5 +1,5 @@
 // import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-paper";
 import { useState } from "react";
 import { BackButton } from "../../components/BackButton";

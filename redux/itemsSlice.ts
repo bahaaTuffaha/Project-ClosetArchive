@@ -3,10 +3,10 @@ import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 
 export type logsType = {
-  id: string; //common ID for any combined items.
+  eventId: string; //common ID for any combined items.
   eventDate: string;
-  eventTime?: string;
   eventName: string;
+  additionalNotes?: string;
   logTime: string; //iso??
 };
 
@@ -22,11 +22,12 @@ export type item = {
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
-  logs?: logsType[];
+  logIds?: string[];
 };
 export type itemsList = {
   items: item[];
   collectionTags: CollectionTag[];
+  logs: logsType[];
 };
 export type CollectionTag = {
   label: string;
@@ -40,6 +41,7 @@ const initialState: itemsList = {
     { label: "GreenCollection", value: "GreenCollection", color: "#008000" },
     { label: "GoldCollection", value: "GoldCollection", color: "#FFD700" },
   ],
+  logs: [],
 };
 
 const itemsSlice = createSlice({
@@ -70,19 +72,24 @@ const itemsSlice = createSlice({
         label: String(action),
       });
     },
+    addEventLog: (state, action) => {
+      state.logs.push({
+        eventDate: action.payload.eventDate,
+        eventName: action.payload.eventName,
+        eventId: action.payload.eventId,
+        logTime: action.payload.logTime,
+        additionalNotes: action.payload.additionalNotes,
+      } as logsType);
+    },
     addLog: (state, action) => {
+      //this added to add the eventId to the item/s
       const itemIndex = state.items.findIndex(
         (x) => x.id === action.payload.selectedId,
       );
-      state.items[itemIndex].logs?.push({
-        eventDate: action.payload.eventDate,
-        eventName: action.payload.eventName,
-        id: nanoid(),
-        logTime: action.payload.logTime,
-        eventTime: action.payload.eventTime,
-      });
+      state.items[itemIndex].logIds?.push(action.payload.logId);
     },
   },
 });
-export const { addItem } = itemsSlice.actions;
+export const { addItem, addCollection, addLog, addEventLog } =
+  itemsSlice.actions;
 export default itemsSlice.reducer;

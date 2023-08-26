@@ -24,7 +24,6 @@ export const SelectionItemBox = ({
   selectedIdCollector: string[];
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
-  const boxStyle2 = "w-[69px] h-[69px] rounded-lg";
   const layout = require("../assets/images/layout1.png");
   const [isSelected, setIsSelected] = useState(false);
   return (
@@ -39,17 +38,15 @@ export const SelectionItemBox = ({
           );
         }
       }}
-      style={{
-        borderWidth: selectedIdCollector.includes(id) ? 5 : 0,
-        borderColor: "#77AEBB",
-      }}
-      className={`m-1 relative ${
-        selectedIdCollector.includes(id) ? boxStyle2 : boxStyle
-      }`}
+      className={`m-1 relative ${boxStyle}`}
     >
       <Image
         className="flex-1 absolute z-20 rounded-lg"
-        source={categoryLayoutImages[categoryNumber] ?? layout}
+        source={
+          selectedIdCollector.includes(id)
+            ? require("../assets/images/layoutSelection.png")
+            : categoryLayoutImages[categoryNumber] ?? layout
+        }
       />
       <Text
         style={{
