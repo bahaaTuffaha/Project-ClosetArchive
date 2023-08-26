@@ -40,7 +40,7 @@ export const ItemBox = ({
   return (
     <Animated.View style={animatedStyle}>
       <GestureDetector gesture={scaleHandler}>
-        <View className={`m-2 relative ${boxStyle}`}>
+        <View className={`m-1 relative ${boxStyle}`}>
           <Image
             className="absolute z-20 rounded-lg"
             source={categoryLayoutImages[categoryNumber] ?? layout}

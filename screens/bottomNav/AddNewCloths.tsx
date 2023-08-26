@@ -128,7 +128,7 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
           }}
         />
         <Pressable
-          onPress={() => console.log("blue")}
+          onPress={() => navigation.navigate("ItemSelector")}
           style={{
             height: height * 2,
             width: width * 2,

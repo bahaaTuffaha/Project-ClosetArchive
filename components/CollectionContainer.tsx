@@ -12,7 +12,7 @@ export const CollectionContainer = ({
   children: ReactElement;
   color?: string;
 }) => {
-  const [isFolded, setIsFolded] = useState(false);
+  const [isFolded, setIsFolded] = useState(true);
   return (
     <View
       style={{ backgroundColor: color }}

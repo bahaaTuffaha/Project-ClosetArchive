@@ -8,12 +8,65 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ItemBox } from "../../components/ItemBox";
 import { CollectionContainer } from "../../components/CollectionContainer";
+import { item } from "../../redux/itemsSlice";
+
+export function filterCategories(array: item[][], search: string) {
+  let newAllCategories = [];
+  for (let i in array) {
+    newAllCategories.push(
+      array[i].filter((x) => x.name.toLowerCase().includes(search)),
+    );
+  }
+  return newAllCategories;
+}
+export function filter(array: item[], search: string) {
+  return array.filter((x) => x.name.toLowerCase().includes(search));
+}
+
 export function HomeBottom() {
   //this is the main page
   const itemsState = useSelector((state: RootState) => state.itemsList);
   const [search, setSearch] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const isDarkMode = useColorScheme() === "dark";
+  const [allCategories, setAllCategories] = useState<item[][]>([]);
+  const [nonCategorized, setNonCategorized] = useState<item[]>([]);
+  const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
+  const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
+
+  useEffect(() => {
+    let cat = [];
+    let nonCat = [];
+    let final = [];
+    for (let i = 0; i < itemsState.collectionTags.length; i++) {
+      cat = [];
+      nonCat = [];
+      for (let j = 0; j < itemsState.items.length; j++) {
+        if (
+          itemsState.items[j].collection?.includes(
+            itemsState.collectionTags[i].value,
+          )
+        ) {
+          cat.push(itemsState.items[j]);
+        } else if (itemsState.items[j].collection?.length == 0) {
+          nonCat.push(itemsState.items[j]);
+        }
+      }
+      final.push(cat);
+    }
+    setAllCategories(final);
+    setNonCategorized(nonCat);
+    return () => {
+      cat = null;
+      nonCat = null;
+      final = null;
+    };
+  }, [itemsState.items.length]); // I will look for a solution in case of editing the items.
+
+  useEffect(() => {
+    setAllCategoriesFilter(filterCategories(allCategories, search));
+    setNonCategorizedFilter(filter(nonCategorized, search));
+  }, [search]);
 
   return (
     <ThemeView classNameStyle="px-5">
@@ -58,50 +111,95 @@ export function HomeBottom() {
               selectionColor="#C0C0C0"
               // label="Search"
               onChange={(text) => setSearch(text.nativeEvent.text)}
+              onClearIconPress={() => setSearch("")}
             />
           )}
-          <View className="w-full h-3/4 flex flex-row flex-wrap px-[5%] bg-gray mt-[1%] pt-2">
+          <View className="w-full h-3/4 flex flex-row flex-wrap bg-gray mt-[1%]">
             {itemsState.collectionTags.map((collection, index) => {
-              return (
-                <CollectionContainer
-                  key={index}
-                  color={collection.color}
-                  label={collection.label}
-                >
-                  <>
-                    {itemsState.items.map((item) => {
-                      if (item.collection?.includes(collection.value)) {
-                        return (
-                          <ItemBox
-                            primary={item.primaryColor || "#fff"}
-                            secondary={item.secondaryColor || "#fff"}
-                            tertiary={item.tertiaryColor || "#fff"}
-                            key={item.id}
-                            image={item.image}
-                            name={item.name}
-                            categoryNumber={item.category}
-                          />
-                        );
-                      }
-                    })}
-                  </>
-                </CollectionContainer>
-              );
+              if (!search) {
+                if (allCategories[index]?.length ?? 0 != 0) {
+                  return (
+                    <CollectionContainer
+                      key={index}
+                      color={collection.color}
+                      label={collection.label}
+                    >
+                      <>
+                        {allCategories[index].map((item) => {
+                          return (
+                            <ItemBox
+                              primary={item.primaryColor || "#fff"}
+                              secondary={item.secondaryColor || "#fff"}
+                              tertiary={item.tertiaryColor || "#fff"}
+                              key={item.id}
+                              image={item.image}
+                              name={item.name}
+                              categoryNumber={item.category}
+                            />
+                          );
+                        })}
+                      </>
+                    </CollectionContainer>
+                  );
+                }
+              } else {
+                if (allCategoriesFilter[index]?.length ?? 0 != 0) {
+                  return (
+                    //searching & filtering
+                    <CollectionContainer
+                      key={index}
+                      color={collection.color}
+                      label={collection.label}
+                    >
+                      <>
+                        {filterCategories(allCategories, search)[index].map(
+                          (item) => {
+                            return (
+                              <ItemBox
+                                primary={item.primaryColor || "#fff"}
+                                secondary={item.secondaryColor || "#fff"}
+                                tertiary={item.tertiaryColor || "#fff"}
+                                key={item.id}
+                                image={item.image}
+                                name={item.name}
+                                categoryNumber={item.category}
+                              />
+                            );
+                          },
+                        )}
+                      </>
+                    </CollectionContainer>
+                  );
+                }
+              }
             })}
-            {itemsState.items.map((item) => {
-              if (item.collection?.length == 0)
-                return (
-                  <ItemBox
-                    primary={item.primaryColor || "#fff"}
-                    secondary={item.secondaryColor || "#fff"}
-                    tertiary={item.tertiaryColor || "#fff"}
-                    key={item.id}
-                    image={item.image}
-                    name={item.name}
-                    categoryNumber={item.category}
-                  />
-                );
-            })}
+            {search == ""
+              ? nonCategorized.map((item, index) => {
+                  return (
+                    <ItemBox
+                      primary={item.primaryColor || "#fff"}
+                      secondary={item.secondaryColor || "#fff"}
+                      tertiary={item.tertiaryColor || "#fff"}
+                      key={index + item.id}
+                      image={item.image}
+                      name={item.name}
+                      categoryNumber={item.category}
+                    />
+                  );
+                })
+              : nonCategorizedFilter.map((item, index) => {
+                  return (
+                    <ItemBox
+                      primary={item.primaryColor || "#fff"}
+                      secondary={item.secondaryColor || "#fff"}
+                      tertiary={item.tertiaryColor || "#fff"}
+                      key={index + item.id}
+                      image={item.image}
+                      name={item.name}
+                      categoryNumber={item.category}
+                    />
+                  );
+                })}
           </View>
         </View>
       </View>
