@@ -28,6 +28,7 @@ export type itemsList = {
   items: item[];
   collectionTags: CollectionTag[];
   logs: logsType[];
+  refreshItems: boolean;
 };
 export type CollectionTag = {
   label: string;
@@ -42,6 +43,7 @@ const initialState: itemsList = {
     { label: "GoldCollection", value: "GoldCollection", color: "#FFD700" },
   ],
   logs: [],
+  refreshItems: false,
 };
 
 const itemsSlice = createSlice({
@@ -66,6 +68,20 @@ const itemsSlice = createSlice({
         tertiaryColor: action.payload.tertiaryColor,
       } as item);
     },
+    updateItem: (state, action) => {
+      const itemIndex = action.payload.itemIndex;
+      state.items[itemIndex].name = action.payload.name;
+      state.items[itemIndex].image = action.payload.image;
+      state.items[itemIndex].type = action.payload.type;
+      state.items[itemIndex].collection =
+        action.payload.collection.length == 0 ? [] : action.payload.collection;
+      state.items[itemIndex].automaticColorPicking =
+        action.payload.automaticColor;
+      state.items[itemIndex].purchaseDate = action.payload.purchaseDate;
+      state.items[itemIndex].primaryColor = action.payload.primaryColor;
+      state.items[itemIndex].secondaryColor = action.payload.secondaryColor;
+      state.items[itemIndex].tertiaryColor = action.payload.tertiaryColor;
+    },
     addCollection: (state, action) => {
       state.collectionTags.push({
         value: String(action),
@@ -88,8 +104,24 @@ const itemsSlice = createSlice({
       );
       state.items[itemIndex].logIds?.push(action.payload.logId);
     },
+    itemRefresher: (state) => {
+      state.refreshItems = !state.refreshItems;
+    },
+    deleteItem: (state, action) => {
+      const itemIndex = state.items.findIndex(
+        (x) => x.id === action.payload.selectedId,
+      );
+      state.items.splice(itemIndex, 1);
+    },
   },
 });
-export const { addItem, addCollection, addLog, addEventLog } =
-  itemsSlice.actions;
+export const {
+  addItem,
+  updateItem,
+  addCollection,
+  addLog,
+  addEventLog,
+  itemRefresher,
+  deleteItem,
+} = itemsSlice.actions;
 export default itemsSlice.reducer;
