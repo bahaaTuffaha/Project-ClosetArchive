@@ -1,6 +1,6 @@
 import { View, Image, Text, Pressable } from "react-native";
 import { categoryLayoutImages } from "../utils/data";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export const SelectionItemBox = ({
   image,
@@ -26,17 +26,20 @@ export const SelectionItemBox = ({
   const boxStyle = "w-16 h-16 rounded-lg";
   const layout = require("../assets/images/layout1.png");
   const [isSelected, setIsSelected] = useState(false);
+  useEffect(() => {
+    if (isSelected) {
+      setSelectedIdCollector((prevArray) => [...prevArray, id]);
+    } else {
+      setSelectedIdCollector((prevArray) =>
+        prevArray.filter((item) => isSelected || item !== id),
+      );
+    }
+  }, [isSelected]);
+
   return (
     <Pressable
       onPress={() => {
         setIsSelected(!isSelected);
-        if (isSelected) {
-          setSelectedIdCollector((prevArray) => [...prevArray, id]);
-        } else {
-          setSelectedIdCollector((prevArray) =>
-            prevArray.filter((item) => isSelected || item !== id),
-          );
-        }
       }}
       className={`m-1 relative ${boxStyle}`}
     >

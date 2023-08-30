@@ -74,7 +74,7 @@ export const ItemForm = ({
   const [openType, setOpenType] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(
-    storedItems ? storedItems.automaticColorPicking : false,
+    storedItems ? storedItems.automaticColor : false,
   );
   const [CollectionColors, setCollectionColors] = useState<{ color: string }>();
   const RandomNamesP1 = [
@@ -177,7 +177,7 @@ export const ItemForm = ({
             type: type,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
-            automaticColorPicking: isAutoOn,
+            automaticColor: isAutoOn,
             primaryColor: colors[0],
             secondaryColor: colors[1],
             tertiaryColor: colors[2],
@@ -191,7 +191,7 @@ export const ItemForm = ({
             type: type,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
-            automaticColorPicking: isAutoOn,
+            automaticColor: isAutoOn,
             primaryColor: colors[0],
             secondaryColor: colors[1],
             tertiaryColor: colors[2],

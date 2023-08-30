@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { trousers, tshirt } from "../screens/stackNav/images";
+import { jacket, shoes, trousers, tshirt } from "../screens/stackNav/images";
 
 export type Category = {
   name: string;
@@ -14,6 +14,8 @@ const initialState: CategoryList = {
   Categories: [
     { name: "T-Shirts", sprites: tshirt, screen: "ItemForm", index: 0 },
     { name: "Trousers", sprites: trousers, screen: "ItemForm", index: 1 },
+    { name: "Shoes", sprites: shoes, screen: "ItemForm", index: 2 },
+    { name: "Jacket", sprites: jacket, screen: "ItemForm", index: 3 },
   ],
 };
 const categoriesSlice = createSlice({

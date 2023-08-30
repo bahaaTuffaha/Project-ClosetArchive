@@ -18,7 +18,7 @@ export type item = {
   collection?: string[];
   purchaseDate?: string;
   image: string;
-  automaticColorPicking?: boolean;
+  automaticColor?: boolean;
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
@@ -61,7 +61,7 @@ const itemsSlice = createSlice({
             ? []
             : action.payload.collection,
         category: action.payload.category,
-        automaticColorPicking: action.payload.automaticColor || false,
+        automaticColor: action.payload.automaticColor || false,
         purchaseDate: action.payload.purchaseDate,
         primaryColor: action.payload.primaryColor,
         secondaryColor: action.payload.secondaryColor,
@@ -75,8 +75,7 @@ const itemsSlice = createSlice({
       state.items[itemIndex].type = action.payload.type;
       state.items[itemIndex].collection =
         action.payload.collection.length == 0 ? [] : action.payload.collection;
-      state.items[itemIndex].automaticColorPicking =
-        action.payload.automaticColor;
+      state.items[itemIndex].automaticColor = action.payload.automaticColor;
       state.items[itemIndex].purchaseDate = action.payload.purchaseDate;
       state.items[itemIndex].primaryColor = action.payload.primaryColor;
       state.items[itemIndex].secondaryColor = action.payload.secondaryColor;
