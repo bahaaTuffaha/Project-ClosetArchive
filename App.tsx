@@ -5,7 +5,8 @@ import SplashScreen from "react-native-splash-screen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider as ReduxProvider } from "react-redux";
-import store from "./redux/store";
+import { store, persistor } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === "dark";
@@ -19,17 +20,19 @@ function App(): JSX.Element {
 
   return (
     <ReduxProvider store={store}>
-      <PaperProvider>
-        <SafeAreaView className="flex-1">
-          <StatusBar
-            barStyle={isDarkMode ? "light-content" : "dark-content"}
-            backgroundColor={backgroundStyle.backgroundColor}
-          />
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <Navigator />
-          </GestureHandlerRootView>
-        </SafeAreaView>
-      </PaperProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <PaperProvider>
+          <SafeAreaView className="flex-1">
+            <StatusBar
+              barStyle={isDarkMode ? "light-content" : "dark-content"}
+              backgroundColor={backgroundStyle.backgroundColor}
+            />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Navigator />
+            </GestureHandlerRootView>
+          </SafeAreaView>
+        </PaperProvider>
+      </PersistGate>
     </ReduxProvider>
   );
 }

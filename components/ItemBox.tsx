@@ -1,11 +1,14 @@
 import { View, Image, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { categoryLayoutImages } from "../utils/data";
+import { useNavigation } from "@react-navigation/native";
+import { Dispatch, SetStateAction } from "react";
 
 export const ItemBox = ({
   image,
@@ -14,6 +17,8 @@ export const ItemBox = ({
   tertiary,
   name,
   categoryNumber,
+  id,
+  setRefresh,
 }: {
   image: string;
   name: string;
@@ -21,10 +26,18 @@ export const ItemBox = ({
   secondary: string;
   tertiary: string;
   categoryNumber: number;
+  id: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
   const layout = require("../assets/images/layout1.png");
   const scaleDownAnimation = useSharedValue(1);
+  const navigation = useNavigation<any>();
+  function navToEdit() {
+    navigation.navigate("ItemForm", {
+      editingIndex: id,
+    });
+  }
   const scaleHandler = Gesture.Tap()
     .onBegin(() => {
       "worklet";
@@ -33,6 +46,10 @@ export const ItemBox = ({
     .onFinalize(() => {
       "worklet";
       scaleDownAnimation.value = withSpring(1);
+    })
+    .onEnd(() => {
+      "worklet";
+      runOnJS(navToEdit)();
     });
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scaleDownAnimation.value }],

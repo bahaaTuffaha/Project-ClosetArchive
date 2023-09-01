@@ -12,7 +12,12 @@ import { useEffect, useState } from "react";
 import addImage from "../../assets/images/addImage.png";
 import { BackButton } from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem } from "../../redux/itemsSlice";
+import {
+  addItem,
+  updateItem,
+  itemRefresher,
+  deleteItem,
+} from "../../redux/itemsSlice";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ColorModal from "../../components/ColorModal";
@@ -37,22 +42,40 @@ export const ItemForm = ({
   navigation: any;
   route: any;
 }) => {
-  const { selectedCategory } = route.params;
+  const { selectedCategory, editingIndex } = route.params;
   // const navigation = useNavigation<any>();
   const collectionState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
   );
-  const [name, setName] = useState("");
-  const [collection, setCollection] = useState([]);
-  const [type, setType] = useState("");
-  const [purchaseDate, setPurchaseDate] = useState(new Date());
-  const [imageUrl, setImageUrl] = useState<string>("");
+  const currentIndex = useSelector((state: RootState) =>
+    state.itemsList.items.findIndex((x) => x.id === editingIndex),
+  );
+  const storedItems = useSelector(
+    (state: RootState) => state.itemsList.items[currentIndex],
+  );
+  const [name, setName] = useState(storedItems ? storedItems.name : "");
+  const [collection, setCollection] = useState(
+    storedItems ? storedItems.collection : [],
+  );
+  const [type, setType] = useState(storedItems ? storedItems.type : "");
+  const [purchaseDate, setPurchaseDate] = useState(
+    storedItems ? JSON.parse(storedItems.purchaseDate ?? "") : new Date(),
+  );
+  const [imageUrl, setImageUrl] = useState<string>(
+    storedItems ? storedItems.image : "",
+  );
   const [errorsList, setErrorsList] = useState<string[]>([]);
-  const [colors, setColors] = useState(["", "", ""]);
+  const [colors, setColors] = useState([
+    storedItems ? storedItems.primaryColor : "",
+    storedItems ? storedItems.secondaryColor : "",
+    storedItems ? storedItems.tertiaryColor : "",
+  ]);
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
-  const [isAutoOn, setIsAutoOn] = useState(false);
+  const [isAutoOn, setIsAutoOn] = useState(
+    storedItems ? storedItems.automaticColor : false,
+  );
   const [CollectionColors, setCollectionColors] = useState<{ color: string }>();
   const RandomNamesP1 = [
     "Wildfire",
@@ -120,6 +143,12 @@ export const ItemForm = ({
   const [visible, setVisible] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
+  function deleteItemHandler() {
+    dispatch(deleteItem({ selectedId: storedItems.id }));
+    dispatch(itemRefresher());
+    navigation.popToTop("Category");
+  }
+
   function addItemHandler() {
     const errors = [];
 
@@ -138,22 +167,42 @@ export const ItemForm = ({
       return;
     }
     setErrorsList([]);
-    dispatch(
-      addItem({
-        name: name,
-        collection: collection,
-        category: selectedCategory,
-        type: type,
-        purchaseDate: JSON.stringify(purchaseDate),
-        image: imageUrl,
-        automaticColorPicking: isAutoOn,
-        primaryColor: colors[0],
-        secondaryColor: colors[1],
-        tertiaryColor: colors[2],
-      }),
-    );
+    editingIndex
+      ? dispatch(
+          updateItem({
+            itemIndex: currentIndex,
+            name: name,
+            collection: collection,
+            category: selectedCategory,
+            type: type,
+            purchaseDate: JSON.stringify(purchaseDate),
+            image: imageUrl,
+            automaticColor: isAutoOn,
+            primaryColor: colors[0],
+            secondaryColor: colors[1],
+            tertiaryColor: colors[2],
+          }),
+        )
+      : dispatch(
+          addItem({
+            name: name,
+            collection: collection,
+            category: selectedCategory,
+            type: type,
+            purchaseDate: JSON.stringify(purchaseDate),
+            image: imageUrl,
+            automaticColor: isAutoOn,
+            primaryColor: colors[0],
+            secondaryColor: colors[1],
+            tertiaryColor: colors[2],
+          }),
+        );
     navigation.popToTop("Category");
-    navigation.dispatch(CommonActions.goBack());
+    if (!editingIndex) {
+      navigation.dispatch(CommonActions.goBack());
+    } else {
+      dispatch(itemRefresher());
+    }
   }
   const onToggleSwitch = () => {
     if (imageUrl) {
@@ -241,6 +290,9 @@ export const ItemForm = ({
         <>
           <BackButton />
           <View className="flex items-center space-y-3">
+            <ThemeText classNameStyle="text-xl mt-4 font-mono">
+              {editingIndex ? "Editing Item" : "Adding an Item"}
+            </ThemeText>
             <TouchableOpacity
               onPress={() => {
                 setImageModalVisible(true);
@@ -383,16 +435,28 @@ export const ItemForm = ({
                 })}
               </View>
             )}
-
-            <Button
-              // className="mb-5"
-              mode="contained"
-              buttonColor="#77AEBB"
-              textColor="white"
-              onPress={addItemHandler}
-            >
-              Save
-            </Button>
+            <View className="flex flex-row justify-center space-x-5">
+              <Button
+                // className="mb-5"
+                mode="contained"
+                buttonColor="#77AEBB"
+                textColor="white"
+                onPress={addItemHandler}
+              >
+                Save
+              </Button>
+              {editingIndex && (
+                <Button
+                  // className="mb-5"
+                  mode="contained"
+                  buttonColor="#ee4949"
+                  textColor="white"
+                  onPress={deleteItemHandler}
+                >
+                  Delete
+                </Button>
+              )}
+            </View>
           </View>
         </>
       </ThemeView>

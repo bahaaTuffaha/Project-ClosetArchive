@@ -33,6 +33,9 @@ export function HomeBottom() {
   const [nonCategorized, setNonCategorized] = useState<item[]>([]);
   const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
   const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
+  const refreshItems = useSelector(
+    (state: RootState) => state.itemsList.refreshItems,
+  );
 
   useEffect(() => {
     let cat = [];
@@ -61,7 +64,7 @@ export function HomeBottom() {
       nonCat = null;
       final = null;
     };
-  }, [itemsState.items.length]); // I will look for a solution in case of editing the items.
+  }, [itemsState.items.length, refreshItems]); // I will look for a solution in case of editing the items.
 
   useEffect(() => {
     setAllCategoriesFilter(filterCategories(allCategories, search));
@@ -135,6 +138,7 @@ export function HomeBottom() {
                               image={item.image}
                               name={item.name}
                               categoryNumber={item.category}
+                              id={item.id}
                             />
                           );
                         })}
@@ -163,6 +167,7 @@ export function HomeBottom() {
                                 image={item.image}
                                 name={item.name}
                                 categoryNumber={item.category}
+                                id={item.id}
                               />
                             );
                           },
@@ -184,6 +189,7 @@ export function HomeBottom() {
                       image={item.image}
                       name={item.name}
                       categoryNumber={item.category}
+                      id={item.id}
                     />
                   );
                 })
@@ -197,6 +203,7 @@ export function HomeBottom() {
                       image={item.image}
                       name={item.name}
                       categoryNumber={item.category}
+                      id={item.id}
                     />
                   );
                 })}
