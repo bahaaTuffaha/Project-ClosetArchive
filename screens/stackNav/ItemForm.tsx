@@ -206,6 +206,7 @@ export const ItemForm = ({
   }
   const onToggleSwitch = () => {
     if (imageUrl) {
+      console.log(imageUrl);
       if (isAutoOn == false) {
         colorsExtractor(imageUrl.slice(7));
       }

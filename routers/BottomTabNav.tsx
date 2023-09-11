@@ -17,7 +17,7 @@ const CustomTabButton = ({
   children: any;
   onPress?: any;
 }) => {
-  const isDarkMode = useColorScheme() === "dark";
+  // const isDarkMode = useColorScheme() === "dark";
   return (
     <Pressable
       onPress={onPress}
@@ -29,7 +29,7 @@ const CustomTabButton = ({
           height: 70,
           backgroundColor: "#77AEBB",
           borderRadius: 50,
-          borderColor: isDarkMode ? "#444444" : "#ffffff",
+          borderColor: "#C9C9C9",
           borderWidth: 5,
         }}
       >

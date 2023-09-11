@@ -28,7 +28,7 @@ export const EventLogForm = ({
   const dispatch = useDispatch();
 
   async function addEventHandler() {
-    const generatedId = nanoid();
+    const generatedId = nanoid(); // event Id
     const errors = [];
 
     if (eventName.length <= 0) {

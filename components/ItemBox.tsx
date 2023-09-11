@@ -18,7 +18,6 @@ export const ItemBox = ({
   name,
   categoryNumber,
   id,
-  setRefresh,
 }: {
   image: string;
   name: string;
@@ -27,7 +26,6 @@ export const ItemBox = ({
   tertiary: string;
   categoryNumber: number;
   id: string;
-  setRefresh: Dispatch<SetStateAction<boolean>>;
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
   const layout = require("../assets/images/layout1.png");

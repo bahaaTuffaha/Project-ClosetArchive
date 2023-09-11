@@ -117,7 +117,7 @@ export function HomeBottom() {
               onClearIconPress={() => setSearch("")}
             />
           )}
-          <View className="w-full h-3/4 flex flex-row flex-wrap bg-gray mt-[1%]">
+          <View className="w-full h-[85%] flex flex-row flex-wrap bg-gray mt-[1%]">
             {itemsState.collectionTags.map((collection, index) => {
               if (!search) {
                 if (allCategories[index]?.length ?? 0 != 0) {

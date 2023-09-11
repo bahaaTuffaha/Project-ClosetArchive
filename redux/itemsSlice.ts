@@ -66,6 +66,7 @@ const itemsSlice = createSlice({
         primaryColor: action.payload.primaryColor,
         secondaryColor: action.payload.secondaryColor,
         tertiaryColor: action.payload.tertiaryColor,
+        logIds: [],
       } as item);
     },
     updateItem: (state, action) => {
