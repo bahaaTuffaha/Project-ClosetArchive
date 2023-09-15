@@ -29,7 +29,9 @@ const CustomModal = ({
           >
             <Icon name="close-a" size={20} color="red" />
           </TouchableOpacity>
-          <Text className="self-center text-2xl font-bold mt-1">{label}</Text>
+          <Text className="self-center text-2xl font-bold mt-1 capitalize">
+            {label}
+          </Text>
           {children}
         </View>
       </View>
@@ -43,6 +45,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#49494968",
+    borderStyle: "dashed",
+    borderColor: "green",
+    borderWidth: 1,
   },
   modalView: {
     backgroundColor: "white",
