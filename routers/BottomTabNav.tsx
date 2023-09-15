@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AddNewCloths } from "../screens/bottomNav/AddNewCloths";
 import { HomeBottom } from "../screens/bottomNav/HomeBottom";
-import { Image, Pressable, View, useColorScheme } from "react-native";
+import { Image, Pressable, View } from "react-native";
 import closetIcon from "../assets/images/closet.png";
 import closetUnselectedIcon from "../assets/images/closetUnselected.png";
 import addIcon from "../assets/images/add.png";

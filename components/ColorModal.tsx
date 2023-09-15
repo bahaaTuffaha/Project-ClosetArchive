@@ -1,8 +1,15 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Keyboard,
+} from "react-native";
 import ColorPicker from "react-native-wheel-color-picker";
 import Icon from "react-native-vector-icons/Fontisto";
-import { TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 let Reg_Exp = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
 const ColorModal = ({
   setVisible,
@@ -54,6 +61,32 @@ const ColorModal = ({
             swatches={false}
             sliderHidden={true}
           />
+          {!Keyboard.isVisible() && (
+            <View className="flex flex-row justify-center">
+              <Button
+                mode="text"
+                textColor="#77AEBB"
+                onPress={() => {
+                  newColors[colorSelection] = "#ffffff";
+                  setColors(newColors);
+                  setCurrentColor("#ffffff");
+                }}
+              >
+                Reset
+              </Button>
+              <Button
+                mode="text"
+                textColor="black"
+                onPress={() => {
+                  newColors[colorSelection] = "#000";
+                  setColors(newColors);
+                  setCurrentColor("#000");
+                }}
+              >
+                Set Black
+              </Button>
+            </View>
+          )}
           <TextInput
             mode="outlined"
             outlineColor="#AEBB77"

@@ -9,6 +9,10 @@ import { RootState } from "../../redux/store";
 import { LogComponent } from "../../components/LogComponent";
 import { Searchbar } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
+import CustomModal from "../../components/CustomModal";
+import { logsType } from "../../redux/itemsSlice";
+import { ThemeText } from "../../components/ThemeText";
+import dayjs from "dayjs";
 
 export const OutfitLog = () => {
   const animationRef = useRef<Lottie>(null);
@@ -19,12 +23,63 @@ export const OutfitLog = () => {
     // animationRef.current?.play(30, 120);
   }, []);
   const [search, setSearch] = useState("");
+  const [filteredLogs, setFilteredLogs] = useState<logsType[]>([]);
   const isDarkMode = useColorScheme() === "dark";
   const logsState = useSelector((state: RootState) => state.itemsList.logs);
+  const [refresh, setRefresh] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalEventId, setModalEventId] = useState("");
+  const [modalInfo, setModalInfo] = useState<logsType>();
+
+  function filter(array: logsType[], search: string) {
+    return array.filter((x) => x.eventName.toLowerCase().includes(search));
+  }
+
+  useEffect(() => {
+    let info = logsState.find((x) => x.eventId == modalEventId);
+    setModalInfo(info);
+  }, [modalEventId]);
+
+  useEffect(() => {
+    setFilteredLogs(filter(logsState, search));
+  }, [search]);
+
   //filter : last added  and first added (from logTime), today, last week ,search by name
   return (
     <ThemeView classNameStyle="px-5">
       <>
+        <CustomModal
+          setVisible={setModalVisible}
+          visible={modalVisible}
+          label={modalInfo?.eventName || "Event Name"}
+        >
+          <View className="w-[90%] mr-auto ml-auto space-y-5">
+            <View>
+              <ThemeText classNameStyle="text-[16px]">Date:</ThemeText>
+              <ThemeText>
+                {dayjs(
+                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
+                ).format("DD/MM/YYYY")}
+              </ThemeText>
+            </View>
+            <View>
+              <ThemeText classNameStyle="text-[16px]">Time:</ThemeText>
+              <ThemeText>
+                {dayjs(
+                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
+                ).format("h:mm A")}
+              </ThemeText>
+            </View>
+            <View>
+              <ThemeText classNameStyle="text-[16px]">
+                AdditionalNotes:
+              </ThemeText>
+              <ThemeText classNameStyle="h-fit">
+                {modalInfo?.additionalNotes}
+              </ThemeText>
+            </View>
+          </View>
+        </CustomModal>
         <View className="flex flex-row items-center justify-center w-full h-14 rounded-t-2xl shadow-2xl bg-mainCyan mb-[1%]">
           <Text className="text-xl text-white font-bold">LOGS</Text>
           <View className="w-[1%] h-full bg-white absolute right-[15%]" />
@@ -47,25 +102,29 @@ export const OutfitLog = () => {
           onChange={(text) => setSearch(text.nativeEvent.text)}
           onClearIconPress={() => setSearch("")}
         />
-        {logsState.length <= 0 && (
-          <>
-            <Lottie
-              ref={animationRef}
-              style={{ width: "100%", alignSelf: "center" }}
-              source={require("../../assets/jsonAnimations/cloths1.json")}
-            />
-            <Text className="self-center">Your closet history is empty</Text>
-          </>
-        )}
         <View className="w-full h-[85%] flex flex-row flex-wrap bg-gray mx-auto mt-[1%] px-5">
+          {logsState.length <= 0 && (
+            <View className="flex flex-col">
+              <Lottie
+                ref={animationRef}
+                style={{ width: "100%", alignSelf: "center" }}
+                source={require("../../assets/jsonAnimations/cloths1.json")}
+              />
+              <Text className="self-center">Your closet history is empty</Text>
+            </View>
+          )}
           <FlashList
             showsVerticalScrollIndicator={false}
-            data={logsState}
+            data={filteredLogs}
+            extraData={refresh}
             renderItem={({ item }) => (
               <LogComponent
                 eventName={item.eventName}
                 eventDate={JSON.parse(item.eventDate)}
                 eventId={item.eventId}
+                setRefresh={setRefresh}
+                setModalVisible={setModalVisible}
+                setModalEventId={setModalEventId}
               />
             )}
             estimatedItemSize={200}

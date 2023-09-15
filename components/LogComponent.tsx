@@ -1,27 +1,37 @@
 import { View, TouchableOpacity } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
-import { useSelector } from "react-redux";
+import { Text } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { ItemBox } from "./ItemBox";
 import dayjs from "dayjs";
+import { deleteEventLog, deleteLog } from "../redux/itemsSlice";
+import { Dispatch, SetStateAction } from "react";
 
 export const LogComponent = ({
   eventName,
   eventDate,
   eventId,
+  setRefresh,
+  setModalVisible,
+  setModalEventId,
 }: {
   eventName: string;
   eventDate: Date;
   eventId: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
+  setModalVisible: Dispatch<SetStateAction<boolean>>;
+  setModalEventId: Dispatch<SetStateAction<string>>;
 }) => {
   const itemsState = useSelector((state: RootState) => state.itemsList.items);
   const filteredArray = itemsState.filter((obj) => {
     return obj.logIds?.some((element) => element === eventId);
   });
+  const dispatch = useDispatch();
   return (
     <TouchableOpacity
       onPress={() => {
-        console.log("event details");
+        setModalVisible(true);
+        setModalEventId(eventId);
       }}
       className="w-full h-fit my-5 border-mainGreen bg-white flex flex-col items-center relative rounded-lg"
     >
@@ -32,7 +42,11 @@ export const LogComponent = ({
         <Text>{dayjs(eventDate).format("DD/MM/YYYY")}</Text>
         <Text>{dayjs(eventDate).format("h:mm A")}</Text>
         <TouchableOpacity
-          onPress={() => console.log("delete this item")}
+          onPress={() => {
+            dispatch(deleteLog({ selectedLogId: eventId }));
+            dispatch(deleteEventLog({ selectedLogId: eventId }));
+            setRefresh((value) => !value);
+          }}
           className="h-full w-6 bg-red flex flex-row justify-center z-20 rounded-tr-lg"
         >
           <Text className="text-white font-bold">X</Text>

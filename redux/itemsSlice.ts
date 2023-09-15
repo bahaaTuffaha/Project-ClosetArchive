@@ -97,12 +97,38 @@ const itemsSlice = createSlice({
         additionalNotes: action.payload.additionalNotes,
       } as logsType);
     },
+    deleteEventLog: (state, action) => {
+      const eventIndex = state.logs.findIndex(
+        (x) => x.eventId === action.payload.selectedLogId,
+      );
+      state.logs.splice(eventIndex, 1);
+    },
     addLog: (state, action) => {
       //this added to add the eventId to the item/s
       const itemIndex = state.items.findIndex(
         (x) => x.id === action.payload.selectedId,
       );
       state.items[itemIndex].logIds?.push(action.payload.logId);
+    },
+    deleteLog: (state, action) => {
+      const itemIndices = state.items.reduce(
+        (indices: number[], item, index) => {
+          if (
+            item.logIds &&
+            item.logIds.includes(action.payload.selectedLogId)
+          ) {
+            indices.push(index);
+          }
+          return indices;
+        },
+        [],
+      );
+      for (let i of itemIndices) {
+        const logIndex = state.items[i].logIds?.findIndex(
+          (x) => x === action.payload.selectedLogId,
+        );
+        state.items[i].logIds?.splice(logIndex as number, 1);
+      }
     },
     itemRefresher: (state) => {
       state.refreshItems = !state.refreshItems;
@@ -120,7 +146,9 @@ export const {
   updateItem,
   addCollection,
   addLog,
+  deleteLog,
   addEventLog,
+  deleteEventLog,
   itemRefresher,
   deleteItem,
 } = itemsSlice.actions;
