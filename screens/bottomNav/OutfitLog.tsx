@@ -1,18 +1,30 @@
-import { Text, View, useColorScheme, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  useColorScheme,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import React, { useEffect, useRef, useState } from "react";
 import Lottie from "lottie-react-native";
-import { BackButton } from "../../components/BackButton";
 import { FlashList } from "@shopify/flash-list";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { LogComponent } from "../../components/LogComponent";
-import { Searchbar } from "react-native-paper";
+import { Button, RadioButton, Searchbar } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import CustomModal from "../../components/CustomModal";
 import { logsType } from "../../redux/itemsSlice";
 import { ThemeText } from "../../components/ThemeText";
 import dayjs from "dayjs";
+import { Dimensions } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
 
 export const OutfitLog = () => {
   const animationRef = useRef<Lottie>(null);
@@ -30,6 +42,29 @@ export const OutfitLog = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEventId, setModalEventId] = useState("");
   const [modalInfo, setModalInfo] = useState<logsType>();
+  const [sortValue, setSortValue] = useState("LA");
+
+  const space = useSharedValue(-10);
+  const { width, height } = Dimensions.get("window");
+  const [isOpen, setIsOpen] = useState(false);
+  const closeDrawerAnimation = useAnimatedStyle(() => {
+    return {
+      marginRight: withTiming(space.value, {
+        duration: 500,
+        easing: Easing.ease,
+      }),
+    };
+  }, []);
+  const handleOpenDrawer = () => {
+    // Update the space value to trigger the animation
+    setIsOpen((prev) => !prev);
+    space.value = width / 2 - 15;
+  };
+  const handleCloseDrawer = () => {
+    // Update the space value to trigger the animation
+    setIsOpen((prev) => !prev);
+    space.value = -10;
+  };
 
   function filter(array: logsType[], search: string) {
     return array.filter((x) => x.eventName.toLowerCase().includes(search));
@@ -42,7 +77,7 @@ export const OutfitLog = () => {
 
   useEffect(() => {
     setFilteredLogs(filter(logsState, search));
-  }, [search]);
+  }, [logsState.length, search]);
 
   //filter : last added  and first added (from logTime), today, last week ,search by name
   return (
@@ -80,10 +115,55 @@ export const OutfitLog = () => {
             </View>
           </View>
         </CustomModal>
+        {/* this is a clickable background solution */}
+        {isOpen && (
+          <TouchableOpacity
+            onPress={handleCloseDrawer}
+            className="z-40 h-full w-full absolute right-5 bg-black opacity-30 rounded-xl"
+          />
+        )}
+        <Animated.View
+          style={[
+            {
+              height: height,
+              width: width / 2,
+              position: "absolute",
+              backgroundColor: "white",
+              zIndex: 50,
+              right: "-50%",
+            },
+            closeDrawerAnimation,
+          ]}
+        >
+          <RadioButton.Group
+            onValueChange={(value) => setSortValue(value)}
+            value={sortValue}
+          >
+            <RadioButton.Item label="Last Added" value="LA" />
+            <RadioButton.Item label="Name Asc" value="NA" />
+            <RadioButton.Item label="Name Desc" value="ND" />
+            <RadioButton.Item label="Date Asc" value="DA" />
+            <RadioButton.Item label="Date Desc" value="DD" />
+          </RadioButton.Group>
+          <Button
+            mode="contained-tonal"
+            className="self-center"
+            onPress={() => {
+              handleCloseDrawer();
+            }}
+          >
+            Apply
+          </Button>
+        </Animated.View>
         <View className="flex flex-row items-center justify-center w-full h-14 rounded-t-2xl shadow-2xl bg-mainCyan mb-[1%]">
           <Text className="text-xl text-white font-bold">LOGS</Text>
           <View className="w-[1%] h-full bg-white absolute right-[15%]" />
-          <Pressable className="w-[15%] h-full bg-mainGreen absolute right-0 rounded-tr-2xl flex justify-center items-center">
+          <Pressable
+            onPress={() => {
+              handleOpenDrawer();
+            }}
+            className="w-[15%] h-full bg-mainGreen absolute right-0 rounded-tr-2xl flex justify-center items-center"
+          >
             <Icon name="filter" size={25} color="white" />
           </Pressable>
         </View>
