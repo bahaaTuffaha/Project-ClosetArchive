@@ -97,7 +97,7 @@ export const EventLogForm = ({
             value={additionalNotes}
             onChange={(text) => setAdditionalNotes(text.nativeEvent.text)}
           />
-          {errorsList.length && (
+          {errorsList.length > 0 && (
             <View>
               {errorsList.map((error, index) => {
                 return (

@@ -425,7 +425,7 @@ export const ItemForm = ({
               </View>
             )}
 
-            {errorsList.length && (
+            {errorsList.length > 0 && (
               <View>
                 {errorsList.map((error, index) => {
                   return (

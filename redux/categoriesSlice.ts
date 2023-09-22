@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { jacket, shoes, trousers, tshirt } from "../screens/stackNav/images";
+import {
+  customCategory,
+  jacket,
+  shoes,
+  trousers,
+  tshirt,
+} from "../screens/stackNav/images";
 
 export type Category = {
   name: string;
@@ -26,11 +32,14 @@ const categoriesSlice = createSlice({
       state.Categories.push({
         name: action.payload.name,
         screen: "ItemForm",
-        sprites: trousers,
-        index: action.payload.index,
+        sprites: customCategory,
+        index: state.Categories[state.Categories.length - 1].index + 1,
       } as Category);
+    },
+    delCategory: (state, action) => {
+      state.Categories.splice(action.payload.index, 1);
     },
   },
 });
-export const { addCategory } = categoriesSlice.actions;
+export const { addCategory, delCategory } = categoriesSlice.actions;
 export default categoriesSlice.reducer;

@@ -67,7 +67,75 @@ export const OutfitLog = () => {
   };
 
   function filter(array: logsType[], search: string) {
-    return array.filter((x) => x.eventName.toLowerCase().includes(search));
+    let newArray = array.filter((x) =>
+      x.eventName.toLowerCase().includes(search.toLowerCase()),
+    );
+    switch (sortValue) {
+      case "LA":
+        newArray.sort((a, b) => {
+          if (a.logTime > b.logTime) {
+            return -1;
+          }
+          if (a.logTime < b.logTime) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      case "NA":
+        newArray.sort((a, b) => {
+          const nameA = a.eventName.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+          const nameB = b.eventName.toUpperCase();
+
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      case "ND":
+        newArray.sort((a, b) => {
+          const nameA = a.eventName.toUpperCase();
+          const nameB = b.eventName.toUpperCase();
+
+          if (nameA > nameB) {
+            return -1;
+          }
+          if (nameA < nameB) {
+            return 1;
+          }
+          return 0;
+        });
+
+        break;
+      case "DA":
+        newArray.sort((a, b) => {
+          if (a.eventDate < b.eventDate) {
+            return -1;
+          }
+          if (a.eventDate > b.eventDate) {
+            return 1;
+          }
+          return 0;
+        });
+
+        break;
+      case "DD":
+        newArray.sort((a, b) => {
+          if (a.eventDate > b.eventDate) {
+            return -1;
+          }
+          if (a.eventDate < b.eventDate) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+    }
+    return newArray;
   }
 
   useEffect(() => {
@@ -77,7 +145,7 @@ export const OutfitLog = () => {
 
   useEffect(() => {
     setFilteredLogs(filter(logsState, search));
-  }, [logsState.length, search]);
+  }, [logsState.length, search, sortValue]);
 
   //filter : last added  and first added (from logTime), today, last week ,search by name
   return (

@@ -14,13 +14,17 @@ export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
   for (let i in array) {
     newAllCategories.push(
-      array[i].filter((x) => x.name.toLowerCase().includes(search)),
+      array[i].filter((x) =>
+        x.name.toLowerCase().includes(search.toLowerCase()),
+      ),
     );
   }
   return newAllCategories;
 }
 export function filter(array: item[], search: string) {
-  return array.filter((x) => x.name.toLowerCase().includes(search));
+  return array.filter((x) =>
+    x.name.toLowerCase().includes(search.toLowerCase()),
+  );
 }
 
 export function HomeBottom() {
