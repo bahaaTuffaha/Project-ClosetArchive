@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AddNewCloths } from "../screens/bottomNav/AddNewCloths";
 import { HomeBottom } from "../screens/bottomNav/HomeBottom";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, View, useColorScheme } from "react-native";
 import closetIcon from "../assets/images/closet.png";
 import closetUnselectedIcon from "../assets/images/closetUnselected.png";
 import addIcon from "../assets/images/add.png";
@@ -17,7 +17,7 @@ const CustomTabButton = ({
   children: any;
   onPress?: any;
 }) => {
-  // const isDarkMode = useColorScheme() === "dark";
+  const isDarkMode = useColorScheme() === "dark";
   return (
     <Pressable
       onPress={onPress}
@@ -29,7 +29,7 @@ const CustomTabButton = ({
           height: 70,
           backgroundColor: "#77AEBB",
           borderRadius: 50,
-          borderColor: "#C9C9C9",
+          borderColor: isDarkMode ? "#444444" : "white",
           borderWidth: 5,
         }}
       >

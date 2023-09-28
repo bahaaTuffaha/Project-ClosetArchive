@@ -84,9 +84,29 @@ const itemsSlice = createSlice({
     },
     addCollection: (state, action) => {
       state.collectionTags.push({
-        value: String(action),
-        label: String(action),
+        value: action.payload.name,
+        label: action.payload.name,
+        color: action.payload.color,
       });
+    },
+    deleteCollection: (state, action) => {
+      const collectionIndex = state.collectionTags.findIndex(
+        (x) => x.label === action.payload.name,
+      );
+      state.collectionTags.splice(collectionIndex, 1);
+      try {
+        for (let i = 0; i < state.items.length; i++) {
+          let itemCollectionIndex = state.items[i].collection?.findIndex(
+            (x) => x === action.payload.name,
+          );
+
+          if (itemCollectionIndex != -1) {
+            state.items[i].collection?.splice(itemCollectionIndex, 1);
+          }
+        }
+      } catch (err) {
+        console.log("Error occurred at deleteCollection");
+      }
     },
     addEventLog: (state, action) => {
       state.logs.push({
@@ -145,6 +165,7 @@ export const {
   addItem,
   updateItem,
   addCollection,
+  deleteCollection,
   addLog,
   deleteLog,
   addEventLog,

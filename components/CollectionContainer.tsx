@@ -13,6 +13,7 @@ export const CollectionContainer = ({
   color?: string;
 }) => {
   const [isFolded, setIsFolded] = useState(true);
+  const isDarkMode = useColorScheme() === "dark";
   return (
     <View
       style={{ backgroundColor: color }}
@@ -22,11 +23,12 @@ export const CollectionContainer = ({
         onPress={() => {
           setIsFolded((prev) => !prev);
         }}
-        className="w-full h-8 bg-white flex flex-row items-center justify-between pr-5"
+        className="w-full h-8 flex flex-row items-center justify-between pr-5"
+        style={{ backgroundColor: isDarkMode ? "#181818" : "white" }}
       >
         <ThemeText classNameStyle="px-2 font-medium italic">{label}</ThemeText>
         <Icon
-          color={useColorScheme() == "dark" ? "white" : "black"}
+          color={isDarkMode ? "white" : "black"}
           name={isFolded ? "chevron-down" : "chevron-up"}
           size={20}
         />

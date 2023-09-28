@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, useColorScheme } from "react-native";
 import { Text } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -33,7 +33,10 @@ export const LogComponent = ({
         setModalVisible(true);
         setModalEventId(eventId);
       }}
-      className="w-full h-fit my-5 border-mainGreen bg-white flex flex-col items-center relative rounded-lg"
+      style={{
+        backgroundColor: useColorScheme() === "dark" ? "#181818" : "white",
+      }}
+      className="w-full h-fit my-5 border-mainGreen flex flex-col items-center relative rounded-lg"
     >
       <View className="w-full flex flex-row justify-between">
         <Text className="ml-[5%] capitalize text-mainCyan font-bold">
@@ -52,7 +55,12 @@ export const LogComponent = ({
           <Text className="text-white font-bold">X</Text>
         </TouchableOpacity>
       </View>
-      <View className="flex flex-row flex-wrap bg-mainPink rounded-b-md w-full h-fit min-h-[73px] px-4 py-2 border-2 border-white">
+      <View
+        className="flex flex-row flex-wrap bg-slate-500 rounded-b-md w-full h-fit min-h-[73px] px-4 py-2 border-2"
+        style={{
+          borderColor: useColorScheme() === "dark" ? "#181818" : "white",
+        }}
+      >
         {filteredArray.map((item) => {
           return (
             <ItemBox

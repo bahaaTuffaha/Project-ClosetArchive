@@ -250,7 +250,15 @@ export const OutfitLog = () => {
           onChange={(text) => setSearch(text.nativeEvent.text)}
           onClearIconPress={() => setSearch("")}
         />
-        <View className="w-full h-[85%] flex flex-row flex-wrap bg-gray mx-auto mt-[1%] px-5">
+        <View
+          style={{
+            width: "100%",
+            height: "78%",
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}
+          className="flex flex-row flex-wrap bg-gray mx-auto mt-[1%] px-5"
+        >
           {logsState.length <= 0 && (
             <View className="flex flex-col">
               <Lottie

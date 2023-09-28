@@ -8,7 +8,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { Button, Switch } from "react-native-paper";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import addImage from "../../assets/images/addImage.png";
 import { BackButton } from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +31,7 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
+import { RandomNamesP1, types } from "../../utils/data";
 
 function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -76,67 +77,17 @@ export const ItemForm = ({
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
   );
-  const [CollectionColors, setCollectionColors] = useState<{ color: string }>();
-  const RandomNamesP1 = [
-    "Wildfire",
-    "Sunshine Spirit",
-    "Retro Rebel",
-    "Neon Nights",
-    "Midnight Mirage",
-    "Enigma",
-    "Stardust Surfer",
-    "Classic Comfort",
-    "Essential Basics",
-    "Everyday Style",
-    "Timeless Appeal",
-    "Urban Chic",
-    "Casual Cool",
-    "Easy Breezy",
-    "Effortless Elegance",
-    "Simple Sophistication",
-    "Modern Minimalism",
-    "Relaxed Vibes",
-    "Versatile Essentials",
-    "Contemporary Classic",
-    "Effortless Style",
-    "Trendy Basics",
-    "Casual Chic",
-    "Modern Edge",
-    "Urban Essentials",
-    "Easygoing Fashion",
-    "Contemporary Comfort",
-  ];
+  // const [CollectionColors, setCollectionColors] = useState<string[]>([]);
 
-  const types = [
-    {
-      value: "Regular Fit",
-      label: "Regular Fit",
-    },
-    {
-      value: "Slim Fit",
-      label: "Slim Fit",
-    },
-    {
-      value: "Oversized Fit",
-      label: "Oversized Fit",
-    },
-    {
-      value: "Relaxed Fit",
-      label: "Relaxed Fit",
-    },
-    {
-      value: "Loose Fit",
-      label: "Loose Fit",
-    },
-  ];
-  useEffect(() => {
-    // separating the color collection
-    let colorCollector = [];
-    for (let i = 0; i < collectionState.length; i++) {
-      colorCollector.unshift(collectionState[i].color);
-    }
-    setCollectionColors(colorCollector);
-  }, [collectionState]);
+  // useEffect(() => {
+  //   // separating the color collection
+  //   let colorCollector = [];
+  //   for (let i = 0; i < collectionState.length; i++) {
+  //     // console.log(collectionState[i].color);
+  //     colorCollector.unshift(collectionState[i].color);
+  //   }
+  //   setCollectionColors(colorCollector);
+  // }, [collectionState]);
 
   const dispatch = useDispatch();
 
@@ -351,7 +302,8 @@ export const ItemForm = ({
                 setValue={setCollection}
                 multiple={true}
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
-                badgeDotColors={CollectionColors}
+                // badgeDotColors={CollectionColors}
+                showBadgeDot={false}
                 badgeTextStyle={{ color: "black" }}
                 mode="BADGE"
                 placeholder="Collection"
