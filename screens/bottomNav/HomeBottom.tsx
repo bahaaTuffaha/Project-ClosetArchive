@@ -9,22 +9,30 @@ import { RootState } from "../../redux/store";
 import { ItemBox } from "../../components/ItemBox";
 import { CollectionContainer } from "../../components/CollectionContainer";
 import { item } from "../../redux/itemsSlice";
+import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native";
+import { addOpacityToHex } from "../stackNav/CollectionForm";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
   for (let i in array) {
     newAllCategories.push(
-      array[i].filter((x) => x.name.toLowerCase().includes(search)),
+      array[i].filter((x) =>
+        x.name.toLowerCase().includes(search.toLowerCase()),
+      ),
     );
   }
   return newAllCategories;
 }
 export function filter(array: item[], search: string) {
-  return array.filter((x) => x.name.toLowerCase().includes(search));
+  return array.filter((x) =>
+    x.name.toLowerCase().includes(search.toLowerCase()),
+  );
 }
 
 export function HomeBottom() {
   //this is the main page
+  const navigation = useNavigation<any>();
   const itemsState = useSelector((state: RootState) => state.itemsList);
   const [search, setSearch] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -78,7 +86,10 @@ export function HomeBottom() {
           <ThemeText classNameStyle="font-light text-lg italic">
             {`Welcome back, ${"bahaa"}`}
           </ThemeText>
-          <TouchableOpacity className="flex flex-col bg-mainGreen w-[20%] h-12 justify-center items-center rounded-t-2xl">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("CollectionForm")}
+            className="flex flex-col bg-mainGreen w-[20%] h-12 justify-center items-center rounded-t-2xl"
+          >
             <Icon name="plus-square" size={20} color="white" />
             <Text className="text-xs text-white">Collection</Text>
           </TouchableOpacity>
@@ -117,14 +128,26 @@ export function HomeBottom() {
               onClearIconPress={() => setSearch("")}
             />
           )}
-          <View className="w-full h-[85%] flex flex-row flex-wrap bg-gray mt-[1%]">
+          <ScrollView
+            contentContainerStyle={{
+              width: "100%",
+              height: "85%",
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              backgroundColor: "#C9C9C9",
+              marginTop: "1%",
+              borderBottomLeftRadius: 20,
+              borderBottomRightRadius: 20,
+            }}
+          >
             {itemsState.collectionTags.map((collection, index) => {
               if (!search) {
                 if (allCategories[index]?.length ?? 0 != 0) {
                   return (
                     <CollectionContainer
                       key={index}
-                      color={collection.color}
+                      color={addOpacityToHex(collection.color, 0.2)}
                       label={collection.label}
                     >
                       <>
@@ -152,7 +175,7 @@ export function HomeBottom() {
                     //searching & filtering
                     <CollectionContainer
                       key={index}
-                      color={collection.color}
+                      color={addOpacityToHex(collection.color, 0.2)}
                       label={collection.label}
                     >
                       <>
@@ -207,7 +230,7 @@ export function HomeBottom() {
                     />
                   );
                 })}
-          </View>
+          </ScrollView>
         </View>
       </View>
     </ThemeView>

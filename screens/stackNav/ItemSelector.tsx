@@ -10,6 +10,7 @@ import { item } from "../../redux/itemsSlice";
 import { SelectionItemBox } from "../../components/SelectionItemBox";
 import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../components/BackButton";
+import { addOpacityToHex } from "./CollectionForm";
 
 export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
@@ -86,7 +87,7 @@ export const ItemSelector = () => {
                 return (
                   <CollectionContainer
                     key={index}
-                    color={collection.color}
+                    color={addOpacityToHex(collection.color, 0.2)}
                     label={collection.label}
                   >
                     <>
@@ -116,7 +117,7 @@ export const ItemSelector = () => {
                   //searching & filtering
                   <CollectionContainer
                     key={index}
-                    color={collection.color}
+                    color={addOpacityToHex(collection.color, 0.2)}
                     label={collection.label}
                   >
                     <>

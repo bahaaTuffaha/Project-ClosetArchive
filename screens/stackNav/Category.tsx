@@ -4,12 +4,15 @@ import ImageSequence from "react-native-image-sequence-2";
 import { AnimatedStyleProp, interpolate } from "react-native-reanimated";
 import { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { newCategory, trousers } from "./images";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { BackButton } from "../../components/BackButton";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { TouchableOpacity } from "react-native";
+import { delCategory } from "../../redux/categoriesSlice";
 const centerIndex = Math.round(36);
 export type TAnimationStyle = (value: number) => AnimatedStyleProp<ViewStyle>;
 
@@ -30,6 +33,7 @@ export function Category() {
       zIndex,
     };
   }, []);
+  const dispatch = useDispatch();
   return (
     <>
       <BackButton />
@@ -79,6 +83,15 @@ export function Category() {
                   style={{ width: 500, height: 500 }}
                 />
               </Pressable>
+              {item.index > 3 && (
+                <TouchableOpacity
+                  onPress={() => {
+                    dispatch(delCategory({ index: item.index }));
+                  }}
+                >
+                  <Icon name="delete" size={50} color="red" />
+                </TouchableOpacity>
+              )}
             </View>
           )}
         />

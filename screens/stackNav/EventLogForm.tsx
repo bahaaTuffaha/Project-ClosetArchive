@@ -97,6 +97,17 @@ export const EventLogForm = ({
             value={additionalNotes}
             onChange={(text) => setAdditionalNotes(text.nativeEvent.text)}
           />
+          {errorsList.length > 0 && (
+            <View>
+              {errorsList.map((error, index) => {
+                return (
+                  <Text key={index} className="text-[#C70039]">
+                    {error}
+                  </Text>
+                );
+              })}
+            </View>
+          )}
           <Button
             // className="mb-5"
             mode="contained"
