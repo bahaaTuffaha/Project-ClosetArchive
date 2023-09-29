@@ -1,4 +1,10 @@
-import { Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+  Image,
+} from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import Icon from "react-native-vector-icons/Feather";
 import { useEffect, useState } from "react";
@@ -12,6 +18,9 @@ import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native";
 import { addOpacityToHex } from "../stackNav/CollectionForm";
+import IonIcon from "react-native-vector-icons/Ionicons";
+import settingsIcon from "../../assets/images/settings.png";
+import settingsIconDark from "../../assets/images/settingsUnselected.png";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
@@ -44,6 +53,7 @@ export function HomeBottom() {
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
   );
+  const storedSettings = useSelector((state: RootState) => state.settings);
 
   useEffect(() => {
     let cat = [];
@@ -83,9 +93,25 @@ export function HomeBottom() {
     <ThemeView classNameStyle="px-5">
       <View className="flex flex-col">
         <View className="w-full flex flex-row justify-between items-center pt-5">
-          <ThemeText classNameStyle="font-light text-lg italic">
-            {`Welcome back, ${"bahaa"}`}
-          </ThemeText>
+          <View className="flex flex-row space-x-2 justify-center items-center">
+            <ThemeText classNameStyle="font-light text-lg italic">
+              {`Welcome back, ${storedSettings.name}`}
+            </ThemeText>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Settings")}
+              className="rounded-full"
+            >
+              {/* <IonIcon
+                name="settings-outline"
+                size={25}
+                color={isDarkMode ? "white" : "gray"}
+              /> */}
+              <Image
+                style={{ width: 35, height: 35 }}
+                source={isDarkMode ? settingsIcon : settingsIconDark}
+              />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
             onPress={() => navigation.navigate("CollectionForm")}
             className="flex flex-col bg-mainGreen w-[20%] h-12 justify-center items-center rounded-t-2xl"

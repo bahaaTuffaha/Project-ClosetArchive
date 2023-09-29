@@ -141,7 +141,7 @@ export const CollectionForm = () => {
           >
             Save
           </Button>
-          <View className="w-full h-1 bg-mainGreen" />
+          <View className="w-full h-1 bg-gray" />
           <Text className="w-full text-center font-mono text-xl my-5">
             Collections
           </Text>

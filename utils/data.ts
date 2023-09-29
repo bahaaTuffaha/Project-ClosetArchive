@@ -57,3 +57,17 @@ export const types = [
     label: "Loose Fit",
   },
 ];
+export const languagesList = [
+  {
+    value: "En",
+    label: "En",
+  },
+  {
+    value: "Ar",
+    label: "Ar",
+  },
+  {
+    value: "Es",
+    label: "Es",
+  },
+];
