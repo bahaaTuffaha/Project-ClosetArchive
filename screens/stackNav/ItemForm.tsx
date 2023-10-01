@@ -33,7 +33,7 @@ import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
 import { RandomNamesP1, types } from "../../utils/data";
 
-function get_random(list: string[]) {
+export function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
 }
 export const ItemForm = ({

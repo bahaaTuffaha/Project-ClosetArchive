@@ -1,4 +1,4 @@
-import { Dimensions, Pressable, Text, View, ViewStyle } from "react-native";
+import { Dimensions, Pressable, View, ViewStyle } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import ImageSequence from "react-native-image-sequence-2";
 import { AnimatedStyleProp, interpolate } from "react-native-reanimated";
@@ -6,7 +6,7 @@ import { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { newCategory, trousers } from "./images";
+import { newCategory } from "./images";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { BackButton } from "../../components/BackButton";

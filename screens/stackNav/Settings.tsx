@@ -1,4 +1,4 @@
-import { Text, View, useColorScheme } from "react-native";
+import { View, useColorScheme } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
@@ -8,10 +8,15 @@ import { languagesList } from "../../utils/data";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { CustomInput } from "../../components/CustomInput";
-import { changeLanguage, userNameSetter } from "../../redux/settingsSlice";
-import { Button, Snackbar } from "react-native-paper";
+import {
+  changeLanguage,
+  laundryNumberSetter,
+  userNameSetter,
+} from "../../redux/settingsSlice";
+import { Button, Checkbox, Snackbar } from "react-native-paper";
 import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
@@ -30,11 +35,20 @@ export const Settings = () => {
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
   const [exportOrImport, setExportOrImport] = useState(0);
+  const [checked, setChecked] = useState(false);
+
+  const handleNumberChange = (text: string) => {
+    // Use regular expressions to allow only numbers and optionally a single decimal point
+    const regex = /^[0-9]*\.?[0-9]*$/;
+    if (regex.test(text) && text >= 0 && text <= 30) {
+      dispatch(laundryNumberSetter({ number: text }));
+    }
+  };
 
   return (
-    <ThemeView classNameStyle="px-5">
+    <ThemeView classNameStyle="px-5 space-y-3">
       <>
-        <View className="w-full flex flex-row h-14 justify-center items-center mb-5">
+        <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
           <ThemeText classNameStyle="text-xl">Settings</ThemeText>
         </View>
@@ -54,7 +68,6 @@ export const Settings = () => {
             activeOutlineColor="#AEBB77"
             textContentType="name"
             style={{ width: "50%" }}
-            className="mb-5"
             label="User Name"
             value={storedSettings.name}
             onChange={(text) =>
@@ -63,11 +76,11 @@ export const Settings = () => {
             }
           />
         </View>
-        <View className="flex flex-row space-x-2 justify-between items-center mb-5">
+        <View className="flex flex-row space-x-2 justify-between items-center z-20">
           <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
             Language
           </ThemeText>
-          <View style={{ zIndex: 2, marginBottom: 10, width: "50%" }}>
+          <View style={{ marginBottom: 10, width: "50%" }}>
             <DropDownPicker
               open={openLang}
               value={lang}
@@ -76,7 +89,7 @@ export const Settings = () => {
               setValue={setLang}
               mode="BADGE"
               placeholder="Language"
-              style={{ borderColor: "#AEBB77" }}
+              style={{ borderColor: "#AEBB77", zIndex: 10 }}
               dropDownContainerStyle={{
                 borderColor: "#AEBB77",
               }}
@@ -84,7 +97,7 @@ export const Settings = () => {
             />
           </View>
         </View>
-        <View className="flex flex-row justify-between items-center mb-5">
+        <View className="flex flex-row justify-between items-center">
           <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
             Export
           </ThemeText>
@@ -101,7 +114,7 @@ export const Settings = () => {
             Export
           </Button>
         </View>
-        <View className="flex flex-row justify-between items-center">
+        <View className="flex flex-row justify-between items-center z-0 ">
           <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
             Import
           </ThemeText>
@@ -117,6 +130,39 @@ export const Settings = () => {
           >
             Import
           </Button>
+        </View>
+        <View className="flex flex-row justify-between items-center">
+          <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
+            Laundry Reminder
+          </ThemeText>
+          <CustomInput
+            mode="outlined"
+            outlineColor="#AEBB77"
+            selectionColor="#C0C0C0"
+            activeOutlineColor="#AEBB77"
+            textContentType="name"
+            className="w-[50px] mx-5"
+            label="n"
+            value={storedSettings.laundryNumber}
+            onChange={(text) => handleNumberChange(text.nativeEvent.text)}
+            keyboardType="numeric"
+          />
+          <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
+            times
+          </ThemeText>
+          <Checkbox
+            status={checked ? "checked" : "unchecked"}
+            onPress={() => {
+              setChecked(!checked);
+            }}
+          />
+        </View>
+        <View className="flex flex-row">
+          <Icon name="info-circle" size={15} color="#77AEBB" />
+          <ThemeText classNameStyle="text-xs mx-5">
+            This will remind you to put an item in the laundry after n number of
+            uses.
+          </ThemeText>
         </View>
         {/* <View className="w-full h-1 bg-gray" /> */}
       </>
