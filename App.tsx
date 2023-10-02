@@ -56,7 +56,7 @@ function App(): JSX.Element {
   const isDarkMode = useColorScheme() === "dark";
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? "black" : "white",
+    backgroundColor: isDarkMode ? "#444444" : "white",
   };
   useEffect(() => {
     GetAllPermissions();
