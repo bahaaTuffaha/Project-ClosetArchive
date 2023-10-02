@@ -34,13 +34,24 @@ export type CollectionTag = {
   label: string;
   value: string;
   color?: string;
+  isOpen: boolean;
 };
 
 const initialState: itemsList = {
   items: [],
   collectionTags: [
-    { label: "GreenCollection", value: "GreenCollection", color: "#008000" },
-    { label: "GoldCollection", value: "GoldCollection", color: "#FFD700" },
+    {
+      label: "GreenCollection",
+      value: "GreenCollection",
+      color: "#008000",
+      isOpen: true,
+    },
+    {
+      label: "GoldCollection",
+      value: "GoldCollection",
+      color: "#FFD700",
+      isOpen: true,
+    },
   ],
   logs: [],
   refreshItems: false,
@@ -87,7 +98,15 @@ const itemsSlice = createSlice({
         value: action.payload.name,
         label: action.payload.name,
         color: action.payload.color,
+        isOpen: true,
       });
+    },
+    toggleCollection: (state, action) => {
+      const collectionIndex = state.collectionTags.findIndex(
+        (x) => x.label === action.payload.name,
+      );
+      state.collectionTags[collectionIndex].isOpen =
+        !state.collectionTags[collectionIndex].isOpen;
     },
     deleteCollection: (state, action) => {
       const collectionIndex = state.collectionTags.findIndex(
@@ -165,6 +184,7 @@ export const {
   addItem,
   updateItem,
   addCollection,
+  toggleCollection,
   deleteCollection,
   addLog,
   deleteLog,

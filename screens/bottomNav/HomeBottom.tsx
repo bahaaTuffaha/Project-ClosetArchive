@@ -18,7 +18,7 @@ import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native";
 import { addOpacityToHex } from "../stackNav/CollectionForm";
-import IonIcon from "react-native-vector-icons/Ionicons";
+// import IonIcon from "react-native-vector-icons/Ionicons";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
 
@@ -119,6 +119,8 @@ export function HomeBottom() {
             <Icon name="plus-square" size={20} color="white" />
             <Text className="text-xs text-white">Collection</Text>
           </TouchableOpacity>
+          <View className="bg-mainCyan w-[20%] h-12 rounded-t-2xl absolute -z-10 right-1 bottom-1 " />
+          <View className="bg-mainPink w-[20%] h-12 rounded-t-2xl absolute -z-20 right-2 bottom-2 " />
         </View>
         <View className="w-full flex flex-col mt-5">
           <View className="w-full flex flex-row justify-between">

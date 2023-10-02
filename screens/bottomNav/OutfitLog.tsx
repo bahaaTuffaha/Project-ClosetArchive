@@ -149,7 +149,7 @@ export const OutfitLog = () => {
 
   //filter : last added  and first added (from logTime), today, last week ,search by name
   return (
-    <ThemeView classNameStyle="px-5">
+    <ThemeView classNameStyle="px-1">
       <>
         <CustomModal
           setVisible={setModalVisible}
@@ -196,7 +196,7 @@ export const OutfitLog = () => {
               height: height,
               width: width / 2,
               position: "absolute",
-              backgroundColor: "white",
+              backgroundColor: isDarkMode ? "gray" : "white",
               zIndex: 50,
               right: "-50%",
             },
@@ -215,6 +215,7 @@ export const OutfitLog = () => {
           </RadioButton.Group>
           <Button
             mode="contained-tonal"
+            buttonColor="#77AEBB"
             className="self-center"
             onPress={() => {
               handleCloseDrawer();

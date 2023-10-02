@@ -46,7 +46,7 @@ export const Settings = () => {
   };
 
   return (
-    <ThemeView classNameStyle="px-5 space-y-3">
+    <ThemeView>
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
@@ -57,112 +57,116 @@ export const Settings = () => {
             ? "Exported to destination"
             : "Imported successfully"}
         </Snackbar>
-        <View className="flex flex-row space-x-2 justify-between items-center">
-          <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-            Your Name
-          </ThemeText>
-          <CustomInput
-            mode="outlined"
-            outlineColor="#AEBB77"
-            selectionColor="#C0C0C0"
-            activeOutlineColor="#AEBB77"
-            textContentType="name"
-            style={{ width: "50%" }}
-            label="User Name"
-            value={storedSettings.name}
-            onChange={(text) =>
-              text.nativeEvent.text.length < 14 &&
-              dispatch(userNameSetter({ name: text.nativeEvent.text }))
-            }
-          />
-        </View>
-        <View className="flex flex-row space-x-2 justify-between items-center z-20">
-          <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-            Language
-          </ThemeText>
-          <View style={{ marginBottom: 10, width: "50%" }}>
-            <DropDownPicker
-              open={openLang}
-              value={lang}
-              items={languagesList}
-              setOpen={setOpenLang}
-              setValue={setLang}
-              mode="BADGE"
-              placeholder="Language"
-              style={{ borderColor: "#AEBB77", zIndex: 10 }}
-              dropDownContainerStyle={{
-                borderColor: "#AEBB77",
-              }}
-              theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+        <View className="w-full px-5 space-y-3 pt-2">
+          <View className="flex flex-row space-x-2 justify-between items-center">
+            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
+              Your Name
+            </ThemeText>
+            <CustomInput
+              mode="outlined"
+              outlineColor="#AEBB77"
+              selectionColor="#C0C0C0"
+              activeOutlineColor="#AEBB77"
+              textContentType="name"
+              style={{ width: "50%" }}
+              label="User Name"
+              value={storedSettings.name}
+              onChange={(text) =>
+                text.nativeEvent.text.length < 14 &&
+                dispatch(userNameSetter({ name: text.nativeEvent.text }))
+              }
             />
           </View>
-        </View>
-        <View className="flex flex-row justify-between items-center">
-          <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-            Export
-          </ThemeText>
-          <Button
-            onPress={async () => {
-              if (await exportStoreToJson()) {
-                setExportOrImport(0);
-                onToggleSnackBar();
-              }
-            }}
-            mode="contained"
-            className="w-[50%]"
-          >
-            Export
-          </Button>
-        </View>
-        <View className="flex flex-row justify-between items-center z-0 ">
-          <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-            Import
-          </ThemeText>
-          <Button
-            onPress={async () => {
-              if (await importStoreFromJson()) {
-                setExportOrImport(1);
-                onToggleSnackBar();
-              }
-            }}
-            mode="contained"
-            className="w-[50%]"
-          >
-            Import
-          </Button>
-        </View>
-        <View className="flex flex-row justify-between items-center">
-          <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-            Laundry Reminder
-          </ThemeText>
-          <CustomInput
-            mode="outlined"
-            outlineColor="#AEBB77"
-            selectionColor="#C0C0C0"
-            activeOutlineColor="#AEBB77"
-            textContentType="name"
-            className="w-[50px] mx-5"
-            label="n"
-            value={storedSettings.laundryNumber}
-            onChange={(text) => handleNumberChange(text.nativeEvent.text)}
-            keyboardType="numeric"
-          />
-          <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-            times
-          </ThemeText>
-          <Checkbox
-            status={checked ? "checked" : "unchecked"}
-            onPress={() => {
-              setChecked(!checked);
-            }}
-          />
-        </View>
-        <View className="flex flex-row">
-          <Icon name="info-circle" size={15} color="#77AEBB" />
-          <ThemeText classNameStyle="text-xs mx-5">
-            This will remind you to put an item in the laundry after n number of
-            uses.
-          </ThemeText>
+          <View className="flex flex-row space-x-2 justify-between items-center z-20">
+            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
+              Language
+            </ThemeText>
+            <View style={{ marginBottom: 10, width: "50%" }}>
+              <DropDownPicker
+                open={openLang}
+                value={lang}
+                items={languagesList}
+                setOpen={setOpenLang}
+                setValue={setLang}
+                mode="BADGE"
+                placeholder="Language"
+                style={{ borderColor: "#AEBB77", zIndex: 10 }}
+                dropDownContainerStyle={{
+                  borderColor: "#AEBB77",
+                }}
+                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+              />
+            </View>
+          </View>
+          <View className="flex flex-row justify-between items-center">
+            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
+              Export
+            </ThemeText>
+            <Button
+              onPress={async () => {
+                if (await exportStoreToJson()) {
+                  setExportOrImport(0);
+                  onToggleSnackBar();
+                }
+              }}
+              mode="contained"
+              className="w-[50%]"
+              buttonColor="#77AEBB"
+            >
+              Export
+            </Button>
+          </View>
+          <View className="flex flex-row justify-between items-center z-0 ">
+            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
+              Import
+            </ThemeText>
+            <Button
+              onPress={async () => {
+                if (await importStoreFromJson()) {
+                  setExportOrImport(1);
+                  onToggleSnackBar();
+                }
+              }}
+              mode="contained"
+              className="w-[50%]"
+              buttonColor="#77AEBB"
+            >
+              Import
+            </Button>
+          </View>
+          <View className="flex flex-row justify-between items-center">
+            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
+              Laundry Reminder
+            </ThemeText>
+            <CustomInput
+              mode="outlined"
+              outlineColor="#AEBB77"
+              selectionColor="#C0C0C0"
+              activeOutlineColor="#AEBB77"
+              textContentType="name"
+              className="w-[50px] mx-5"
+              label="n"
+              value={storedSettings.laundryNumber}
+              onChange={(text) => handleNumberChange(text.nativeEvent.text)}
+              keyboardType="numeric"
+            />
+            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
+              times
+            </ThemeText>
+            <Checkbox
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => {
+                setChecked(!checked);
+              }}
+            />
+          </View>
+          <View className="flex flex-row">
+            <Icon name="info-circle" size={15} color="#77AEBB" />
+            <ThemeText classNameStyle="text-xs mx-5">
+              This will remind you to put an item in the laundry after n number
+              of uses.
+            </ThemeText>
+          </View>
         </View>
         {/* <View className="w-full h-1 bg-gray" /> */}
       </>

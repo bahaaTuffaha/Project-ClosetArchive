@@ -2,6 +2,9 @@ import { ReactElement, useState } from "react";
 import { Pressable, View, useColorScheme } from "react-native";
 import { ThemeText } from "./ThemeText";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { toggleCollection } from "../redux/itemsSlice";
 
 export const CollectionContainer = ({
   label,
@@ -12,8 +15,14 @@ export const CollectionContainer = ({
   children: ReactElement;
   color?: string;
 }) => {
-  const [isFolded, setIsFolded] = useState(true);
+  const collectionTags = useSelector(
+    (state: RootState) => state.itemsList.collectionTags,
+  );
+  const [isFolded, setIsFolded] = useState(
+    collectionTags.find((x) => x.label === label)?.isOpen,
+  );
   const isDarkMode = useColorScheme() === "dark";
+  const dispatch = useDispatch();
   return (
     <View
       style={{ backgroundColor: color }}
@@ -22,11 +31,14 @@ export const CollectionContainer = ({
       <Pressable
         onPress={() => {
           setIsFolded((prev) => !prev);
+          dispatch(toggleCollection({ name: label }));
         }}
         className="w-full h-8 flex flex-row items-center justify-between pr-5"
         style={{ backgroundColor: isDarkMode ? "#181818" : "white" }}
       >
-        <ThemeText classNameStyle="px-2 font-medium italic">{label}</ThemeText>
+        <ThemeText darkColor="#77AEBB" classNameStyle="px-2 font-medium italic">
+          {label}
+        </ThemeText>
         <Icon
           color={isDarkMode ? "white" : "black"}
           name={isFolded ? "chevron-down" : "chevron-up"}
