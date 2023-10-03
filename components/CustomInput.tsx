@@ -5,9 +5,17 @@ import { Props } from "react-native-paper/lib/typescript/src/components/TextInpu
 export interface CustomInputProps extends Props {
   left?: React.ReactElement;
   right?: React.ReactElement;
+  textArea?: boolean;
 }
-export const CustomInput = ({ left, right, ...props }: CustomInputProps) => (
+export const CustomInput = ({
+  left,
+  right,
+  textArea = false,
+  ...props
+}: CustomInputProps) => (
   <TextInput2
+    multiline={textArea}
+    numberOfLines={textArea ? 4 : 1}
     theme={{
       roundness: 10,
       colors: {
@@ -18,7 +26,10 @@ export const CustomInput = ({ left, right, ...props }: CustomInputProps) => (
     render={(inputProps) => (
       <View style={{ flexDirection: "row" }}>
         {left && <View style={styles.customLeft}>{left}</View>}
-        <TextInput className="w-10/12" {...inputProps} />
+        <TextInput
+          className={`${right ? "w-10/12" : "w-full"}`}
+          {...inputProps}
+        />
         {right && <View style={styles.customRight}>{right}</View>}
       </View>
     )}

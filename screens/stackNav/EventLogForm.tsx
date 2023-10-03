@@ -93,6 +93,7 @@ export const EventLogForm = ({
             activeOutlineColor="#AEBB77"
             textContentType="name"
             style={styles.customWidth}
+            textArea={true}
             label="Additional Notes"
             value={additionalNotes}
             onChange={(text) => setAdditionalNotes(text.nativeEvent.text)}

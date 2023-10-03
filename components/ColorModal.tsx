@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   View,
   Keyboard,
+  useColorScheme,
 } from "react-native";
 import ColorPicker from "react-native-wheel-color-picker";
 import Icon from "react-native-vector-icons/Fontisto";
 import { Button, TextInput } from "react-native-paper";
+import { ThemeText } from "./ThemeText";
 let Reg_Exp = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
 const ColorModal = ({
   setVisible,
@@ -26,6 +28,7 @@ const ColorModal = ({
 }) => {
   let newColors = colors;
   const [currentColor, setCurrentColor] = useState(colors[colorSelection]);
+  const isDarkMode = useColorScheme() === "dark";
 
   return (
     <Modal
@@ -37,17 +40,23 @@ const ColorModal = ({
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+        <View
+          style={[
+            styles.modalView,
+            { backgroundColor: isDarkMode ? "gray" : "white" },
+          ]}
+        >
           <TouchableOpacity
             onPress={() => setVisible(!visible)}
             className="absolute top-3 right-3"
           >
             <Icon name="close-a" size={20} color="red" />
           </TouchableOpacity>
-          <Text className="self-center text-2xl font-bold mt-1">
+          <ThemeText classNameStyle="self-center text-2xl font-bold mt-1">
             Pick a color
-          </Text>
+          </ThemeText>
           <ColorPicker
+            onInteractionStart={() => Keyboard.dismiss()}
             color={colors[colorSelection]}
             onColorChange={(color) => {
               newColors[colorSelection] = color;
@@ -65,7 +74,7 @@ const ColorModal = ({
             <View className="flex flex-row justify-center">
               <Button
                 mode="text"
-                textColor="#77AEBB"
+                textColor={isDarkMode ? "white" : "#77AEBB"}
                 onPress={() => {
                   newColors[colorSelection] = "#ffffff";
                   setColors(newColors);
@@ -95,7 +104,10 @@ const ColorModal = ({
             activeOutlineColor="#AEBB77"
             textContentType="name"
             className="m-2"
-            theme={{ roundness: 10, colors: { background: "white" } }}
+            theme={{
+              roundness: 10,
+              colors: { background: isDarkMode ? "#2B2E3D" : "white" },
+            }}
             label="HEX"
             value={currentColor}
             onChange={(text) => {
