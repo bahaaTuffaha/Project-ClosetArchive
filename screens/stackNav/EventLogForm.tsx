@@ -63,7 +63,7 @@ export const EventLogForm = ({
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
-          <ThemeText classNameStyle="text-xl">Event info</ThemeText>
+          <ThemeText classNameStyle="text-xl italic">Event info</ThemeText>
         </View>
         <View className="flex items-center space-y-3">
           <CustomInput

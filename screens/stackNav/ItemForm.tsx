@@ -242,7 +242,7 @@ export const ItemForm = ({
         <>
           <BackButton />
           <View className="flex items-center space-y-3">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono">
+            <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
               {editingIndex ? "Editing Item" : "Adding an Item"}
             </ThemeText>
             <TouchableOpacity

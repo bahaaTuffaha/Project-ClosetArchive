@@ -29,7 +29,7 @@ const CustomTabButton = ({
           height: 70,
           backgroundColor: "#77AEBB",
           borderRadius: 50,
-          borderColor: isDarkMode ? "#444444" : "white",
+          borderColor: isDarkMode ? "#2b2e3d" : "white",
           borderWidth: 5,
         }}
       >

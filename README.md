@@ -76,7 +76,16 @@ Closet-archive is an open-source app to help people organize , categorize and mo
 
 ### Built With
 
-- [![React][React.js]][React-Native]
+<div>
+  <a href="https://reactnative.dev/" target="_blank" rel="noreferrer">
+    <img
+      src="https://reactnative.dev/img/header_logo.svg"
+      alt="reactnative"
+      width="40"
+      height="40"
+    />
+  </a>
+</div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

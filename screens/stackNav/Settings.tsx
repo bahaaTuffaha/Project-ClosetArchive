@@ -50,7 +50,7 @@ export const Settings = () => {
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
-          <ThemeText classNameStyle="text-xl">Settings</ThemeText>
+          <ThemeText classNameStyle="text-xl italic">Settings</ThemeText>
         </View>
         <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
           {exportOrImport == 0
