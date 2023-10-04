@@ -31,10 +31,10 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
-import { ClothesList, RandomNamesP1, fitList } from "../../utils/data";
-import {colors as appColors} from "./../../utils/colors"
+import { clothesList, RandomNamesP1, fitList } from "../../utils/data";
+import { colors as appColors } from "./../../utils/colors";
 
-function get_random(list: string[]) {
+export function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
 }
 export const ItemForm = ({
@@ -112,9 +112,9 @@ export const ItemForm = ({
     if (name.length > 20) {
       errors.push("Please enter a name within 20 characters");
     }
-    // if (parseInt(size) < 0) {
-    //   errors.push("Please enter the size in a positive value");
-    // }
+    if (!type) {
+      errors.push("Please choose a type");
+    }
 
     if (errors.length > 0) {
       setErrorsList(errors);
@@ -143,7 +143,7 @@ export const ItemForm = ({
             collection: collection,
             category: selectedCategory,
             type: type,
-            fit:fit,
+            fit: fit,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
             automaticColor: isAutoOn,
@@ -161,7 +161,6 @@ export const ItemForm = ({
   }
   const onToggleSwitch = () => {
     if (imageUrl) {
-      console.log(imageUrl);
       if (isAutoOn == false) {
         colorsExtractor(imageUrl.slice(7));
       }
@@ -200,6 +199,7 @@ export const ItemForm = ({
             console.log("Image picker error: ", response.errorMessage);
           } else {
             setImageUrl(response.assets[0].uri || "");
+            setImageModalVisible(false);
           }
         },
       );
@@ -211,6 +211,7 @@ export const ItemForm = ({
           console.log("Image picker error: ", response.errorMessage);
         } else {
           setImageUrl(response.assets[0].uri || "");
+          setImageModalVisible(false);
         }
       });
     }
@@ -234,10 +235,20 @@ export const ItemForm = ({
         label="Import image"
       >
         <View className="px-6 space-y-5 mt-5">
-          <Button mode="contained" onPress={() => handleImagePicker(1)}>
+          <Button
+            buttonColor={appColors.mainCyan}
+            textColor={appColors.white}
+            mode="contained"
+            onPress={() => handleImagePicker(1)}
+          >
             Use Camera
           </Button>
-          <Button mode="contained" onPress={() => handleImagePicker(0)}>
+          <Button
+            buttonColor={appColors.mainCyan}
+            textColor={appColors.white}
+            mode="contained"
+            onPress={() => handleImagePicker(0)}
+          >
             Import From Device
           </Button>
         </View>
@@ -246,7 +257,7 @@ export const ItemForm = ({
         <>
           <BackButton />
           <View className="flex items-center space-y-3">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono">
+            <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
               {editingIndex ? "Editing Item" : "Adding an Item"}
             </ThemeText>
             <TouchableOpacity
@@ -276,26 +287,29 @@ export const ItemForm = ({
                 </Pressable>
               }
             />
-            <View style={[{ zIndex: 2, marginBottom: 10 }, styles.customWidth]}>
+            <View style={[{ zIndex: 3 }, styles.customWidth]}>
               <DropDownPicker
                 open={openType}
                 value={type}
-                items={ClothesList[selectedCategory]}
+                items={clothesList[selectedCategory ?? storedItems.category]}
                 setOpen={setOpenType}
                 setValue={setType}
-                mode="BADGE"
+                mode="SIMPLE"
+                listMode="MODAL"
                 placeholder="Type"
                 style={{ borderColor: appColors.mainGreen }}
                 dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
               />
-            <DropDownPicker
+            </View>
+            <View style={[{ zIndex: 2, marginBottom: 10 }, styles.customWidth]}>
+              <DropDownPicker
                 open={openFit}
                 value={fit}
                 items={fitList}
                 setOpen={setOpenFit}
                 setValue={setFit}
-                mode="BADGE"
+                mode="SIMPLE"
                 placeholder="Fit"
                 style={{ borderColor: appColors.mainGreen }}
                 dropDownContainerStyle={{ borderColor: appColors.mainGreen }}

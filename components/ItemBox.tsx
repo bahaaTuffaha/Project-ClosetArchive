@@ -68,7 +68,7 @@ export const ItemBox = ({
             />
             <Text
               style={{
-                textShadowColor:colors.black,
+                textShadowColor: colors.black,
                 textShadowRadius: 15,
               }}
               className="absolute z-10 rounded-lg text-center font-medium text-xs text-white self-center w-full mt-1"

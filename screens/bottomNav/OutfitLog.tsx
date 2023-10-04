@@ -268,7 +268,13 @@ export const OutfitLog = () => {
                 style={{ width: "100%", alignSelf: "center" }}
                 source={require("../../assets/jsonAnimations/cloths1.json")}
               />
-              <Text className="self-center">Your closet history is empty</Text>
+              <ThemeText
+                darkColor={colors.black}
+                lightColor={colors.white}
+                classNameStyle="self-center"
+              >
+                Your closet history is empty
+              </ThemeText>
             </View>
           )}
           <FlashList
