@@ -25,6 +25,7 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
+import { colors } from "../../utils/colors";
 
 export const OutfitLog = () => {
   const animationRef = useRef<Lottie>(null);
@@ -149,7 +150,7 @@ export const OutfitLog = () => {
 
   //filter : last added  and first added (from logTime), today, last week ,search by name
   return (
-    <ThemeView classNameStyle="px-5">
+    <ThemeView classNameStyle="px-1">
       <>
         <CustomModal
           setVisible={setModalVisible}
@@ -196,7 +197,7 @@ export const OutfitLog = () => {
               height: height,
               width: width / 2,
               position: "absolute",
-              backgroundColor: "white",
+              backgroundColor: isDarkMode ? colors.gray : colors.white,
               zIndex: 50,
               right: "-50%",
             },
@@ -215,6 +216,7 @@ export const OutfitLog = () => {
           </RadioButton.Group>
           <Button
             mode="contained-tonal"
+            buttonColor={colors.mainCyan}
             className="self-center"
             onPress={() => {
               handleCloseDrawer();
@@ -232,7 +234,7 @@ export const OutfitLog = () => {
             }}
             className="w-[15%] h-full bg-mainGreen absolute right-0 rounded-tr-2xl flex justify-center items-center"
           >
-            <Icon name="filter" size={25} color="white" />
+            <Icon name="filter" size={25} color={colors.white} />
           </Pressable>
         </View>
         <Searchbar
@@ -240,7 +242,7 @@ export const OutfitLog = () => {
           theme={{
             roundness: 0,
             colors: {
-              onSurfaceVariant: isDarkMode ? "white" : "black",
+              onSurfaceVariant: isDarkMode ? colors.white : colors.black,
               elevation: { level3: "#aebb77b0" },
             },
           }}
@@ -266,7 +268,13 @@ export const OutfitLog = () => {
                 style={{ width: "100%", alignSelf: "center" }}
                 source={require("../../assets/jsonAnimations/cloths1.json")}
               />
-              <Text className="self-center">Your closet history is empty</Text>
+              <ThemeText
+                darkColor={colors.black}
+                lightColor={colors.white}
+                classNameStyle="self-center"
+              >
+                Your closet history is empty
+              </ThemeText>
             </View>
           )}
           <FlashList

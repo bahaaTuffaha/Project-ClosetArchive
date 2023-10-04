@@ -3,6 +3,7 @@ import { ThemeText } from "./ThemeText";
 import dayjs from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { colors } from "../utils/colors";
 
 export const DatePicker = ({
   title = "Date",
@@ -19,6 +20,7 @@ export const DatePicker = ({
   setDatePickerVisibility: Dispatch<SetStateAction<boolean>>;
   type?: "date" | "time" | "both";
 }) => {
+  const isDark = useColorScheme() == "dark";
   return (
     <>
       <Pressable
@@ -27,10 +29,12 @@ export const DatePicker = ({
           setDatePickerVisibility(true);
         }}
         style={{
-          backgroundColor: useColorScheme() == "dark" ? "#2B2E3D" : "white",
+          backgroundColor: isDark ? colors.darkblue : colors.white,
         }}
       >
-        <ThemeText lightColor="black">{title + ":"}</ThemeText>
+        <ThemeText lightColor={colors.black} darkColor="#CCCCCC">
+          {title + ":"}
+        </ThemeText>
         <ThemeText>{date ? dayjs(date).format("DD/MM/YYYY") : ""}</ThemeText>
         {type == "time" ||
           (type == "both" && (

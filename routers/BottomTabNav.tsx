@@ -8,6 +8,7 @@ import addIcon from "../assets/images/add.png";
 import outfitLogIcon from "../assets/images/outfitLog.png";
 import outfitLogUnselectedIcon from "../assets/images/outfitUnselected.png";
 import { OutfitLog } from "../screens/bottomNav/OutfitLog";
+import { colors } from "../utils/colors";
 const Tab = createBottomTabNavigator();
 
 const CustomTabButton = ({
@@ -27,9 +28,9 @@ const CustomTabButton = ({
         style={{
           width: 70,
           height: 70,
-          backgroundColor: "#77AEBB",
+          backgroundColor: colors.mainCyan,
           borderRadius: 50,
-          borderColor: isDarkMode ? "#444444" : "white",
+          borderColor: isDarkMode ? colors.darkblue : colors.white,
           borderWidth: 5,
         }}
       >
@@ -47,7 +48,7 @@ export default function MyTabs() {
           // backgroundColor: 'rgba(34,36,40,1)',
           marginHorizontal: 5,
           height: 85,
-          backgroundColor: "#77AEBB",
+          backgroundColor: colors.mainCyan,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           paddingBottom: 5,
@@ -59,7 +60,7 @@ export default function MyTabs() {
         name="My closet"
         component={HomeBottom}
         options={{
-          tabBarActiveTintColor: "white",
+          tabBarActiveTintColor: colors.white,
           tabBarLabelStyle: {
             fontSize: 14,
             fontStyle: "italic",
@@ -105,7 +106,7 @@ export default function MyTabs() {
         name="Outfit log"
         component={OutfitLog}
         options={{
-          tabBarActiveTintColor: "white",
+          tabBarActiveTintColor: colors.white,
           tabBarLabelStyle: { fontSize: 14, fontStyle: "italic" },
           tabBarIcon: ({ focused }) => {
             return (

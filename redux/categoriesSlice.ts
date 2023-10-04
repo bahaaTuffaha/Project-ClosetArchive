@@ -18,10 +18,10 @@ export type CategoryList = {
 };
 const initialState: CategoryList = {
   Categories: [
-    { name: "T-Shirts", sprites: tshirt, screen: "ItemForm", index: 0 },
-    { name: "Trousers", sprites: trousers, screen: "ItemForm", index: 1 },
+    { name: "Tops", sprites: tshirt, screen: "ItemForm", index: 0 },
+    { name: "Bottoms", sprites: trousers, screen: "ItemForm", index: 1 },
     { name: "Shoes", sprites: shoes, screen: "ItemForm", index: 2 },
-    { name: "Jacket", sprites: jacket, screen: "ItemForm", index: 3 },
+    { name: "Accessories", sprites: jacket, screen: "ItemForm", index: 3 },
   ],
 };
 const categoriesSlice = createSlice({

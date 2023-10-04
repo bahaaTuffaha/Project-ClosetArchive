@@ -1,11 +1,12 @@
 import { ComponentProps } from "react";
 import { useColorScheme, Text } from "react-native";
+import { colors } from "../utils/colors";
 
 export const ThemeText = ({
   classNameStyle,
   customStyle,
-  darkColor = "white",
-  lightColor = "gray",
+  darkColor = colors.white,
+  lightColor = colors.gray,
   children,
 }: {
   children: string;

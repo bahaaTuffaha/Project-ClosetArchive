@@ -6,5 +6,8 @@
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
           <item name="android:windowIsTranslucent">true</item>
     </style>
+     <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#77AEBB</item>
+    </style>
 
 </resources>

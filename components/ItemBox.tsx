@@ -9,6 +9,7 @@ import Animated, {
 import { categoryLayoutImages } from "../utils/data";
 import { useNavigation } from "@react-navigation/native";
 import { Dispatch, SetStateAction } from "react";
+import { colors } from "../utils/colors";
 
 export const ItemBox = ({
   image,
@@ -67,7 +68,7 @@ export const ItemBox = ({
             />
             <Text
               style={{
-                textShadowColor: "black",
+                textShadowColor: colors.black,
                 textShadowRadius: 15,
               }}
               className="absolute z-10 rounded-lg text-center font-medium text-xs text-white self-center w-full mt-1"

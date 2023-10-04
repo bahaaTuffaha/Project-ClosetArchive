@@ -1,6 +1,15 @@
 import { Dispatch, ReactElement, SetStateAction, useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from "react-native";
 import Icon from "react-native-vector-icons/Fontisto";
+import { ThemeText } from "./ThemeText";
+import { colors } from "../utils/colors";
 const CustomModal = ({
   setVisible,
   visible,
@@ -12,6 +21,7 @@ const CustomModal = ({
   label: string;
   children: ReactElement;
 }) => {
+  const isDarkMode = useColorScheme() === "dark";
   return (
     <Modal
       animationType="fade"
@@ -22,16 +32,21 @@ const CustomModal = ({
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+        <View
+          style={[
+            styles.modalView,
+            { backgroundColor: isDarkMode ? colors.gray : colors.white },
+          ]}
+        >
           <TouchableOpacity
             onPress={() => setVisible(!visible)}
-            className="absolute top-3 right-3"
+            className="h-7 w-10 bg-red flex flex-row justify-center items-center z-20 rounded-tr-2xl absolute top-0 right-0"
           >
-            <Icon name="close-a" size={20} color="red" />
+            <Text className="font-bold text-white">X</Text>
           </TouchableOpacity>
-          <Text className="self-center text-2xl font-bold mt-1 capitalize">
+          <ThemeText classNameStyle="self-center text-2xl font-bold mt-[0.5px] capitalize">
             {label}
-          </Text>
+          </ThemeText>
           {children}
         </View>
       </View>
@@ -50,7 +65,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   modalView: {
-    backgroundColor: "white",
     borderRadius: 20,
     width: "80%",
     height: "50%",

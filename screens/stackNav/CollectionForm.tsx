@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  useColorScheme,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { useState } from "react";
@@ -21,6 +22,7 @@ import {
 } from "../../redux/itemsSlice";
 import { FlashList } from "@shopify/flash-list";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import {colors as appColors} from "./../../utils/colors"
 
 export function addOpacityToHex(hexColor: string, opacity: any) {
   // Remove the "#" character if it's present
@@ -61,6 +63,9 @@ export const CollectionForm = () => {
     if (name.length <= 0) {
       errors.push("Please enter a name for this Collection");
     }
+    if (name.length > 20) {
+      errors.push("Please enter a name within 20 characters max");
+    }
     if (
       CollectionsState.find((x) => x.label.toLowerCase() == name.toLowerCase())
     ) {
@@ -78,6 +83,7 @@ export const CollectionForm = () => {
       }),
     );
   }
+  const isDarkMode = useColorScheme() === "dark";
   return (
     <>
       <ColorModal
@@ -92,7 +98,7 @@ export const CollectionForm = () => {
           <BackButton />
 
           <View className="flex flex-col items-center space-y-3">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono">
+            <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
               Add a Collection
             </ThemeText>
             <TouchableOpacity
@@ -106,9 +112,9 @@ export const CollectionForm = () => {
             </TouchableOpacity>
             <CustomInput
               mode="outlined"
-              outlineColor="#AEBB77"
+              outlineColor={appColors.mainGreen}
               selectionColor="#C0C0C0"
-              activeOutlineColor="#AEBB77"
+              activeOutlineColor={appColors.mainGreen}
               textContentType="name"
               style={styles.customWidth}
               label="Collection Name"
@@ -131,8 +137,8 @@ export const CollectionForm = () => {
           <Button
             // className="mb-5"
             mode="contained"
-            buttonColor="#77AEBB"
-            textColor="white"
+            buttonColor={appColors.mainCyan}
+            textColor={appColors.white}
             onPress={() => {
               addCollectionHandler();
               Keyboard.dismiss();
@@ -141,10 +147,10 @@ export const CollectionForm = () => {
           >
             Save
           </Button>
-          <View className="w-full h-1 bg-mainGreen" />
-          <Text className="w-full text-center font-mono text-xl my-5">
+          <View className="w-full h-1 bg-gray" />
+          <ThemeText classNameStyle="w-full text-center font-mono text-xl my-5">
             Collections
-          </Text>
+          </ThemeText>
           <FlashList
             showsVerticalScrollIndicator={false}
             data={CollectionsState}
@@ -152,9 +158,9 @@ export const CollectionForm = () => {
             renderItem={({ item }) => (
               <View
                 style={{ backgroundColor: addOpacityToHex(item.color, 0.2) }}
-                className="w-[90%] rounded-lg p-5 self-center mb-5 relative "
+                className="w-[80%] rounded-lg p-5 self-center mb-5 relative border-mainGreen border-[1px]"
               >
-                <Text className="font-bold text-black">{item.label}</Text>
+                <ThemeText classNameStyle="font-bold ">{item.label}</ThemeText>
                 <TouchableOpacity
                   className="w-16 h-[59px] absolute rounded-r-lg right-0 flex flex-row justify-center items-center"
                   onPress={() => {
@@ -163,7 +169,11 @@ export const CollectionForm = () => {
                     dispatch(itemRefresher());
                   }}
                 >
-                  <Icon name="delete" size={30} color="red" />
+                  <Icon
+                    name="delete"
+                    size={30}
+                    color={isDarkMode ? "#660000" : "red"}
+                  />
                 </TouchableOpacity>
               </View>
             )}

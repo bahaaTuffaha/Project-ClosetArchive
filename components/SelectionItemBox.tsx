@@ -1,6 +1,7 @@
 import { View, Image, Text, Pressable } from "react-native";
 import { categoryLayoutImages } from "../utils/data";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { colors } from "../utils/colors";
 
 export const SelectionItemBox = ({
   image,
@@ -53,7 +54,7 @@ export const SelectionItemBox = ({
       />
       <Text
         style={{
-          textShadowColor: "black",
+          textShadowColor: colors.black,
           textShadowRadius: 15,
         }}
         className="absolute z-10 rounded-lg text-center font-medium text-xs text-white self-center w-full mt-1"

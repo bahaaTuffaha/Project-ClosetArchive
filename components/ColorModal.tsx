@@ -6,10 +6,13 @@ import {
   TouchableOpacity,
   View,
   Keyboard,
+  useColorScheme,
 } from "react-native";
 import ColorPicker from "react-native-wheel-color-picker";
 import Icon from "react-native-vector-icons/Fontisto";
 import { Button, TextInput } from "react-native-paper";
+import { ThemeText } from "./ThemeText";
+import { colors as appColors } from "../utils/colors";
 let Reg_Exp = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
 const ColorModal = ({
   setVisible,
@@ -26,6 +29,7 @@ const ColorModal = ({
 }) => {
   let newColors = colors;
   const [currentColor, setCurrentColor] = useState(colors[colorSelection]);
+  const isDarkMode = useColorScheme() === "dark";
 
   return (
     <Modal
@@ -37,17 +41,23 @@ const ColorModal = ({
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+        <View
+          style={[
+            styles.modalView,
+            { backgroundColor: isDarkMode ? appColors.gray : appColors.white },
+          ]}
+        >
           <TouchableOpacity
             onPress={() => setVisible(!visible)}
             className="absolute top-3 right-3"
           >
             <Icon name="close-a" size={20} color="red" />
           </TouchableOpacity>
-          <Text className="self-center text-2xl font-bold mt-1">
+          <ThemeText classNameStyle="self-center text-2xl font-bold mt-1">
             Pick a color
-          </Text>
+          </ThemeText>
           <ColorPicker
+            onInteractionStart={() => Keyboard.dismiss()}
             color={colors[colorSelection]}
             onColorChange={(color) => {
               newColors[colorSelection] = color;
@@ -65,7 +75,7 @@ const ColorModal = ({
             <View className="flex flex-row justify-center">
               <Button
                 mode="text"
-                textColor="#77AEBB"
+                textColor={isDarkMode ? appColors.white : appColors.mainCyan}
                 onPress={() => {
                   newColors[colorSelection] = "#ffffff";
                   setColors(newColors);
@@ -76,7 +86,7 @@ const ColorModal = ({
               </Button>
               <Button
                 mode="text"
-                textColor="black"
+                textColor={appColors.black}
                 onPress={() => {
                   newColors[colorSelection] = "#000";
                   setColors(newColors);
@@ -89,13 +99,15 @@ const ColorModal = ({
           )}
           <TextInput
             mode="outlined"
-            outlineColor="#AEBB77"
-            // textColor="#BB77AE"
+            outlineColor={appColors.mainGreen}
             selectionColor="#C0C0C0"
-            activeOutlineColor="#AEBB77"
+            activeOutlineColor={appColors.mainGreen}
             textContentType="name"
             className="m-2"
-            theme={{ roundness: 10, colors: { background: "white" } }}
+            theme={{
+              roundness: 10,
+              colors: { background: isDarkMode ? appColors.darkblue : appColors.white },
+            }}
             label="HEX"
             value={currentColor}
             onChange={(text) => {
@@ -120,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#49494968",
   },
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: appColors.white,
     borderRadius: 20,
     width: "80%",
     height: "50%",

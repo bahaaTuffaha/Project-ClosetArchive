@@ -10,6 +10,7 @@ import { nanoid } from "nanoid";
 import { CommonActions } from "@react-navigation/native";
 import { Button } from "react-native-paper";
 import { ThemeText } from "../../components/ThemeText";
+import { colors } from "../../utils/colors";
 
 export const EventLogForm = ({
   navigation,
@@ -63,14 +64,14 @@ export const EventLogForm = ({
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
-          <ThemeText classNameStyle="text-xl">Event info</ThemeText>
+          <ThemeText classNameStyle="text-xl italic">Event info</ThemeText>
         </View>
         <View className="flex items-center space-y-3">
           <CustomInput
             mode="outlined"
-            outlineColor="#AEBB77"
+            outlineColor={colors.mainGreen}
             selectionColor="#C0C0C0"
-            activeOutlineColor="#AEBB77"
+            activeOutlineColor={colors.mainGreen}
             textContentType="name"
             style={styles.customWidth}
             className="mb-5"
@@ -88,11 +89,12 @@ export const EventLogForm = ({
           />
           <CustomInput
             mode="outlined"
-            outlineColor="#AEBB77"
+            outlineColor={colors.mainGreen}
             selectionColor="#C0C0C0"
-            activeOutlineColor="#AEBB77"
+            activeOutlineColor={colors.mainGreen}
             textContentType="name"
             style={styles.customWidth}
+            textArea={true}
             label="Additional Notes"
             value={additionalNotes}
             onChange={(text) => setAdditionalNotes(text.nativeEvent.text)}
@@ -111,8 +113,8 @@ export const EventLogForm = ({
           <Button
             // className="mb-5"
             mode="contained"
-            buttonColor="#77AEBB"
-            textColor="white"
+            buttonColor={colors.mainCyan}
+            textColor={colors.white}
             onPress={addEventHandler}
           >
             Save

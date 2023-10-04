@@ -1,5 +1,6 @@
 import { ComponentProps, ReactElement } from "react";
 import { useColorScheme, View } from "react-native";
+import { colors } from "../utils/colors";
 
 export const ThemeView = ({
   classNameStyle,
@@ -13,7 +14,7 @@ export const ThemeView = ({
   return (
     <View
       className={classNameStyle}
-      style={{ flex: 1, backgroundColor: isDarkMode ? "#444444" : "white" }}
+      style={{ flex: 1, backgroundColor: isDarkMode ? colors.darkblue : colors.white }}
     >
       {children}
     </View>

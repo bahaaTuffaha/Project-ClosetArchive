@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { ThemeView } from "../../components/ThemeView";
-import { View, useColorScheme } from "react-native";
+import { ScrollView, View, useColorScheme } from "react-native";
 import { useEffect, useState } from "react";
 import { CollectionContainer } from "../../components/CollectionContainer";
 import { filter, filterCategories } from "../bottomNav/HomeBottom";
@@ -11,6 +11,8 @@ import { SelectionItemBox } from "../../components/SelectionItemBox";
 import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../components/BackButton";
 import { addOpacityToHex } from "./CollectionForm";
+import { ThemeText } from "../../components/ThemeText";
+import { colors } from "../../utils/colors";
 
 export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
@@ -62,15 +64,18 @@ export const ItemSelector = () => {
   return (
     <ThemeView>
       <>
-        <View className="flex flex-row justify-end">
+        <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
+          <ThemeText classNameStyle="text-xl italic">Select Items</ThemeText>
+        </View>
+        <View className="flex flex-row justify-end">
           <Searchbar
-            className="w-[85%]"
+            className="w-[100%]"
             theme={{
               roundness: 0,
               colors: {
-                onSurfaceVariant: isDarkMode ? "white" : "black",
-                elevation: { level3: "#aebb77b0" },
+                onSurfaceVariant: isDarkMode ? colors.white : colors.black,
+                elevation: { level3: colors.mainCyan },
               },
             }}
             value={search}
@@ -80,7 +85,19 @@ export const ItemSelector = () => {
             onClearIconPress={() => setSearch("")}
           />
         </View>
-        <View className="flex-1 flex flex-row flex-wrap bg-gray mt-[1%]">
+        <ScrollView
+          contentContainerStyle={{
+            width: "100%",
+            height: "90%",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            backgroundColor: "#C9C9C9",
+            marginTop: "1%",
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}
+        >
           {itemsState.collectionTags.map((collection, index) => {
             if (!search) {
               if (allCategories[index]?.length ?? 0 != 0) {
@@ -178,37 +195,37 @@ export const ItemSelector = () => {
                   />
                 );
               })}
-          <View className="absolute bottom-0 w-full">
-            <Button
-              className="mx-auto w-28 my-1"
-              mode="contained"
-              buttonColor="#77AEBB"
-              textColor="white"
-              onPress={() => {
-                if (selectedIdCollector.length > 0) {
-                  navigation.navigate("EventLogForm", {
-                    selectedIDs: selectedIdCollector,
-                  });
-                } else {
-                  onToggleSnackBar();
-                }
-              }}
-            >
-              Next
-            </Button>
-            <Snackbar
-              visible={visible}
-              onDismiss={onDismissSnackBar}
-              // action={{
-              //   label: 'Undo',
-              //   onPress: () => {
-              //     // Do something
-              //   },
-              // }}
-            >
-              Please select at least 1 item.
-            </Snackbar>
-          </View>
+        </ScrollView>
+        <View className="absolute bottom-[2%] w-full">
+          <Button
+            className="mx-auto w-28 my-1"
+            mode="contained"
+            buttonColor={colors.mainCyan}
+            textColor={colors.white}
+            onPress={() => {
+              if (selectedIdCollector.length > 0) {
+                navigation.navigate("EventLogForm", {
+                  selectedIDs: selectedIdCollector,
+                });
+              } else {
+                onToggleSnackBar();
+              }
+            }}
+          >
+            Next
+          </Button>
+          <Snackbar
+            visible={visible}
+            onDismiss={onDismissSnackBar}
+            // action={{
+            //   label: 'Undo',
+            //   onPress: () => {
+            //     // Do something
+            //   },
+            // }}
+          >
+            Please select at least 1 item.
+          </Snackbar>
         </View>
       </>
     </ThemeView>

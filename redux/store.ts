@@ -12,6 +12,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
+import settingsSlice from "./settingsSlice";
 
 const persistConfig = {
   key: "root",
@@ -20,6 +21,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   CategoryList: categoriesSlice,
   itemsList: itemsSlice,
+  settings: settingsSlice,
 });
 export type RootState = ReturnType<typeof rootReducer>;
 const persistedReducer = persistReducer(persistConfig, rootReducer);
