@@ -17,6 +17,7 @@ import { Button, Checkbox, Snackbar } from "react-native-paper";
 import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { colors } from "../../utils/colors";
 
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
@@ -64,9 +65,9 @@ export const Settings = () => {
             </ThemeText>
             <CustomInput
               mode="outlined"
-              outlineColor="#AEBB77"
+              outlineColor={colors.mainGreen}
               selectionColor="#C0C0C0"
-              activeOutlineColor="#AEBB77"
+              activeOutlineColor={colors.mainGreen}
               textContentType="name"
               style={{ width: "50%" }}
               label="User Name"
@@ -90,9 +91,9 @@ export const Settings = () => {
                 setValue={setLang}
                 mode="BADGE"
                 placeholder="Language"
-                style={{ borderColor: "#AEBB77", zIndex: 10 }}
+                style={{ borderColor: colors.mainGreen, zIndex: 10 }}
                 dropDownContainerStyle={{
-                  borderColor: "#AEBB77",
+                  borderColor: colors.mainGreen,
                 }}
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
               />
@@ -111,7 +112,7 @@ export const Settings = () => {
               }}
               mode="contained"
               className="w-[50%]"
-              buttonColor="#77AEBB"
+              buttonColor={colors.mainCyan}
             >
               Export
             </Button>
@@ -129,7 +130,7 @@ export const Settings = () => {
               }}
               mode="contained"
               className="w-[50%]"
-              buttonColor="#77AEBB"
+              buttonColor={colors.mainCyan}
             >
               Import
             </Button>
@@ -140,9 +141,9 @@ export const Settings = () => {
             </ThemeText>
             <CustomInput
               mode="outlined"
-              outlineColor="#AEBB77"
+              outlineColor={colors.mainGreen}
               selectionColor="#C0C0C0"
-              activeOutlineColor="#AEBB77"
+              activeOutlineColor={colors.mainGreen}
               textContentType="name"
               className="w-[50px] mx-5"
               label="n"
@@ -161,7 +162,7 @@ export const Settings = () => {
             />
           </View>
           <View className="flex flex-row">
-            <Icon name="info-circle" size={15} color="#77AEBB" />
+            <Icon name="info-circle" size={15} color={colors.mainCyan} />
             <ThemeText classNameStyle="text-xs mx-5">
               This will remind you to put an item in the laundry after n number
               of uses.

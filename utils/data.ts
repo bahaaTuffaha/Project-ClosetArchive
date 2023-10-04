@@ -35,7 +35,7 @@ export const RandomNamesP1 = [
   "Relaxed Hoodie",
 ];
 
-export const types = [
+export const fitList = [
   {
     value: "Regular Fit",
     label: "Regular Fit",
@@ -57,6 +57,72 @@ export const types = [
     label: "Loose Fit",
   },
 ];
+
+const tops = [
+  "T-Shirt",
+  "Blouse",
+  "jacket",
+  "Tank Top",
+  "Polo Shirt",
+  "Button-Down Shirt",
+  "Peplum Top",
+  "Sweater",
+  "Turtleneck",
+  "Hoodie",
+  "Blazer",
+];
+
+const bottoms = [
+  "Jeans",
+  "Shorts",
+  "Skirt",
+  "Leggings",
+  "Trousers",
+  "Culottes",
+  "Joggers",
+  "Bermuda",
+  "Leather Pants",
+];
+
+const accessories = [
+  "Necklace",
+  "Bracelet",
+  "Ring",
+  "Earrings",
+  "Watch",
+  "Handbag",
+  "Clutch",
+  "Backpack",
+  "Belt",
+  "Hat",
+  "Scarf",
+  "Gloves",
+  "Sunglasses",
+  "Tie",
+  "Socks",
+  "Headband",
+  "Hairpin",
+  "Hair Accessories",
+];
+
+const shoeTypes = [
+  "Sneakers",
+  "Casual Shoes",
+  "Sandals",
+  "High Heels",
+  "Boots",
+  "Loafers",
+  "Slippers",
+  "Rain Boots",
+  "Hiking Boots",
+  "Running Shoes",
+  "Dress Shoes",
+  "Flip-Flops",
+  "Winter Boots"
+];
+
+export const ClothesList = [tops,bottoms,shoeTypes,accessories];
+
 export const languagesList = [
   {
     value: "En",

@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Keyboard, TouchableOpacity, View, useColorScheme } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { colors } from "../utils/colors";
 
 export const BackButton = () => {
   const navigation = useNavigation<any>();
@@ -17,7 +18,7 @@ export const BackButton = () => {
         <Icon
           name="caret-back"
           size={30}
-          color={isDarkMode ? "white" : "black"}
+          color={isDarkMode ? colors.white : colors.black}
         />
       </TouchableOpacity>
     </View>

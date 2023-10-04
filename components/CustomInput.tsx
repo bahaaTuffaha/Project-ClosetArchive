@@ -1,6 +1,7 @@
 import { StyleSheet, TextInput, View, useColorScheme } from "react-native";
 import { TextInput as TextInput2 } from "react-native-paper";
 import { Props } from "react-native-paper/lib/typescript/src/components/TextInput/TextInput";
+import { colors } from "../utils/colors";
 
 export interface CustomInputProps extends Props {
   left?: React.ReactElement;
@@ -19,7 +20,7 @@ export const CustomInput = ({
     theme={{
       roundness: 10,
       colors: {
-        background: useColorScheme() == "light" ? "white" : "#2B2E3D",
+        background: useColorScheme() == "light" ? colors.white : colors.darkblue,
       },
     }}
     {...props}

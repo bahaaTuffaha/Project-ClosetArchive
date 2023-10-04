@@ -31,9 +31,10 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
-import { RandomNamesP1, types } from "../../utils/data";
+import { ClothesList, RandomNamesP1, fitList } from "../../utils/data";
+import {colors as appColors} from "./../../utils/colors"
 
-export function get_random(list: string[]) {
+function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
 }
 export const ItemForm = ({
@@ -59,6 +60,7 @@ export const ItemForm = ({
     storedItems ? storedItems.collection : [],
   );
   const [type, setType] = useState(storedItems ? storedItems.type : "");
+  const [fit, setFit] = useState(storedItems ? storedItems.fit : "");
   const [purchaseDate, setPurchaseDate] = useState(
     storedItems ? JSON.parse(storedItems.purchaseDate ?? "") : new Date(),
   );
@@ -73,6 +75,7 @@ export const ItemForm = ({
   ]);
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
+  const [openFit, setOpenFit] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
@@ -140,6 +143,7 @@ export const ItemForm = ({
             collection: collection,
             category: selectedCategory,
             type: type,
+            fit:fit,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
             automaticColor: isAutoOn,
@@ -242,7 +246,7 @@ export const ItemForm = ({
         <>
           <BackButton />
           <View className="flex items-center space-y-3">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
+            <ThemeText classNameStyle="text-xl mt-4 font-mono">
               {editingIndex ? "Editing Item" : "Adding an Item"}
             </ThemeText>
             <TouchableOpacity
@@ -258,9 +262,9 @@ export const ItemForm = ({
             </TouchableOpacity>
             <CustomInput
               mode="outlined"
-              outlineColor="#AEBB77"
+              outlineColor={appColors.mainGreen}
               selectionColor="#C0C0C0"
-              activeOutlineColor="#AEBB77"
+              activeOutlineColor={appColors.mainGreen}
               textContentType="name"
               style={styles.customWidth}
               label="Name"
@@ -268,7 +272,7 @@ export const ItemForm = ({
               onChange={(text) => setName(text.nativeEvent.text)}
               right={
                 <Pressable onPress={() => setName(get_random(RandomNamesP1))}>
-                  <Icon name="dice" size={15} color="#77AEBB" />
+                  <Icon name="dice" size={15} color={appColors.mainCyan} />
                 </Pressable>
               }
             />
@@ -276,13 +280,25 @@ export const ItemForm = ({
               <DropDownPicker
                 open={openType}
                 value={type}
-                items={types}
+                items={ClothesList[selectedCategory]}
                 setOpen={setOpenType}
                 setValue={setType}
                 mode="BADGE"
                 placeholder="Type"
-                style={{ borderColor: "#AEBB77" }}
-                dropDownContainerStyle={{ borderColor: "#AEBB77" }}
+                style={{ borderColor: appColors.mainGreen }}
+                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+              />
+            <DropDownPicker
+                open={openFit}
+                value={fit}
+                items={fitList}
+                setOpen={setOpenFit}
+                setValue={setFit}
+                mode="BADGE"
+                placeholder="Fit"
+                style={{ borderColor: appColors.mainGreen }}
+                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
               />
             </View>
@@ -304,16 +320,16 @@ export const ItemForm = ({
                 theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
                 // badgeDotColors={CollectionColors}
                 showBadgeDot={false}
-                badgeTextStyle={{ color: "black" }}
+                badgeTextStyle={{ color: appColors.black }}
                 mode="BADGE"
                 placeholder="Collection"
-                style={{ borderColor: "#AEBB77" }}
-                dropDownContainerStyle={{ borderColor: "#AEBB77" }}
+                style={{ borderColor: appColors.mainGreen }}
+                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
               />
             </View>
 
             <View className="flex flex-row">
-              <Icon name="info-circle" size={15} color="#77AEBB" />
+              <Icon name="info-circle" size={15} color={appColors.mainCyan} />
               <ThemeText classNameStyle="text-xs ml-2">
                 You can add this Item under a collection
               </ThemeText>
@@ -322,7 +338,7 @@ export const ItemForm = ({
             <View className="flex-row items-center">
               <ThemeText>Automatic color selection</ThemeText>
               <Switch
-                color="#77AEBB"
+                color={appColors.mainCyan}
                 value={isAutoOn}
                 onValueChange={onToggleSwitch}
               />
@@ -339,7 +355,7 @@ export const ItemForm = ({
                 >
                   <View
                     className="h-5 w-5 border-[0.2px]"
-                    style={{ backgroundColor: colors[0] || "gray" }}
+                    style={{ backgroundColor: colors[0] || appColors.gray }}
                   />
                 </Pressable>
               </View>
@@ -355,7 +371,7 @@ export const ItemForm = ({
                 >
                   <View
                     className="h-5 w-5 border-[0.2px]"
-                    style={{ backgroundColor: colors[1] || "gray" }}
+                    style={{ backgroundColor: colors[1] || appColors.gray }}
                   />
                 </Pressable>
               </View>
@@ -371,7 +387,7 @@ export const ItemForm = ({
                 >
                   <View
                     className="h-5 w-5 border-[0.2px]"
-                    style={{ backgroundColor: colors[2] || "gray" }}
+                    style={{ backgroundColor: colors[2] || appColors.gray }}
                   />
                 </Pressable>
               </View>
@@ -392,8 +408,8 @@ export const ItemForm = ({
               <Button
                 // className="mb-5"
                 mode="contained"
-                buttonColor="#77AEBB"
-                textColor="white"
+                buttonColor={appColors.mainCyan}
+                textColor={appColors.white}
                 onPress={addItemHandler}
               >
                 Save
@@ -403,7 +419,7 @@ export const ItemForm = ({
                   // className="mb-5"
                   mode="contained"
                   buttonColor="#ee4949"
-                  textColor="white"
+                  textColor={appColors.white}
                   onPress={deleteItemHandler}
                 >
                   Delete

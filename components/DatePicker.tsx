@@ -3,6 +3,7 @@ import { ThemeText } from "./ThemeText";
 import dayjs from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { colors } from "../utils/colors";
 
 export const DatePicker = ({
   title = "Date",
@@ -28,10 +29,10 @@ export const DatePicker = ({
           setDatePickerVisibility(true);
         }}
         style={{
-          backgroundColor: isDark ? "#2B2E3D" : "white",
+          backgroundColor: isDark ? colors.darkblue : colors.white,
         }}
       >
-        <ThemeText lightColor="black" darkColor="#CCCCCC">
+        <ThemeText lightColor={colors.black} darkColor="#CCCCCC">
           {title + ":"}
         </ThemeText>
         <ThemeText>{date ? dayjs(date).format("DD/MM/YYYY") : ""}</ThemeText>

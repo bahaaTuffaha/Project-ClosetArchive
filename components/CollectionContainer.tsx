@@ -5,11 +5,12 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { toggleCollection } from "../redux/itemsSlice";
+import { colors } from "../utils/colors";
 
 export const CollectionContainer = ({
   label,
   children,
-  color = "gray",
+  color = colors.gray,
 }: {
   label: string;
   children: ReactElement;
@@ -34,13 +35,13 @@ export const CollectionContainer = ({
           dispatch(toggleCollection({ name: label }));
         }}
         className="w-full h-8 flex flex-row items-center justify-between pr-5"
-        style={{ backgroundColor: isDarkMode ? "#181818" : "white" }}
+        style={{ backgroundColor: isDarkMode ? "#181818" : colors.white }}
       >
-        <ThemeText darkColor="#77AEBB" classNameStyle="px-2 font-medium italic">
+        <ThemeText darkColor={colors.mainCyan} classNameStyle="px-2 font-medium italic">
           {label}
         </ThemeText>
         <Icon
-          color={isDarkMode ? "white" : "black"}
+          color={isDarkMode ? colors.white : colors.black}
           name={isFolded ? "chevron-down" : "chevron-up"}
           size={20}
         />

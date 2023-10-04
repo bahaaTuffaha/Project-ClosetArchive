@@ -12,6 +12,7 @@ import ColorPicker from "react-native-wheel-color-picker";
 import Icon from "react-native-vector-icons/Fontisto";
 import { Button, TextInput } from "react-native-paper";
 import { ThemeText } from "./ThemeText";
+import { colors as appColors } from "../utils/colors";
 let Reg_Exp = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
 const ColorModal = ({
   setVisible,
@@ -43,7 +44,7 @@ const ColorModal = ({
         <View
           style={[
             styles.modalView,
-            { backgroundColor: isDarkMode ? "gray" : "white" },
+            { backgroundColor: isDarkMode ? appColors.gray : appColors.white },
           ]}
         >
           <TouchableOpacity
@@ -74,7 +75,7 @@ const ColorModal = ({
             <View className="flex flex-row justify-center">
               <Button
                 mode="text"
-                textColor={isDarkMode ? "white" : "#77AEBB"}
+                textColor={isDarkMode ? appColors.white : appColors.mainCyan}
                 onPress={() => {
                   newColors[colorSelection] = "#ffffff";
                   setColors(newColors);
@@ -85,7 +86,7 @@ const ColorModal = ({
               </Button>
               <Button
                 mode="text"
-                textColor="black"
+                textColor={appColors.black}
                 onPress={() => {
                   newColors[colorSelection] = "#000";
                   setColors(newColors);
@@ -98,15 +99,14 @@ const ColorModal = ({
           )}
           <TextInput
             mode="outlined"
-            outlineColor="#AEBB77"
-            // textColor="#BB77AE"
+            outlineColor={appColors.mainGreen}
             selectionColor="#C0C0C0"
-            activeOutlineColor="#AEBB77"
+            activeOutlineColor={appColors.mainGreen}
             textContentType="name"
             className="m-2"
             theme={{
               roundness: 10,
-              colors: { background: isDarkMode ? "#2B2E3D" : "white" },
+              colors: { background: isDarkMode ? appColors.darkblue : appColors.white },
             }}
             label="HEX"
             value={currentColor}
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#49494968",
   },
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: appColors.white,
     borderRadius: 20,
     width: "80%",
     height: "50%",

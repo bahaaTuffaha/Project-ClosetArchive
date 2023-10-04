@@ -21,6 +21,7 @@ import { addOpacityToHex } from "../stackNav/CollectionForm";
 // import IonIcon from "react-native-vector-icons/Ionicons";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
+import { colors } from "../../utils/colors";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
@@ -116,7 +117,7 @@ export function HomeBottom() {
             onPress={() => navigation.navigate("CollectionForm")}
             className="flex flex-col bg-mainGreen w-[20%] h-12 justify-center items-center rounded-t-2xl"
           >
-            <Icon name="plus-square" size={20} color="white" />
+            <Icon name="plus-square" size={20} color={colors.white} />
             <Text className="text-xs text-white">Collection</Text>
           </TouchableOpacity>
           <View className="bg-mainCyan w-[20%] h-12 rounded-t-2xl absolute -z-10 right-1 bottom-1 " />
@@ -126,7 +127,7 @@ export function HomeBottom() {
           <View className="w-full flex flex-row justify-between">
             <View className="flex flex-row items-center h-14 w-[79%] bg-mainPink rounded-tl-2xl shadow-2xl">
               <View className="mx-3">
-                <Icon name="alert-octagon" size={40} color="white" />
+                <Icon name="alert-octagon" size={40} color={colors.white} />
               </View>
               <Text className="text-white font-bold w-3/4 capitalize">
                 warnings
@@ -136,7 +137,7 @@ export function HomeBottom() {
               onPress={() => setIsSearchVisible(!isSearchVisible)}
               className="h-14 w-[20%] bg-mainCyan rounded-tr-2xl justify-center items-center shadow-xl"
             >
-              <Icon name="search" size={30} color="white" />
+              <Icon name="search" size={30} color={colors.white} />
             </TouchableOpacity>
           </View>
           {isSearchVisible && (
@@ -145,7 +146,7 @@ export function HomeBottom() {
               theme={{
                 roundness: 0,
                 colors: {
-                  onSurfaceVariant: isDarkMode ? "white" : "black",
+                  onSurfaceVariant: isDarkMode ? colors.white : colors.black,
                   elevation: { level3: "#aebb77b0" },
                 },
               }}

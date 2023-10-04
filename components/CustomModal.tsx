@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Fontisto";
 import { ThemeText } from "./ThemeText";
+import { colors } from "../utils/colors";
 const CustomModal = ({
   setVisible,
   visible,
@@ -34,7 +35,7 @@ const CustomModal = ({
         <View
           style={[
             styles.modalView,
-            { backgroundColor: isDarkMode ? "gray" : "white" },
+            { backgroundColor: isDarkMode ? colors.gray : colors.white },
           ]}
         >
           <TouchableOpacity

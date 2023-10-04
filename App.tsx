@@ -16,6 +16,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import PushNotification from "react-native-push-notification";
 import { clothingReminderMessages, clothingReminderTitles } from "./utils/data";
 import { get_random } from "./screens/stackNav/ItemForm";
+import { colors } from "./utils/colors";
 
 export async function GetAllPermissions() {
   try {
@@ -56,7 +57,7 @@ function App(): JSX.Element {
   const isDarkMode = useColorScheme() === "dark";
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? "#2b2e3d" : "white",
+    backgroundColor: isDarkMode ? colors.darkblue : colors.white,
   };
   useEffect(() => {
     GetAllPermissions();

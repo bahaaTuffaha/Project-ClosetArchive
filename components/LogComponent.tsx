@@ -6,6 +6,7 @@ import { ItemBox } from "./ItemBox";
 import dayjs from "dayjs";
 import { deleteEventLog, deleteLog } from "../redux/itemsSlice";
 import { Dispatch, SetStateAction } from "react";
+import { colors } from "../utils/colors";
 
 export const LogComponent = ({
   eventName,
@@ -34,7 +35,7 @@ export const LogComponent = ({
         setModalEventId(eventId);
       }}
       style={{
-        backgroundColor: useColorScheme() === "dark" ? "#181818" : "white",
+        backgroundColor: useColorScheme() === "dark" ? "#181818" : colors.white,
       }}
       className="w-full h-fit my-3 border-mainGreen flex flex-col items-center relative rounded-lg"
     >
@@ -58,7 +59,7 @@ export const LogComponent = ({
       <View
         className="flex flex-row flex-wrap bg-slate-500 rounded-b-md w-full h-fit min-h-[73px] px-[5%] justify-evenly py-2 border-2"
         style={{
-          borderColor: useColorScheme() === "dark" ? "#181818" : "white",
+          borderColor: useColorScheme() === "dark" ? "#181818" : colors.white,
         }}
       >
         {filteredArray.map((item) => {

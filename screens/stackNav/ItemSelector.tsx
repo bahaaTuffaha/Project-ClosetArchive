@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../components/BackButton";
 import { addOpacityToHex } from "./CollectionForm";
 import { ThemeText } from "../../components/ThemeText";
+import { colors } from "../../utils/colors";
 
 export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
@@ -73,8 +74,8 @@ export const ItemSelector = () => {
             theme={{
               roundness: 0,
               colors: {
-                onSurfaceVariant: isDarkMode ? "white" : "black",
-                elevation: { level3: "#77AEBB" },
+                onSurfaceVariant: isDarkMode ? colors.white : colors.black,
+                elevation: { level3: colors.mainCyan },
               },
             }}
             value={search}
@@ -199,8 +200,8 @@ export const ItemSelector = () => {
           <Button
             className="mx-auto w-28 my-1"
             mode="contained"
-            buttonColor="#77AEBB"
-            textColor="white"
+            buttonColor={colors.mainCyan}
+            textColor={colors.white}
             onPress={() => {
               if (selectedIdCollector.length > 0) {
                 navigation.navigate("EventLogForm", {

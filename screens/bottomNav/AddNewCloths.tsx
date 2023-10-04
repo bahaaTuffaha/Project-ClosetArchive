@@ -19,6 +19,7 @@ import hangerImage from "../../assets/images/hanger.png";
 import recordImage from "../../assets/images/record.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ThemeView } from "../../components/ThemeView";
+import { colors } from "../../utils/colors";
 
 export const AddNewCloths = ({ navigation }: { navigation: any }) => {
   const { width, height } = Dimensions.get("window");
@@ -71,7 +72,7 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
               {
                 height: height * 2,
                 width: width * 2,
-                backgroundColor: "#AEBB77",
+                backgroundColor: colors.mainGreen,
                 left: "50%",
                 position: "absolute",
                 marginLeft: amountOfSpace,
@@ -84,7 +85,7 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
               {
                 height: height * 2,
                 width: width * 2,
-                backgroundColor: "#77AEBB",
+                backgroundColor: colors.mainCyan,
                 position: "absolute",
                 right: "50%",
                 marginRight: amountOfSpace,
@@ -148,12 +149,12 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
           //   styles.backButton,
           // ]}
           style={{
-            backgroundColor: useColorScheme() == "dark" ? "gray" : "white",
+            backgroundColor: useColorScheme() == "dark" ? colors.gray : colors.white,
           }}
           className="w-16 absolute top-2 left-1 rounded-md justify-center items-center"
         >
           <Icon
-            color={useColorScheme() == "dark" ? "white" : "black"}
+            color={useColorScheme() == "dark" ? colors.white : colors.black}
             name="caret-back"
             size={30}
           />
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
   labelText: {
     fontFamily: "LibreBarcode128Text-Regular",
     fontSize: 64,
-    color: "white",
+    color: colors.white,
     textAlign: "center",
     marginVertical: 15,
   },
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     left: 5,
-    backgroundColor: "white",
+    backgroundColor: colors.white,
     padding: 5,
     borderRadius: 10,
     // elevation: 10,

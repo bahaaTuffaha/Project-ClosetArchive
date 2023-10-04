@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { ThemeText } from "../../components/ThemeText";
 import { addCategory } from "../../redux/categoriesSlice";
 import { CommonActions } from "@react-navigation/native";
+import {colors as appColors} from "../../utils/colors"
 
 export const CategoryForm = ({ navigation }: { navigation: any }) => {
   // const navigation = useNavigation<any>();
@@ -69,9 +70,9 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
             </ThemeText>
             <CustomInput
               mode="outlined"
-              outlineColor="#AEBB77"
+              outlineColor={appColors.mainGreen}
               selectionColor="#C0C0C0"
-              activeOutlineColor="#AEBB77"
+              activeOutlineColor={appColors.mainGreen}
               textContentType="name"
               style={styles.customWidth}
               label="Category Name"
@@ -94,8 +95,8 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
           <Button
             // className="mb-5"
             mode="contained"
-            buttonColor="#77AEBB"
-            textColor="white"
+            buttonColor={appColors.mainCyan}
+            textColor={appColors.white}
             onPress={addCategoryHandler}
             className="mx-10 my-5"
           >

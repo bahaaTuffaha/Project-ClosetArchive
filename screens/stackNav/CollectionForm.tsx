@@ -22,6 +22,7 @@ import {
 } from "../../redux/itemsSlice";
 import { FlashList } from "@shopify/flash-list";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import {colors as appColors} from "./../../utils/colors"
 
 export function addOpacityToHex(hexColor: string, opacity: any) {
   // Remove the "#" character if it's present
@@ -111,9 +112,9 @@ export const CollectionForm = () => {
             </TouchableOpacity>
             <CustomInput
               mode="outlined"
-              outlineColor="#AEBB77"
+              outlineColor={appColors.mainGreen}
               selectionColor="#C0C0C0"
-              activeOutlineColor="#AEBB77"
+              activeOutlineColor={appColors.mainGreen}
               textContentType="name"
               style={styles.customWidth}
               label="Collection Name"
@@ -136,8 +137,8 @@ export const CollectionForm = () => {
           <Button
             // className="mb-5"
             mode="contained"
-            buttonColor="#77AEBB"
-            textColor="white"
+            buttonColor={appColors.mainCyan}
+            textColor={appColors.white}
             onPress={() => {
               addCollectionHandler();
               Keyboard.dismiss();

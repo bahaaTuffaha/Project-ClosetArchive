@@ -13,7 +13,8 @@ export type logsType = {
 export type item = {
   id: string;
   name: string;
-  type?: number;
+  type: number;
+  fit?:number;
   category: number;
   collection?: string[];
   purchaseDate?: string;
@@ -66,7 +67,8 @@ const itemsSlice = createSlice({
         id: nanoid(),
         name: action.payload.name,
         image: action.payload.image,
-        type: action.payload.type || 0,
+        type: action.payload.type,
+        fit: action.payload.fit || 0,
         collection:
           action.payload.collection.length == 0
             ? []
@@ -85,6 +87,7 @@ const itemsSlice = createSlice({
       state.items[itemIndex].name = action.payload.name;
       state.items[itemIndex].image = action.payload.image;
       state.items[itemIndex].type = action.payload.type;
+      state.items[itemIndex].fit = action.payload.fit;
       state.items[itemIndex].collection =
         action.payload.collection.length == 0 ? [] : action.payload.collection;
       state.items[itemIndex].automaticColor = action.payload.automaticColor;
