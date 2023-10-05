@@ -13,8 +13,8 @@ export type logsType = {
 export type item = {
   id: string;
   name: string;
-  type: number;
-  fit?:number;
+  type: string;
+  fit?: number;
   category: number;
   collection?: string[];
   purchaseDate?: string;

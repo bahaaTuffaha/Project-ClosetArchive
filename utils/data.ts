@@ -6,6 +6,38 @@ export const categoryLayoutImages = [
   require("../assets/images/layoutTie.png"),
   require("../assets/images/layoutAccessories.png"),
 ];
+const layout = require("../assets/images/layout1.png");
+export function layoutFinder(type: string) {
+  switch (type) {
+    case "T-Shirt":
+    case "Blouse":
+    case "Polo Shirt":
+      return categoryLayoutImages[0];
+      break;
+
+    case "Jeans":
+    case "Trousers":
+    case "Joggers":
+    case "Leather Pants":
+      return categoryLayoutImages[1];
+      break;
+
+    case "Jacket":
+    case "blazer":
+      return categoryLayoutImages[3];
+      break;
+
+    case "Casual Shoes":
+    case "Boots":
+    case "Sneakers":
+      return categoryLayoutImages[2];
+      break;
+
+    default:
+      return layout;
+      break;
+  }
+}
 
 export const RandomNamesP1 = [
   "Wildfire",

@@ -4,6 +4,7 @@ import {
   useColorScheme,
   Pressable,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import React, { useEffect, useRef, useState } from "react";
@@ -158,27 +159,41 @@ export const OutfitLog = () => {
           label={modalInfo?.eventName || "Event Name"}
         >
           <View className="w-[90%] mr-auto ml-auto space-y-5">
-            <View>
-              <ThemeText classNameStyle="text-[16px]">Date:</ThemeText>
-              <ThemeText>
-                {dayjs(
-                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
-                ).format("DD/MM/YYYY")}
-              </ThemeText>
-            </View>
-            <View>
-              <ThemeText classNameStyle="text-[16px]">Time:</ThemeText>
-              <ThemeText>
+            <View className="bg-mainGreen rounded-md mt-5">
+              {/* <ThemeText classNameStyle="text-[16px]">Time:</ThemeText> */}
+              <ThemeText
+                lightColor={colors.black}
+                customStyle={styles.fontStyle1}
+              >
                 {dayjs(
                   modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
                 ).format("h:mm A")}
               </ThemeText>
             </View>
-            <View>
-              <ThemeText classNameStyle="text-[16px]">
-                AdditionalNotes:
+            <View className="border-mainCyan border-[1px] w-[60%] rounded-md self-center">
+              {/* <ThemeText classNameStyle="text-[16px]">Date:</ThemeText> */}
+              <ThemeText
+                lightColor={colors.mainCyan}
+                customStyle={styles.fontStyle2}
+              >
+                {dayjs(
+                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
+                ).format("DD.MM.YYYY")}
               </ThemeText>
-              <ThemeText classNameStyle="h-fit">
+            </View>
+            <View>
+              <ThemeText
+                customStyle={{
+                  textShadowColor: "rgba(0, 0, 0, 0.50)",
+                  textShadowOffset: { width: -1, height: 1 },
+                  textShadowRadius: 10,
+                  fontFamily: "DS-DIGIB",
+                  fontSize: 25,
+                }}
+              >
+                Additional Notes:
+              </ThemeText>
+              <ThemeText classNameStyle="h-fit text-[16px]">
                 {modalInfo?.additionalNotes}
               </ThemeText>
             </View>
@@ -298,3 +313,7 @@ export const OutfitLog = () => {
     </ThemeView>
   );
 };
+const styles = StyleSheet.create({
+  fontStyle1: { fontFamily: "DS-DIGIB", textAlign: "center", fontSize: 40 },
+  fontStyle2: { fontFamily: "DS-DIGIB", textAlign: "center", fontSize: 25 },
+});

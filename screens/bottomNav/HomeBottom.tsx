@@ -189,7 +189,7 @@ export function HomeBottom() {
                               key={item.id}
                               image={item.image}
                               name={item.name}
-                              categoryNumber={item.category}
+                              type={item.type}
                               id={item.id}
                             />
                           );
@@ -218,7 +218,7 @@ export function HomeBottom() {
                                 key={item.id}
                                 image={item.image}
                                 name={item.name}
-                                categoryNumber={item.category}
+                                type={item.type}
                                 id={item.id}
                               />
                             );
@@ -240,7 +240,7 @@ export function HomeBottom() {
                       key={index + item.id}
                       image={item.image}
                       name={item.name}
-                      categoryNumber={item.category}
+                      type={item.type}
                       id={item.id}
                     />
                   );
@@ -254,7 +254,7 @@ export function HomeBottom() {
                       key={index + item.id}
                       image={item.image}
                       name={item.name}
-                      categoryNumber={item.category}
+                      type={item.type}
                       id={item.id}
                     />
                   );

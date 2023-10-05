@@ -1,4 +1,4 @@
-import { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import { Dispatch, ReactElement, SetStateAction } from "react";
 import {
   Modal,
   StyleSheet,
@@ -7,7 +7,6 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import Icon from "react-native-vector-icons/Fontisto";
 import { ThemeText } from "./ThemeText";
 import { colors } from "../utils/colors";
 const CustomModal = ({
@@ -44,7 +43,7 @@ const CustomModal = ({
           >
             <Text className="font-bold text-white">X</Text>
           </TouchableOpacity>
-          <ThemeText classNameStyle="self-center text-2xl font-bold mt-[0.5px] capitalize">
+          <ThemeText classNameStyle="self-center text-2xl font-bold mt-[0.5px] capitalize italic">
             {label}
           </ThemeText>
           {children}

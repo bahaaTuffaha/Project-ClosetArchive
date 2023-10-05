@@ -2,6 +2,10 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/fonts/DS-DIGIB.ttf",
+      "sha1": "126da1a82a1491b962982cb0be5f3d8e0b23d077"
+    },
+    {
       "path": "assets/fonts/LibreBarcode128Text-Regular.ttf",
       "sha1": "95880a73f528330a2e1492b5aa28989040865bb9"
     }

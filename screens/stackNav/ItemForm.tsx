@@ -112,7 +112,7 @@ export const ItemForm = ({
     if (name.length > 20) {
       errors.push("Please enter a name within 20 characters");
     }
-    if (!type) {
+    if (!type && selectedCategory <= 3) {
       errors.push("Please choose a type");
     }
 
@@ -287,35 +287,44 @@ export const ItemForm = ({
                 </Pressable>
               }
             />
-            <View style={[{ zIndex: 3 }, styles.customWidth]}>
-              <DropDownPicker
-                open={openType}
-                value={type}
-                items={clothesList[selectedCategory ?? storedItems.category]}
-                setOpen={setOpenType}
-                setValue={setType}
-                mode="SIMPLE"
-                listMode="MODAL"
-                placeholder="Type"
-                style={{ borderColor: appColors.mainGreen }}
-                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
-              />
-            </View>
-            <View style={[{ zIndex: 2, marginBottom: 10 }, styles.customWidth]}>
-              <DropDownPicker
-                open={openFit}
-                value={fit}
-                items={fitList}
-                setOpen={setOpenFit}
-                setValue={setFit}
-                mode="SIMPLE"
-                placeholder="Fit"
-                style={{ borderColor: appColors.mainGreen }}
-                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
-              />
-            </View>
+            {(selectedCategory ?? storedItems.category) <= 3 && (
+              <View style={[{ zIndex: 3 }, styles.customWidth]}>
+                <DropDownPicker
+                  open={openType}
+                  value={type}
+                  items={clothesList[selectedCategory ?? storedItems.category]}
+                  setOpen={setOpenType}
+                  setValue={setType}
+                  mode="SIMPLE"
+                  listMode="MODAL"
+                  placeholder="Type"
+                  style={{ borderColor: appColors.mainGreen }}
+                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                  theme={
+                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
+                  }
+                />
+              </View>
+            )}
+            {(selectedCategory ?? storedItems.category) < 2 && (
+              <View style={[{ zIndex: 2 }, styles.customWidth]}>
+                <DropDownPicker
+                  open={openFit}
+                  value={fit}
+                  items={fitList}
+                  setOpen={setOpenFit}
+                  setValue={setFit}
+                  mode="SIMPLE"
+                  placeholder="Fit"
+                  style={{ borderColor: appColors.mainGreen }}
+                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                  theme={
+                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
+                  }
+                />
+              </View>
+            )}
+            <View></View>
             <DatePicker
               title="Purchase Date"
               date={purchaseDate}

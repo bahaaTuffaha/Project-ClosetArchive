@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { ThemeText } from "../../components/ThemeText";
 import { addCategory } from "../../redux/categoriesSlice";
 import { CommonActions } from "@react-navigation/native";
-import {colors as appColors} from "../../utils/colors"
+import { colors as appColors } from "../../utils/colors";
 
 export const CategoryForm = ({ navigation }: { navigation: any }) => {
   // const navigation = useNavigation<any>();
@@ -39,7 +39,7 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
         name: name,
       }),
     );
-    navigation.popToTop("Category");
+    // navigation.popToTop("Category");
     navigation.dispatch(CommonActions.goBack());
   }
   return (

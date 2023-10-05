@@ -54,6 +54,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>LibreBarcode128Text-Regular.ttf</string>
+		<string>DS-DIGIB.ttf</string>
 	</array>
 </dict>
 </plist>

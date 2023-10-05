@@ -83,7 +83,7 @@ export function Category() {
                   style={{ width: 500, height: 500 }}
                 />
               </Pressable>
-              {item.index > 4 && (
+              {item.index > 3 && (
                 <TouchableOpacity
                   onPress={() => {
                     dispatch(delCategory({ index: item.index }));
