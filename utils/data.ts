@@ -12,6 +12,7 @@ export function layoutFinder(type: string) {
     case "T-Shirt":
     case "Blouse":
     case "Polo Shirt":
+    case "Shirt":
       return categoryLayoutImages[0];
       break;
 
@@ -92,6 +93,7 @@ export const fitList = [
 
 const tops = [
   { value: "T-Shirt", label: "T-Shirt" },
+  { value: "Shirt", label: "Shirt" },
   { value: "Blouse", label: "Blouse" },
   { value: "Jacket", label: "Jacket" },
   { value: "Tank Top", label: "Tank Top" },

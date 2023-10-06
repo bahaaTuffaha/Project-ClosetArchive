@@ -2,12 +2,16 @@
   "migIndex": 1,
   "data": [
     {
-      "path": "assets/fonts/DS-DIGIB.ttf",
-      "sha1": "126da1a82a1491b962982cb0be5f3d8e0b23d077"
-    },
-    {
       "path": "assets/fonts/LibreBarcode128Text-Regular.ttf",
       "sha1": "95880a73f528330a2e1492b5aa28989040865bb9"
+    },
+    {
+      "path": "assets/fonts/Montserrat-Bold.otf",
+      "sha1": "a88aa713b7cdada0016869ed3548aa9c4e4f18b5"
+    },
+    {
+      "path": "assets/fonts/Montserrat-Regular.otf",
+      "sha1": "a3f5403e26df9e0dfcabd5c17bdf29662fbe96c2"
     }
   ]
 }

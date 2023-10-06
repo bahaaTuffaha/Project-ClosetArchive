@@ -89,7 +89,7 @@ export const Settings = () => {
                 items={languagesList}
                 setOpen={setOpenLang}
                 setValue={setLang}
-                mode="BADGE"
+                mode="SIMPLE"
                 placeholder="Language"
                 style={{ borderColor: colors.mainGreen, zIndex: 10 }}
                 dropDownContainerStyle={{
@@ -147,7 +147,7 @@ export const Settings = () => {
               textContentType="name"
               className="w-[50px] mx-5"
               label="n"
-              value={storedSettings.laundryNumber}
+              value={storedSettings.laundryNumber.toString()}
               onChange={(text) => handleNumberChange(text.nativeEvent.text)}
               keyboardType="numeric"
             />
