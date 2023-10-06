@@ -91,6 +91,13 @@ export const fitList = [
   },
 ];
 
+export const sizeList = [
+  { label: "US", value: "US" },
+  { label: "UK", value: "UK" },
+  { label: "EU", value: "EU" },
+  { label: "Asia", value: "Asia" },
+  { label: "Int'l", value: "Int'l" },
+];
 const tops = [
   { value: "T-Shirt", label: "T-Shirt" },
   { value: "Shirt", label: "Shirt" },

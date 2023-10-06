@@ -14,7 +14,10 @@ export type item = {
   id: string;
   name: string;
   type: string;
-  fit?: number;
+  fit: string;
+  quantity: number;
+  size: number;
+  sizeUnit: string;
   category: number;
   collection?: string[];
   purchaseDate?: string;
@@ -68,7 +71,10 @@ const itemsSlice = createSlice({
         name: action.payload.name,
         image: action.payload.image,
         type: action.payload.type,
-        fit: action.payload.fit || 0,
+        fit: action.payload.fit,
+        sizeUnit: action.payload.sizeUnit,
+        size: action.payload.size,
+        quantity: action.payload.quantity,
         collection:
           action.payload.collection.length == 0
             ? []
@@ -88,6 +94,9 @@ const itemsSlice = createSlice({
       state.items[itemIndex].image = action.payload.image;
       state.items[itemIndex].type = action.payload.type;
       state.items[itemIndex].fit = action.payload.fit;
+      state.items[itemIndex].size = action.payload.size;
+      state.items[itemIndex].sizeUnit = action.payload.sizeUnit;
+      state.items[itemIndex].quantity = action.payload.quantity;
       state.items[itemIndex].collection =
         action.payload.collection.length == 0 ? [] : action.payload.collection;
       state.items[itemIndex].automaticColor = action.payload.automaticColor;

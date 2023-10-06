@@ -19,6 +19,19 @@ import { importStoreFromJson } from "../../utils/importStoreFromJson";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
 
+export const handleNumberChange = (
+  func: any,
+  text: string,
+  min: number,
+  max: number,
+) => {
+  // Use regular expressions to allow only numbers and optionally a single decimal point
+  const regex = /^[0-9]*\.?[0-9]*$/;
+  if (regex.test(text) && Number(text) >= min && Number(text) <= max) {
+    func();
+  }
+};
+
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
   const storedSettings = useSelector((state: RootState) => state.settings);
@@ -37,14 +50,6 @@ export const Settings = () => {
   const onDismissSnackBar = () => setVisible(false);
   const [exportOrImport, setExportOrImport] = useState(0);
   const [checked, setChecked] = useState(false);
-
-  const handleNumberChange = (text: string) => {
-    // Use regular expressions to allow only numbers and optionally a single decimal point
-    const regex = /^[0-9]*\.?[0-9]*$/;
-    if (regex.test(text) && text >= 0 && text <= 30) {
-      dispatch(laundryNumberSetter({ number: text }));
-    }
-  };
 
   return (
     <ThemeView>
@@ -148,7 +153,16 @@ export const Settings = () => {
               className="w-[50px] mx-5"
               label="n"
               value={storedSettings.laundryNumber.toString()}
-              onChange={(text) => handleNumberChange(text.nativeEvent.text)}
+              onChange={(text) =>
+                handleNumberChange(
+                  dispatch(
+                    laundryNumberSetter({ number: text.nativeEvent.text }),
+                  ),
+                  text.nativeEvent.text,
+                  0,
+                  30,
+                )
+              }
               keyboardType="numeric"
             />
             <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>

@@ -31,7 +31,12 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
-import { clothesList, RandomNamesP1, fitList } from "../../utils/data";
+import {
+  clothesList,
+  RandomNamesP1,
+  fitList,
+  sizeList,
+} from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
 
 export function get_random(list: string[]) {
@@ -61,6 +66,13 @@ export const ItemForm = ({
   );
   const [type, setType] = useState(storedItems ? storedItems.type : "");
   const [fit, setFit] = useState(storedItems ? storedItems.fit : "");
+  const [quantity, setQuantity] = useState(
+    storedItems ? storedItems.quantity : 1,
+  );
+  const [sizeUnit, setSizeUnit] = useState(
+    storedItems ? storedItems.sizeUnit : "",
+  );
+  const [size, setSize] = useState(storedItems ? storedItems.size : "");
   const [purchaseDate, setPurchaseDate] = useState(
     storedItems ? JSON.parse(storedItems.purchaseDate ?? "") : new Date(),
   );
@@ -76,6 +88,7 @@ export const ItemForm = ({
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
   const [openFit, setOpenFit] = useState(false);
+  const [openSizeUnit, setOpenSizeUnit] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
@@ -129,6 +142,10 @@ export const ItemForm = ({
             collection: collection,
             category: selectedCategory,
             type: type,
+            fit: fit,
+            size: size,
+            sizeUnit: sizeUnit,
+            quantity: quantity === 0 ? 1 : quantity,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
             automaticColor: isAutoOn,
@@ -144,6 +161,9 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
+            size: size,
+            sizeUnit: sizeUnit,
+            quantity: quantity === 0 ? 1 : quantity,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
             automaticColor: isAutoOn,
@@ -256,7 +276,7 @@ export const ItemForm = ({
       <ThemeView>
         <>
           <BackButton />
-          <View className="flex items-center space-y-3">
+          <View className="flex items-center space-y-2">
             <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
               {editingIndex ? "Editing Item" : "Adding an Item"}
             </ThemeText>
@@ -288,7 +308,7 @@ export const ItemForm = ({
               }
             />
             {(selectedCategory ?? storedItems.category) <= 3 && (
-              <View style={[{ zIndex: 3 }, styles.customWidth]}>
+              <View style={[{ zIndex: 2 }, styles.customWidth]}>
                 <DropDownPicker
                   open={openType}
                   value={type}
@@ -307,7 +327,7 @@ export const ItemForm = ({
               </View>
             )}
             {(selectedCategory ?? storedItems.category) < 2 && (
-              <View style={[{ zIndex: 2 }, styles.customWidth]}>
+              <View style={[{ zIndex: 3 }, styles.customWidth]}>
                 <DropDownPicker
                   open={openFit}
                   value={fit}
@@ -324,6 +344,47 @@ export const ItemForm = ({
                 />
               </View>
             )}
+            <View className="w-[80%] flex flex-row justify-between items-center z-[2]">
+              <CustomInput
+                mode="outlined"
+                outlineColor={appColors.mainGreen}
+                selectionColor="#C0C0C0"
+                activeOutlineColor={appColors.mainGreen}
+                style={{ width: "40%" }}
+                label="Quantity"
+                value={String(quantity)}
+                onChange={(text) => setQuantity(Number(text.nativeEvent.text))}
+                keyboardType="numeric"
+                maxLength={2}
+              />
+              <View style={{ width: "25%" }}>
+                <DropDownPicker
+                  open={openSizeUnit}
+                  value={sizeUnit}
+                  items={sizeList}
+                  setOpen={setOpenSizeUnit}
+                  setValue={setSizeUnit}
+                  mode="SIMPLE"
+                  placeholder="Unit"
+                  style={{ borderColor: appColors.mainGreen, marginTop: 5 }}
+                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                  theme={
+                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
+                  }
+                />
+              </View>
+              <CustomInput
+                mode="outlined"
+                outlineColor={appColors.mainGreen}
+                selectionColor="#C0C0C0"
+                activeOutlineColor={appColors.mainGreen}
+                style={{ width: "25%" }}
+                label="Size"
+                value={String(size)}
+                onChange={(text) => setSize(text.nativeEvent.text)}
+                maxLength={6}
+              />
+            </View>
             <View></View>
             <DatePicker
               title="Purchase Date"
