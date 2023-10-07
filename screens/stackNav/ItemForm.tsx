@@ -26,7 +26,8 @@ import { CustomInput } from "../../components/CustomInput";
 import { RootState } from "../../redux/store";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import CustomModal from "../../components/CustomModal";
-import { getAllSwatches } from "react-native-palette";
+// import { getAllSwatches } from "react-native-palette";
+import { getColors } from "react-native-image-colors";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
@@ -182,58 +183,75 @@ export const ItemForm = ({
   const onToggleSwitch = () => {
     if (imageUrl) {
       if (isAutoOn == false) {
-        colorsExtractor(imageUrl.slice(7));
+        colorsExtractor(imageUrl);
       }
       setIsAutoOn(!isAutoOn);
     }
   };
 
-  const colorsExtractor = (imageUrl: string) => {
-    getAllSwatches(
-      { quality: "medium" },
-      imageUrl,
-      (error: any, swatches: any) => {
-        if (error) {
-          console.log(error);
-        } else {
-          swatches.sort((a: any, b: any) => {
-            return b.population - a.population;
-          });
-          setColors([
-            swatches[0].hex.slice(0, -2),
-            swatches[1].hex.slice(0, -2),
-            swatches[2].hex.slice(0, -2),
-          ]);
-        }
-      },
-    );
+  const colorsExtractor = (base64: string) => {
+    try {
+      getColors(`data:image/*;base64,${base64}`, {
+        quality: "high",
+      }).then((colors: any) =>
+        setColors([colors.dominant, colors.vibrant, colors.darkVibrant]),
+      );
+    } catch (e) {
+      console.log("colorExtractor error:", e);
+    }
+    // getAllSwatches(
+    //   { quality: "medium" },
+    //   imageUrl,
+    //   (error: any, swatches: any) => {
+    //     if (error) {
+    //       console.log(error);
+    //     } else {
+    //       swatches.sort((a: any, b: any) => {
+    //         return b.population - a.population;
+    //       });
+    //       setColors([
+    //         swatches[0].hex.slice(0, -2),
+    //         swatches[1].hex.slice(0, -2),
+    //         swatches[2].hex.slice(0, -2),
+    //       ]);
+    //     }
+    //   },
+    // );
   };
   const handleImagePicker = async (type: number) => {
     if (type == 0) {
       await launchImageLibrary(
-        { mediaType: "photo", selectionLimit: 1 },
+        {
+          mediaType: "photo",
+          selectionLimit: 1,
+          quality: 0.5,
+          includeBase64: true,
+        },
         (response) => {
           if (response.didCancel) {
             console.log("Image picker cancelled");
           } else if (response.errorCode) {
             console.log("Image picker error: ", response.errorMessage);
           } else {
-            setImageUrl(response.assets[0].uri || "");
+            setImageUrl(response.assets[0].base64 || "");
             setImageModalVisible(false);
           }
         },
       );
     } else if (1) {
-      await launchCamera({ mediaType: "photo" }, (response) => {
-        if (response.didCancel) {
-          console.log("Image picker cancelled");
-        } else if (response.errorCode) {
-          console.log("Image picker error: ", response.errorMessage);
-        } else {
-          setImageUrl(response.assets[0].uri || "");
-          setImageModalVisible(false);
-        }
-      });
+      await launchCamera(
+        { mediaType: "photo", quality: 0.5, includeBase64: true },
+        (response) => {
+          if (response.didCancel) {
+            console.log("Image picker cancelled");
+          } else if (response.errorCode) {
+            console.log("Image picker error: ", response.errorMessage);
+          } else {
+            setImageUrl(response.assets[0].base64 || "");
+            setImageModalVisible(false);
+          }
+        },
+      );
     }
   };
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -271,6 +289,14 @@ export const ItemForm = ({
           >
             Import From Device
           </Button>
+          <Button
+            buttonColor={appColors.mainCyan}
+            textColor={appColors.white}
+            mode="contained"
+            onPress={() => setImageUrl("")}
+          >
+            Reset Image
+          </Button>
         </View>
       </CustomModal>
       <ThemeView>
@@ -287,7 +313,11 @@ export const ItemForm = ({
             >
               <Image
                 style={{ resizeMode: "contain" }}
-                source={imageUrl == "" ? addImage : { uri: imageUrl }}
+                source={
+                  imageUrl == ""
+                    ? addImage
+                    : { uri: `data:image/*;base64,${imageUrl}` }
+                }
                 className="w-20 h-20 rounded-md object-contain"
               />
             </TouchableOpacity>

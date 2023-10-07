@@ -61,7 +61,10 @@ export const SelectionItemBox = ({
         {name}
       </Text>
       {image !== "" ? (
-        <Image className="w-full h-full rounded-lg" source={{ uri: image }} />
+        <Image
+          className="w-full h-full rounded-lg"
+          source={{ uri: `data:image/*;base64,${image}` }}
+        />
       ) : (
         <View className={`flex flex-row rounded-lg ${boxStyle}`}>
           <View
