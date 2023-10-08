@@ -85,6 +85,8 @@ export function Category() {
               </Pressable>
               {item.index > 3 && (
                 <TouchableOpacity
+                  className="z-10"
+                  hitSlop={{ left: 50, right: 50, bottom: 50, top: 50 }}
                   onPress={() => {
                     dispatch(delCategory({ index: item.index }));
                   }}

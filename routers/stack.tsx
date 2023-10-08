@@ -16,7 +16,7 @@ export default function Navigator() {
         <Stack.Screen
           name="StackNavHome"
           component={Home}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, orientation: "portrait" }}
         />
         <Stack.Screen
           name="CollectionForm"
