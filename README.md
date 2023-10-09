@@ -19,7 +19,7 @@
 <!-- PROJECT LOGO -->
 <!-- <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/bahaaTuffaha/Project-ClosetArchive">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -28,14 +28,14 @@
   <p align="center">
     project_description
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/bahaaTuffaha/Project-ClosetArchive"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/bahaaTuffaha/Project-ClosetArchive">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/bahaaTuffaha/Project-ClosetArchive/graphs/contributorsissues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/bahaaTuffaha/Project-ClosetArchive/graphs/contributorsissues">Request Feature</a>
   </p>
 </div> -->
 
@@ -52,7 +52,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#installation">Installation</are></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -70,7 +70,7 @@
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-Closet-archive is an open-source app to help people organize , categorize and most importantly log what you have wore the last event to prevent waring the same cloths many times or help you when to put it in the landry and many more.
+Closet-Archive is an open-source app designed to assist people in organizing, categorizing, and, most importantly, logging their recent outfit choices. This functionality prevents the inadvertent repetition of clothing items, aids in laundry management, and offers various other features.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -81,6 +81,14 @@ Closet-archive is an open-source app to help people organize , categorize and mo
     <img
       src="https://reactnative.dev/img/header_logo.svg"
       alt="reactnative"
+      width="40"
+      height="40"
+    />
+  </a>
+    <a href="https://redux-toolkit.js.org/" target="_blank" rel="noreferrer">
+    <img
+      src="https://cdn.iconscout.com/icon/free/png-256/free-redux-283024.png"
+      alt="redux-toolkit"
       width="40"
       height="40"
     />
@@ -118,9 +126,27 @@ installing all packages.
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+![image1](Readme_images/img1.png)![image2](Readme_images/img2.png)![image3](Readme_images/img3.png)
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+- Adding a Clothing Item:
+
+Press the "+" button , press on adding an item and choose your category.
+Fill in the details of the clothing item, such as name, type, image or colors, and size.(min req. :name,type)
+Click "Save" to add the item to your closet.
+
+- Recording an Event:
+
+Press the "+" button , press on adding a log then select a clothing item from your closet.
+Provide event details, including the date, name, and any notes.
+Click "Save" to record the event for that item.
+
+- Managing Collections:
+
+Create a new collection by clicking collection at main screen.
+
+- Importing and Exporting Data:
+
+Use the "Import" and "Export" features in the app's settings to manage your data.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -133,7 +159,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Feature 3
   - [ ] Nested Feature
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/bahaaTuffaha/Project-ClosetArchive/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -158,7 +184,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See [MIT License](License) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -166,37 +192,27 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Bahaa Tuffaha - bahaa.tuffaha@yahoo.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-
-## Acknowledgments
-
-- []()
-- []()
-- []()
+Project Link: [https://github.com/bahaaTuffaha/Project-ClosetArchive](https://github.com/bahaaTuffaha/Project-ClosetArchive)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/bahaaTuffaha/Project-ClosetArchive.svg?style=for-the-badge
+[contributors-url]: https://github.com/bahaaTuffaha/Project-ClosetArchive/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/bahaaTuffaha/Project-ClosetArchive.svg?style=for-the-badge
+[forks-url]: https://github.com/bahaaTuffaha/Project-ClosetArchive/network/members
+[stars-shield]: https://img.shields.io/github/stars/bahaaTuffaha/Project-ClosetArchive.svg?style=for-the-badge
+[stars-url]: https://github.com/bahaaTuffaha/Project-ClosetArchive/stargazers
+[issues-shield]: https://img.shields.io/github/issues/bahaaTuffaha/Project-ClosetArchive.svg?style=for-the-badge
+[issues-url]: https://github.com/bahaaTuffaha/Project-ClosetArchive/issues
+[license-shield]: https://img.shields.io/github/license/bahaaTuffaha/Project-ClosetArchive.svg?style=for-the-badge
+[license-url]: https://github.com/bahaaTuffaha/Project-ClosetArchive/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[linkedin-url]: https://www.linkedin.com/in/bahaa-tuffaha
 [product-screenshot]: images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/

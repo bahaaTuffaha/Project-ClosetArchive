@@ -44,7 +44,6 @@ const createChannels = () => {
 const scheduleNotification = () => {
   // Check if there's an existing scheduled notification
   PushNotification.getDeliveredNotifications((nots) => {
-    console.log(nots);
     if (nots.length === 0) {
       // Schedule a new notification only if no existing ones are scheduled
       PushNotification.localNotificationSchedule({
