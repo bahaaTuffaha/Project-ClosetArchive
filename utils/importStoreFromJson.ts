@@ -1,6 +1,9 @@
 import { RootState, store } from "../redux/store"; // Replace with the correct path to your rootReducer file
 import * as ScopedStorage from "react-native-scoped-storage";
 import * as FileSystem from "expo-file-system";
+import { importCategory } from "../redux/categoriesSlice";
+import { importItems } from "../redux/itemsSlice";
+import { importSettings } from "../redux/settingsSlice";
 
 // Function to import the Redux store from a JSON file in the Documents folder
 export const importStoreFromJson = async () => {
@@ -15,12 +18,27 @@ export const importStoreFromJson = async () => {
         // Check if the selected file is a JSON file based on MIME type or file extension
         if (file.mime === "application/json" || file.name.endsWith(".json")) {
           // Read the serialized state from the selected JSON file
+          // const theFile = await ScopedStorage.readFile(file.path);
           const serializedState = await FileSystem.readAsStringAsync(file.uri);
           const state: RootState = JSON.parse(serializedState);
-
-          // Dispatch an action to replace the current Redux store with the imported state
-          store.dispatch({ type: "REPLACE_STATE", payload: state });
-
+          store.dispatch(
+            importCategory({ Categories: state.CategoryList.Categories }),
+          );
+          store.dispatch(
+            importItems({
+              collectionTags: state.itemsList.collectionTags,
+              logs: state.itemsList.logs,
+              items: state.itemsList.items,
+              refreshItems: state.itemsList.refreshItems,
+            }),
+          );
+          store.dispatch(
+            importSettings({
+              language: state.settings.language,
+              laundryNumber: state.settings.laundryNumber,
+              name: state.settings.name,
+            }),
+          );
           console.log("Store imported successfully.");
           return true;
         } else {

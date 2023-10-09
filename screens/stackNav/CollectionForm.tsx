@@ -22,7 +22,8 @@ import {
 } from "../../redux/itemsSlice";
 import { FlashList } from "@shopify/flash-list";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {colors as appColors} from "./../../utils/colors"
+import Icon2 from "react-native-vector-icons/MaterialIcons";
+import { colors as appColors } from "./../../utils/colors";
 
 export function addOpacityToHex(hexColor: string, opacity: any) {
   // Remove the "#" character if it's present
@@ -49,7 +50,7 @@ export const CollectionForm = () => {
   // const navigation = useNavigation<any>();
   const [name, setName] = useState("");
   const [visible, setVisible] = useState(false);
-  const [colors, setColors] = useState([""]);
+  const [colors, setColors] = useState(["#242424"]);
   const [refresh, setRefresh] = useState(false);
   const CollectionsState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
@@ -106,9 +107,9 @@ export const CollectionForm = () => {
               onPress={() => {
                 setVisible(true);
               }}
-              className="flex justify-center items-center w-16 h-16 border-[3px] rounded-xl mt-2"
+              className="flex justify-center items-center w-16 h-16 border-[2px] border-gray rounded-xl mt-2"
             >
-              <Text className="text-black">Color</Text>
+              <Icon2 name="colorize" size={30} color={appColors.mainCyan} />
             </TouchableOpacity>
             <CustomInput
               mode="outlined"

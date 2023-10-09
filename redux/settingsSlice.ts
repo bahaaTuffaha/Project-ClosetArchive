@@ -25,8 +25,17 @@ const settingsSlice = createSlice({
     laundryNumberSetter: (state, action) => {
       state.laundryNumber = action.payload.number;
     },
+    importSettings: (state, action) => {
+      state.language = action.payload.language;
+      state.laundryNumber = action.payload.laundryNumber;
+      state.name = action.payload.name;
+    },
   },
 });
-export const { changeLanguage, userNameSetter, laundryNumberSetter } =
-  settingsSlice.actions;
+export const {
+  changeLanguage,
+  userNameSetter,
+  laundryNumberSetter,
+  importSettings,
+} = settingsSlice.actions;
 export default settingsSlice.reducer;

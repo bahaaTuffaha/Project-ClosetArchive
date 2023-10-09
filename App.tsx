@@ -42,14 +42,21 @@ const createChannels = () => {
   );
 };
 const scheduleNotification = () => {
-  PushNotification.localNotificationSchedule({
-    channelId: "channel-id-1",
-    message: get_random(clothingReminderMessages),
-    title: get_random(clothingReminderTitles),
-    date: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12 hours in milliseconds
-    repeatType: "time",
-    repeatTime: 12 * 60 * 60 * 1000, // 12 hours in milliseconds
-    allowWhileIdle: true,
+  // Check if there's an existing scheduled notification
+  PushNotification.getDeliveredNotifications((nots) => {
+    console.log(nots);
+    if (nots.length === 0) {
+      // Schedule a new notification only if no existing ones are scheduled
+      PushNotification.localNotificationSchedule({
+        channelId: "channel-id-1",
+        message: get_random(clothingReminderMessages),
+        title: get_random(clothingReminderTitles),
+        date: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12 hours in milliseconds
+        repeatType: "time",
+        repeatTime: 12 * 60 * 60 * 1000, // 12 hours in milliseconds
+        allowWhileIdle: true,
+      });
+    }
   });
 };
 

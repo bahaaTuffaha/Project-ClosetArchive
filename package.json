@@ -21,6 +21,7 @@
     "@types/react-native-vector-icons": "^6.4.13",
     "@types/react-redux": "^7.1.25",
     "dayjs": "^1.11.9",
+    "expo": "^48.0.0",
     "lottie-ios": "^3.4.0",
     "lottie-react-native": "^5.1.6",
     "nanoid": "^4.0.2",
@@ -31,7 +32,7 @@
     "react-native-gesture-handler": "^2.12.0",
     "react-native-get-random-values": "^1.9.0",
     "react-native-image-colors": "^2.2.0",
-    "react-native-image-picker": "^5.6.0",
+    "react-native-image-picker": "^7.0.0",
     "react-native-image-sequence-2": "^0.9.1",
     "react-native-modal-datetime-picker": "^17.0.0",
     "react-native-paper": "^5.8.0",
@@ -45,12 +46,17 @@
     "react-native-wheel-color-picker": "^1.2.0",
     "react-redux": "^8.1.1",
     "redux-persist": "^6.0.0",
-    "tailwindcss": "^3.3.2",
-    "expo": "^48.0.0"
+    "tailwindcss": "^3.3.2"
   },
   "expo": {
     "autolinking": {
-      "exclude": ["expo-keep-awake","expo-application","expo-constants","expo-font","expo-keep-awake"]
+      "exclude": [
+        "expo-keep-awake",
+        "expo-application",
+        "expo-constants",
+        "expo-font",
+        "expo-keep-awake"
+      ]
     }
   },
   "devDependencies": {

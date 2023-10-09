@@ -2,23 +2,28 @@ import { RootState, store } from "../redux/store"; // Replace with the correct p
 import * as ScopedStorage from "react-native-scoped-storage";
 
 export const exportStoreToJson = async () => {
+  if (!store) {
+    console.log("Store not initialized");
+    return;
+  }
+
   try {
     const state: RootState = store.getState();
     const serializedState = JSON.stringify(state);
 
-    // Open the Document Picker to select a folder (scoped storage)
-    // const dir = await ScopedStorage.openDocumentTree();
-
-    // Write the serialized state to a file in the selected directory
-    let file = await ScopedStorage.createDocument(
+    // Create a new file named store.json in the Documents directory
+    const storePath = await ScopedStorage.createDocument(
       "store.json",
       "application/json",
       serializedState,
       "utf8",
     );
-
-    console.log("Store exported successfully.");
-    return true;
+    if (storePath) {
+      console.log("Store exported successfully.");
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error("Error exporting store:", error);
     return false;

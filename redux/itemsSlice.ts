@@ -190,6 +190,12 @@ const itemsSlice = createSlice({
       );
       state.items.splice(itemIndex, 1);
     },
+    importItems: (state, action) => {
+      state.items = action.payload.items;
+      state.collectionTags = action.payload.collectionTags;
+      state.logs = action.payload.logs;
+      state.refreshItems = action.payload.refreshItems;
+    },
   },
 });
 export const {
@@ -204,5 +210,6 @@ export const {
   deleteEventLog,
   itemRefresher,
   deleteItem,
+  importItems,
 } = itemsSlice.actions;
 export default itemsSlice.reducer;

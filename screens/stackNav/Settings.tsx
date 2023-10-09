@@ -78,7 +78,7 @@ export const Settings = () => {
               label="User Name"
               value={storedSettings.name}
               onChange={(text) =>
-                text.nativeEvent.text.length < 14 &&
+                text.nativeEvent.text.length < 8 &&
                 dispatch(userNameSetter({ name: text.nativeEvent.text }))
               }
             />

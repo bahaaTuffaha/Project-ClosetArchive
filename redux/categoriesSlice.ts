@@ -39,7 +39,11 @@ const categoriesSlice = createSlice({
     delCategory: (state, action) => {
       state.Categories.splice(action.payload.index, 1);
     },
+    importCategory: (state, action) => {
+      state.Categories = action.payload.Categories;
+    },
   },
 });
-export const { addCategory, delCategory } = categoriesSlice.actions;
+export const { addCategory, delCategory, importCategory } =
+  categoriesSlice.actions;
 export default categoriesSlice.reducer;

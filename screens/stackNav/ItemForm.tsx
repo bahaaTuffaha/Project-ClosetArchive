@@ -241,27 +241,19 @@ export const ItemForm = ({
       );
     } else if (1) {
       try {
-        console.log("asking for permission");
-        const granted = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.CAMERA,
-        ]);
-        if (granted["android.permission.CAMERA"]) {
-          await launchCamera(
-            { mediaType: "photo", quality: 0.5, includeBase64: true },
-            (response) => {
-              if (response.didCancel) {
-                console.log("Image picker cancelled");
-              } else if (response.errorCode) {
-                console.log("Image picker error: ", response.errorMessage);
-              } else {
-                setImageUrl(response.assets[0].base64 || "");
-                setImageModalVisible(false);
-              }
-            },
-          );
-        } else {
-          console.log("Camera permission denied");
-        }
+        await launchCamera(
+          { mediaType: "photo", quality: 0.5, includeBase64: true },
+          (response) => {
+            if (response.didCancel) {
+              console.log("Image picker cancelled");
+            } else if (response.errorCode) {
+              console.log("Image picker error: ", response.errorMessage);
+            } else {
+              setImageUrl(response.assets[0].base64 || "");
+              setImageModalVisible(false);
+            }
+          },
+        );
       } catch (error) {
         console.log("permission error", error);
       }
@@ -345,7 +337,10 @@ export const ItemForm = ({
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
               right={
-                <Pressable onPress={() => setName(get_random(RandomNamesP1))}>
+                <Pressable
+                  hitSlop={{ bottom: 20, left: 20, right: 10, top: 20 }}
+                  onPress={() => setName(get_random(RandomNamesP1))}
+                >
                   <Icon name="dice" size={15} color={appColors.mainCyan} />
                 </Pressable>
               }
@@ -400,7 +395,7 @@ export const ItemForm = ({
                 keyboardType="numeric"
                 maxLength={2}
               />
-              <View style={{ width: "25%" }}>
+              <View style={{ width: "28%" }}>
                 <DropDownPicker
                   open={openSizeUnit}
                   value={sizeUnit}
@@ -421,7 +416,7 @@ export const ItemForm = ({
                 outlineColor={appColors.mainGreen}
                 selectionColor="#C0C0C0"
                 activeOutlineColor={appColors.mainGreen}
-                style={{ width: "25%" }}
+                style={{ width: "28%" }}
                 label="Size"
                 value={String(size)}
                 onChange={(text) => setSize(text.nativeEvent.text)}
