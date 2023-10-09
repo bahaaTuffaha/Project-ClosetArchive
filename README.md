@@ -126,7 +126,7 @@ installing all packages.
 
 ## Usage
 
-![image1](Readme_images/img1.png)![image2](Readme_images/img2.png)![image3](Readme_images/img3.png)
+[<img src="Readme_images/img1.png" width="250"/>](img1.png)[<img src="Readme_images/img2.png" width="250"/>](img2.png)[<img src="Readme_images/img3.png" width="250"/>](img3.png)
 
 - Adding a Clothing Item:
 
