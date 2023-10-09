@@ -117,7 +117,7 @@ export const ItemSelector = () => {
                             key={item.id}
                             image={item.image}
                             name={item.name}
-                            categoryNumber={item.category}
+                            type={item.type}
                             id={item.id}
                             setSelectedIdCollector={setSelectedIdCollector}
                             selectedIdCollector={selectedIdCollector}
@@ -148,7 +148,7 @@ export const ItemSelector = () => {
                               key={item.id}
                               image={item.image}
                               name={item.name}
-                              categoryNumber={item.category}
+                              type={item.type}
                               id={item.id}
                               setSelectedIdCollector={setSelectedIdCollector}
                               selectedIdCollector={selectedIdCollector}
@@ -172,7 +172,7 @@ export const ItemSelector = () => {
                     key={index + item.id}
                     image={item.image}
                     name={item.name}
-                    categoryNumber={item.category}
+                    type={item.type}
                     id={item.id}
                     setSelectedIdCollector={setSelectedIdCollector}
                     selectedIdCollector={selectedIdCollector}
@@ -188,7 +188,7 @@ export const ItemSelector = () => {
                     key={index + item.id}
                     image={item.image}
                     name={item.name}
-                    categoryNumber={item.category}
+                    type={item.type}
                     id={item.id}
                     setSelectedIdCollector={setSelectedIdCollector}
                     selectedIdCollector={selectedIdCollector}

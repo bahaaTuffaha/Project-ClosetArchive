@@ -1,15 +1,13 @@
 import { View, Image, Text, TouchableWithoutFeedback } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { categoryLayoutImages } from "../utils/data";
 import { useNavigation } from "@react-navigation/native";
-import { Dispatch, SetStateAction } from "react";
 import { colors } from "../utils/colors";
+import { layoutFinder } from "../utils/data";
 
 export const ItemBox = ({
   image,
@@ -17,7 +15,7 @@ export const ItemBox = ({
   secondary,
   tertiary,
   name,
-  categoryNumber,
+  type,
   id,
 }: {
   image: string;
@@ -25,11 +23,10 @@ export const ItemBox = ({
   primary: string;
   secondary: string;
   tertiary: string;
-  categoryNumber: number;
+  type: string;
   id: string;
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
-  const layout = require("../assets/images/layout1.png");
   const scaleDownAnimation = useSharedValue(1);
   const navigation = useNavigation<any>();
   function navToEdit() {
@@ -64,7 +61,7 @@ export const ItemBox = ({
           <View className={`m-1 relative ${boxStyle}`}>
             <Image
               className="absolute z-20 rounded-lg"
-              source={categoryLayoutImages[categoryNumber] ?? layout}
+              source={layoutFinder(type)}
             />
             <Text
               style={{
@@ -78,7 +75,7 @@ export const ItemBox = ({
             {image !== "" ? (
               <Image
                 className="w-full h-full rounded-lg"
-                source={{ uri: image }}
+                source={{ uri: `data:image/*;base64,${image}` }}
               />
             ) : (
               <View className={`flex flex-row rounded-lg ${boxStyle}`}>

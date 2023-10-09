@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   customCategory,
-  jacket,
+  accessories,
   shoes,
   trousers,
   tshirt,
@@ -21,7 +21,7 @@ const initialState: CategoryList = {
     { name: "Tops", sprites: tshirt, screen: "ItemForm", index: 0 },
     { name: "Bottoms", sprites: trousers, screen: "ItemForm", index: 1 },
     { name: "Shoes", sprites: shoes, screen: "ItemForm", index: 2 },
-    { name: "Accessories", sprites: jacket, screen: "ItemForm", index: 3 },
+    { name: "Accessories", sprites: accessories, screen: "ItemForm", index: 3 },
   ],
 };
 const categoriesSlice = createSlice({
@@ -39,7 +39,11 @@ const categoriesSlice = createSlice({
     delCategory: (state, action) => {
       state.Categories.splice(action.payload.index, 1);
     },
+    importCategory: (state, action) => {
+      state.Categories = action.payload.Categories;
+    },
   },
 });
-export const { addCategory, delCategory } = categoriesSlice.actions;
+export const { addCategory, delCategory, importCategory } =
+  categoriesSlice.actions;
 export default categoriesSlice.reducer;

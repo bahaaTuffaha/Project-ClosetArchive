@@ -54,6 +54,8 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>LibreBarcode128Text-Regular.ttf</string>
+		<string>Montserrat-Bold.otf</string>
+		<string>Montserrat-Regular.otf</string>
 	</array>
 </dict>
 </plist>

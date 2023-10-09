@@ -4,6 +4,7 @@ import {
   useColorScheme,
   Pressable,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import React, { useEffect, useRef, useState } from "react";
@@ -157,28 +158,51 @@ export const OutfitLog = () => {
           visible={modalVisible}
           label={modalInfo?.eventName || "Event Name"}
         >
-          <View className="w-[90%] mr-auto ml-auto space-y-5">
-            <View>
-              <ThemeText classNameStyle="text-[16px]">Date:</ThemeText>
-              <ThemeText>
+          <View className="w-[90%] mr-auto ml-auto">
+            <View className="mt-5 bg-[#77aebb5d] rounded-lg p-5">
+              {/* <ThemeText classNameStyle="text-[16px]">Date:</ThemeText> */}
+              <ThemeText lightColor={colors.gray} customStyle={styles.dayStyle}>
                 {dayjs(
                   modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
-                ).format("DD/MM/YYYY")}
+                ).format("dddd")}
               </ThemeText>
-            </View>
-            <View>
-              <ThemeText classNameStyle="text-[16px]">Time:</ThemeText>
-              <ThemeText>
+              <ThemeText lightColor={colors.gray} customStyle={styles.date}>
                 {dayjs(
                   modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
-                ).format("h:mm A")}
+                ).format("MMM DD, YYYY")}
               </ThemeText>
+              <View
+                className={`w-[60%] h-[1px] ${
+                  isDarkMode ? "bg-white" : "bg-black"
+                }`}
+              />
+              <View className="flex flex-row items-baseline mt-2">
+                {/* <ThemeText classNameStyle="text-[16px]">Time:</ThemeText> */}
+                <ThemeText
+                  lightColor={colors.gray}
+                  customStyle={styles.timeStyle}
+                >
+                  {dayjs(
+                    modalInfo?.eventDate
+                      ? JSON.parse(modalInfo?.eventDate)
+                      : "",
+                  ).format("h:mm ")}
+                </ThemeText>
+                <ThemeText lightColor={colors.gray} customStyle={styles.timeA}>
+                  {dayjs(
+                    modalInfo?.eventDate
+                      ? JSON.parse(modalInfo?.eventDate)
+                      : "",
+                  ).format("A")}
+                </ThemeText>
+              </View>
             </View>
-            <View>
-              <ThemeText classNameStyle="text-[16px]">
-                AdditionalNotes:
+
+            <View className="p-2">
+              <ThemeText customStyle={styles.notes}>
+                Additional Notes:
               </ThemeText>
-              <ThemeText classNameStyle="h-fit">
+              <ThemeText classNameStyle="h-fit text-[14px]">
                 {modalInfo?.additionalNotes}
               </ThemeText>
             </View>
@@ -298,3 +322,25 @@ export const OutfitLog = () => {
     </ThemeView>
   );
 };
+const styles = StyleSheet.create({
+  timeStyle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 30,
+  },
+  timeA: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 15,
+  },
+  date: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 25,
+  },
+  dayStyle: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 16,
+  },
+  notes: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 20,
+  },
+});

@@ -6,6 +6,39 @@ export const categoryLayoutImages = [
   require("../assets/images/layoutTie.png"),
   require("../assets/images/layoutAccessories.png"),
 ];
+const layout = require("../assets/images/layout1.png");
+export function layoutFinder(type: string) {
+  switch (type) {
+    case "T-Shirt":
+    case "Blouse":
+    case "Polo Shirt":
+    case "Shirt":
+      return categoryLayoutImages[0];
+      break;
+
+    case "Jeans":
+    case "Trousers":
+    case "Joggers":
+    case "Leather Pants":
+      return categoryLayoutImages[1];
+      break;
+
+    case "Jacket":
+    case "blazer":
+      return categoryLayoutImages[3];
+      break;
+
+    case "Casual Shoes":
+    case "Boots":
+    case "Sneakers":
+      return categoryLayoutImages[2];
+      break;
+
+    default:
+      return layout;
+      break;
+  }
+}
 
 export const RandomNamesP1 = [
   "Wildfire",
@@ -58,8 +91,16 @@ export const fitList = [
   },
 ];
 
+export const sizeList = [
+  { label: "US", value: "US" },
+  { label: "UK", value: "UK" },
+  { label: "EU", value: "EU" },
+  { label: "Asia", value: "Asia" },
+  { label: "Int'l", value: "Int'l" },
+];
 const tops = [
   { value: "T-Shirt", label: "T-Shirt" },
+  { value: "Shirt", label: "Shirt" },
   { value: "Blouse", label: "Blouse" },
   { value: "Jacket", label: "Jacket" },
   { value: "Tank Top", label: "Tank Top" },

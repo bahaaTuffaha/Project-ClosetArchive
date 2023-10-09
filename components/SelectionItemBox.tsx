@@ -1,5 +1,5 @@
 import { View, Image, Text, Pressable } from "react-native";
-import { categoryLayoutImages } from "../utils/data";
+import { layoutFinder } from "../utils/data";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { colors } from "../utils/colors";
 
@@ -9,7 +9,7 @@ export const SelectionItemBox = ({
   secondary,
   tertiary,
   name,
-  categoryNumber,
+  type,
   id,
   setSelectedIdCollector,
   selectedIdCollector,
@@ -19,13 +19,12 @@ export const SelectionItemBox = ({
   primary: string;
   secondary: string;
   tertiary: string;
-  categoryNumber: number;
+  type: string;
   id: string;
   setSelectedIdCollector: Dispatch<SetStateAction<string[]>>;
   selectedIdCollector: string[];
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
-  const layout = require("../assets/images/layout1.png");
   const [isSelected, setIsSelected] = useState(false);
   useEffect(() => {
     if (isSelected) {
@@ -49,7 +48,7 @@ export const SelectionItemBox = ({
         source={
           selectedIdCollector.includes(id)
             ? require("../assets/images/layoutSelection.png")
-            : categoryLayoutImages[categoryNumber] ?? layout
+            : layoutFinder(type)
         }
       />
       <Text
@@ -62,7 +61,10 @@ export const SelectionItemBox = ({
         {name}
       </Text>
       {image !== "" ? (
-        <Image className="w-full h-full rounded-lg" source={{ uri: image }} />
+        <Image
+          className="w-full h-full rounded-lg"
+          source={{ uri: `data:image/*;base64,${image}` }}
+        />
       ) : (
         <View className={`flex flex-row rounded-lg ${boxStyle}`}>
           <View

@@ -1,4 +1,10 @@
-import { Dimensions, Pressable, View, ViewStyle } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  View,
+  ViewStyle,
+  TouchableOpacity,
+} from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import ImageSequence from "react-native-image-sequence-2";
 import { AnimatedStyleProp, interpolate } from "react-native-reanimated";
@@ -11,7 +17,6 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { BackButton } from "../../components/BackButton";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { TouchableOpacity } from "react-native";
 import { delCategory } from "../../redux/categoriesSlice";
 const centerIndex = Math.round(36);
 export type TAnimationStyle = (value: number) => AnimatedStyleProp<ViewStyle>;
@@ -83,14 +88,15 @@ export function Category() {
                   style={{ width: 500, height: 500 }}
                 />
               </Pressable>
-              {item.index > 4 && (
-                <TouchableOpacity
+              {item.index > 3 && (
+                <Icon
                   onPress={() => {
                     dispatch(delCategory({ index: item.index }));
                   }}
-                >
-                  <Icon name="delete" size={50} color="red" />
-                </TouchableOpacity>
+                  name="delete"
+                  size={50}
+                  color="red"
+                />
               )}
             </View>
           )}

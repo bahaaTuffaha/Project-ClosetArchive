@@ -1,6 +1,7 @@
 // import { useNavigation } from "@react-navigation/native";
 import {
   Image,
+  PermissionsAndroid,
   Pressable,
   StyleSheet,
   Text,
@@ -26,12 +27,18 @@ import { CustomInput } from "../../components/CustomInput";
 import { RootState } from "../../redux/store";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import CustomModal from "../../components/CustomModal";
-import { getAllSwatches } from "react-native-palette";
+// import { getAllSwatches } from "react-native-palette";
+import { getColors } from "react-native-image-colors";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
-import { clothesList, RandomNamesP1, fitList } from "../../utils/data";
+import {
+  clothesList,
+  RandomNamesP1,
+  fitList,
+  sizeList,
+} from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
 
 export function get_random(list: string[]) {
@@ -61,6 +68,13 @@ export const ItemForm = ({
   );
   const [type, setType] = useState(storedItems ? storedItems.type : "");
   const [fit, setFit] = useState(storedItems ? storedItems.fit : "");
+  const [quantity, setQuantity] = useState(
+    storedItems ? storedItems.quantity : 1,
+  );
+  const [sizeUnit, setSizeUnit] = useState(
+    storedItems ? storedItems.sizeUnit : "",
+  );
+  const [size, setSize] = useState(storedItems ? storedItems.size : "");
   const [purchaseDate, setPurchaseDate] = useState(
     storedItems ? JSON.parse(storedItems.purchaseDate ?? "") : new Date(),
   );
@@ -76,6 +90,7 @@ export const ItemForm = ({
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
   const [openFit, setOpenFit] = useState(false);
+  const [openSizeUnit, setOpenSizeUnit] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
@@ -112,7 +127,7 @@ export const ItemForm = ({
     if (name.length > 20) {
       errors.push("Please enter a name within 20 characters");
     }
-    if (!type) {
+    if (!type && selectedCategory <= 3) {
       errors.push("Please choose a type");
     }
 
@@ -129,6 +144,10 @@ export const ItemForm = ({
             collection: collection,
             category: selectedCategory,
             type: type,
+            fit: fit,
+            size: size,
+            sizeUnit: sizeUnit,
+            quantity: quantity === 0 ? 1 : quantity,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
             automaticColor: isAutoOn,
@@ -144,6 +163,9 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
+            size: size,
+            sizeUnit: sizeUnit,
+            quantity: quantity === 0 ? 1 : quantity,
             purchaseDate: JSON.stringify(purchaseDate),
             image: imageUrl,
             automaticColor: isAutoOn,
@@ -162,58 +184,79 @@ export const ItemForm = ({
   const onToggleSwitch = () => {
     if (imageUrl) {
       if (isAutoOn == false) {
-        colorsExtractor(imageUrl.slice(7));
+        colorsExtractor(imageUrl);
       }
       setIsAutoOn(!isAutoOn);
     }
   };
 
-  const colorsExtractor = (imageUrl: string) => {
-    getAllSwatches(
-      { quality: "medium" },
-      imageUrl,
-      (error: any, swatches: any) => {
-        if (error) {
-          console.log(error);
-        } else {
-          swatches.sort((a: any, b: any) => {
-            return b.population - a.population;
-          });
-          setColors([
-            swatches[0].hex.slice(0, -2),
-            swatches[1].hex.slice(0, -2),
-            swatches[2].hex.slice(0, -2),
-          ]);
-        }
-      },
-    );
+  const colorsExtractor = (base64: string) => {
+    try {
+      getColors(`data:image/*;base64,${base64}`, {
+        quality: "high",
+      }).then((colors: any) =>
+        setColors([colors.dominant, colors.vibrant, colors.darkVibrant]),
+      );
+    } catch (e) {
+      console.log("colorExtractor error:", e);
+    }
+    // getAllSwatches(
+    //   { quality: "medium" },
+    //   imageUrl,
+    //   (error: any, swatches: any) => {
+    //     if (error) {
+    //       console.log(error);
+    //     } else {
+    //       swatches.sort((a: any, b: any) => {
+    //         return b.population - a.population;
+    //       });
+    //       setColors([
+    //         swatches[0].hex.slice(0, -2),
+    //         swatches[1].hex.slice(0, -2),
+    //         swatches[2].hex.slice(0, -2),
+    //       ]);
+    //     }
+    //   },
+    // );
   };
   const handleImagePicker = async (type: number) => {
     if (type == 0) {
       await launchImageLibrary(
-        { mediaType: "photo", selectionLimit: 1 },
+        {
+          mediaType: "photo",
+          selectionLimit: 1,
+          quality: 0.5,
+          includeBase64: true,
+        },
         (response) => {
           if (response.didCancel) {
             console.log("Image picker cancelled");
           } else if (response.errorCode) {
             console.log("Image picker error: ", response.errorMessage);
           } else {
-            setImageUrl(response.assets[0].uri || "");
+            setImageUrl(response.assets[0].base64 || "");
             setImageModalVisible(false);
           }
         },
       );
     } else if (1) {
-      await launchCamera({ mediaType: "photo" }, (response) => {
-        if (response.didCancel) {
-          console.log("Image picker cancelled");
-        } else if (response.errorCode) {
-          console.log("Image picker error: ", response.errorMessage);
-        } else {
-          setImageUrl(response.assets[0].uri || "");
-          setImageModalVisible(false);
-        }
-      });
+      try {
+        await launchCamera(
+          { mediaType: "photo", quality: 0.5, includeBase64: true },
+          (response) => {
+            if (response.didCancel) {
+              console.log("Image picker cancelled");
+            } else if (response.errorCode) {
+              console.log("Image picker error: ", response.errorMessage);
+            } else {
+              setImageUrl(response.assets[0].base64 || "");
+              setImageModalVisible(false);
+            }
+          },
+        );
+      } catch (error) {
+        console.log("permission error", error);
+      }
     }
   };
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -251,12 +294,20 @@ export const ItemForm = ({
           >
             Import From Device
           </Button>
+          <Button
+            buttonColor={appColors.mainCyan}
+            textColor={appColors.white}
+            mode="contained"
+            onPress={() => setImageUrl("")}
+          >
+            Reset Image
+          </Button>
         </View>
       </CustomModal>
       <ThemeView>
         <>
           <BackButton />
-          <View className="flex items-center space-y-3">
+          <View className="flex items-center space-y-2">
             <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
               {editingIndex ? "Editing Item" : "Adding an Item"}
             </ThemeText>
@@ -267,7 +318,11 @@ export const ItemForm = ({
             >
               <Image
                 style={{ resizeMode: "contain" }}
-                source={imageUrl == "" ? addImage : { uri: imageUrl }}
+                source={
+                  imageUrl == ""
+                    ? addImage
+                    : { uri: `data:image/*;base64,${imageUrl}` }
+                }
                 className="w-20 h-20 rounded-md object-contain"
               />
             </TouchableOpacity>
@@ -282,40 +337,93 @@ export const ItemForm = ({
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
               right={
-                <Pressable onPress={() => setName(get_random(RandomNamesP1))}>
+                <Pressable
+                  hitSlop={{ bottom: 20, left: 20, right: 10, top: 20 }}
+                  onPress={() => setName(get_random(RandomNamesP1))}
+                >
                   <Icon name="dice" size={15} color={appColors.mainCyan} />
                 </Pressable>
               }
             />
-            <View style={[{ zIndex: 3 }, styles.customWidth]}>
-              <DropDownPicker
-                open={openType}
-                value={type}
-                items={clothesList[selectedCategory ?? storedItems.category]}
-                setOpen={setOpenType}
-                setValue={setType}
-                mode="SIMPLE"
-                listMode="MODAL"
-                placeholder="Type"
-                style={{ borderColor: appColors.mainGreen }}
-                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+            {(selectedCategory ?? storedItems.category) <= 3 && (
+              <View style={[{ zIndex: 2 }, styles.customWidth]}>
+                <DropDownPicker
+                  open={openType}
+                  value={type}
+                  items={clothesList[selectedCategory ?? storedItems.category]}
+                  setOpen={setOpenType}
+                  setValue={setType}
+                  mode="SIMPLE"
+                  listMode="MODAL"
+                  placeholder="Type"
+                  style={{ borderColor: appColors.mainGreen }}
+                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                  theme={
+                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
+                  }
+                />
+              </View>
+            )}
+            {(selectedCategory ?? storedItems.category) < 2 && (
+              <View style={[{ zIndex: 3 }, styles.customWidth]}>
+                <DropDownPicker
+                  open={openFit}
+                  value={fit}
+                  items={fitList}
+                  setOpen={setOpenFit}
+                  setValue={setFit}
+                  mode="SIMPLE"
+                  placeholder="Fit"
+                  style={{ borderColor: appColors.mainGreen }}
+                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                  theme={
+                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
+                  }
+                />
+              </View>
+            )}
+            <View className="w-[80%] flex flex-row justify-between items-center z-[2]">
+              <CustomInput
+                mode="outlined"
+                outlineColor={appColors.mainGreen}
+                selectionColor="#C0C0C0"
+                activeOutlineColor={appColors.mainGreen}
+                style={{ width: "40%" }}
+                label="Quantity"
+                value={String(quantity)}
+                onChange={(text) => setQuantity(Number(text.nativeEvent.text))}
+                keyboardType="numeric"
+                maxLength={2}
+              />
+              <View style={{ width: "28%" }}>
+                <DropDownPicker
+                  open={openSizeUnit}
+                  value={sizeUnit}
+                  items={sizeList}
+                  setOpen={setOpenSizeUnit}
+                  setValue={setSizeUnit}
+                  mode="SIMPLE"
+                  placeholder="Unit"
+                  style={{ borderColor: appColors.mainGreen, marginTop: 5 }}
+                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                  theme={
+                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
+                  }
+                />
+              </View>
+              <CustomInput
+                mode="outlined"
+                outlineColor={appColors.mainGreen}
+                selectionColor="#C0C0C0"
+                activeOutlineColor={appColors.mainGreen}
+                style={{ width: "28%" }}
+                label="Size"
+                value={String(size)}
+                onChange={(text) => setSize(text.nativeEvent.text)}
+                maxLength={6}
               />
             </View>
-            <View style={[{ zIndex: 2, marginBottom: 10 }, styles.customWidth]}>
-              <DropDownPicker
-                open={openFit}
-                value={fit}
-                items={fitList}
-                setOpen={setOpenFit}
-                setValue={setFit}
-                mode="SIMPLE"
-                placeholder="Fit"
-                style={{ borderColor: appColors.mainGreen }}
-                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
-              />
-            </View>
+            <View></View>
             <DatePicker
               title="Purchase Date"
               date={purchaseDate}
