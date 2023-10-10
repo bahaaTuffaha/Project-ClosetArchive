@@ -18,6 +18,7 @@ import {
   updateItem,
   itemRefresher,
   deleteItem,
+  resetLaundryCounter,
 } from "../../redux/itemsSlice";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -62,6 +63,7 @@ export const ItemForm = ({
   const storedItems = useSelector(
     (state: RootState) => state.itemsList.items[currentIndex],
   );
+  const storedSettings = useSelector((state: RootState) => state.settings);
   const [name, setName] = useState(storedItems ? storedItems.name : "");
   const [collection, setCollection] = useState(
     storedItems ? storedItems.collection : [],
@@ -116,6 +118,10 @@ export const ItemForm = ({
     dispatch(deleteItem({ selectedId: storedItems.id }));
     dispatch(itemRefresher());
     navigation.popToTop("Category");
+  }
+  function resetLaundryCounterHandler() {
+    dispatch(resetLaundryCounter({ selectedId: storedItems.id }));
+    dispatch(itemRefresher());
   }
 
   function addItemHandler() {
@@ -547,6 +553,18 @@ export const ItemForm = ({
                   Delete
                 </Button>
               )}
+              {editingIndex &&
+                storedItems.laundryCounter > storedSettings.laundryNumber && (
+                  <Button
+                    // className="mb-5"
+                    mode="contained"
+                    buttonColor={"orange"}
+                    textColor={appColors.white}
+                    onPress={resetLaundryCounterHandler}
+                  >
+                    Cleaned
+                  </Button>
+                )}
             </View>
           </View>
         </>

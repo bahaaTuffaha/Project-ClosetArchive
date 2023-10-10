@@ -27,6 +27,7 @@ export type item = {
   secondaryColor?: string;
   tertiaryColor?: string;
   logIds?: string[];
+  laundryCounter: number;
 };
 export type itemsList = {
   items: item[];
@@ -86,6 +87,7 @@ const itemsSlice = createSlice({
         secondaryColor: action.payload.secondaryColor,
         tertiaryColor: action.payload.tertiaryColor,
         logIds: [],
+        laundryCounter: 0,
       } as item);
     },
     updateItem: (state, action) => {
@@ -160,6 +162,7 @@ const itemsSlice = createSlice({
         (x) => x.id === action.payload.selectedId,
       );
       state.items[itemIndex].logIds?.push(action.payload.logId);
+      state.items[itemIndex].laundryCounter += 1;
     },
     deleteLog: (state, action) => {
       const itemIndices = state.items.reduce(
@@ -190,6 +193,12 @@ const itemsSlice = createSlice({
       );
       state.items.splice(itemIndex, 1);
     },
+    resetLaundryCounter: (state, action) => {
+      const itemIndex = state.items.findIndex(
+        (x) => x.id === action.payload.selectedId,
+      );
+      state.items[itemIndex].laundryCounter = 0;
+    },
     importItems: (state, action) => {
       state.items = action.payload.items;
       state.collectionTags = action.payload.collectionTags;
@@ -210,6 +219,7 @@ export const {
   deleteEventLog,
   itemRefresher,
   deleteItem,
+  resetLaundryCounter,
   importItems,
 } = itemsSlice.actions;
 export default itemsSlice.reducer;

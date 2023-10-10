@@ -11,6 +11,7 @@ import { CustomInput } from "../../components/CustomInput";
 import {
   changeLanguage,
   laundryNumberSetter,
+  setEnableLaundry,
   userNameSetter,
 } from "../../redux/settingsSlice";
 import { Button, Checkbox, Snackbar } from "react-native-paper";
@@ -18,6 +19,7 @@ import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
+import { itemRefresher } from "../../redux/itemsSlice";
 
 export const handleNumberChange = (
   func: any,
@@ -49,7 +51,7 @@ export const Settings = () => {
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
   const [exportOrImport, setExportOrImport] = useState(0);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(storedSettings.enableLaundry);
 
   return (
     <ThemeView>
@@ -155,9 +157,14 @@ export const Settings = () => {
               value={storedSettings.laundryNumber.toString()}
               onChange={(text) =>
                 handleNumberChange(
-                  dispatch(
-                    laundryNumberSetter({ number: text.nativeEvent.text }),
-                  ),
+                  () => {
+                    dispatch(
+                      laundryNumberSetter({
+                        number: Number(text.nativeEvent.text),
+                      }),
+                    );
+                    dispatch(itemRefresher());
+                  },
                   text.nativeEvent.text,
                   0,
                   30,
@@ -171,7 +178,8 @@ export const Settings = () => {
             <Checkbox
               status={checked ? "checked" : "unchecked"}
               onPress={() => {
-                setChecked(!checked);
+                setChecked((prev) => !prev);
+                dispatch(setEnableLaundry({ enableLaundry: !checked }));
               }}
             />
           </View>

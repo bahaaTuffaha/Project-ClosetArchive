@@ -11,16 +11,20 @@ export const CollectionContainer = ({
   label,
   children,
   color = colors.gray,
+  LaundryReminder = false,
 }: {
   label: string;
   children: ReactElement;
   color?: string;
+  LaundryReminder?: boolean;
 }) => {
   const collectionTags = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
   );
   const [isFolded, setIsFolded] = useState(
-    collectionTags.find((x) => x.label === label)?.isOpen,
+    LaundryReminder
+      ? false
+      : collectionTags.find((x) => x.label === label)?.isOpen,
   );
   const isDarkMode = useColorScheme() === "dark";
   const dispatch = useDispatch();
@@ -32,16 +36,43 @@ export const CollectionContainer = ({
       <Pressable
         onPress={() => {
           setIsFolded((prev) => !prev);
-          dispatch(toggleCollection({ name: label }));
+          !LaundryReminder && dispatch(toggleCollection({ name: label }));
         }}
         className="w-full h-8 flex flex-row items-center justify-between pr-5"
-        style={{ backgroundColor: isDarkMode ? "#181818" : colors.white }}
+        style={{
+          backgroundColor: isDarkMode
+            ? LaundryReminder
+              ? colors.yellow
+              : "#181818"
+            : LaundryReminder
+            ? colors.yellow
+            : colors.white,
+        }}
       >
-        <ThemeText darkColor={colors.mainCyan} classNameStyle="px-2 font-medium italic">
-          {label}
-        </ThemeText>
+        <View className="flex flex-row px-2">
+          {LaundryReminder && (
+            <Icon
+              style={{ marginRight: 5 }}
+              color={colors.gray}
+              name={"warning-outline"}
+              size={20}
+            />
+          )}
+          <ThemeText
+            darkColor={LaundryReminder ? colors.gray : colors.mainCyan}
+            classNameStyle="font-medium italic"
+          >
+            {label}
+          </ThemeText>
+        </View>
         <Icon
-          color={isDarkMode ? colors.white : colors.black}
+          color={
+            LaundryReminder
+              ? colors.gray
+              : isDarkMode
+              ? colors.white
+              : colors.black
+          }
           name={isFolded ? "chevron-down" : "chevron-up"}
           size={20}
         />

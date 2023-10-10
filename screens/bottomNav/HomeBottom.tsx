@@ -49,6 +49,7 @@ export function HomeBottom() {
   const isDarkMode = useColorScheme() === "dark";
   const [allCategories, setAllCategories] = useState<item[][]>([]);
   const [nonCategorized, setNonCategorized] = useState<item[]>([]);
+  const [laundryItems, setLaundryItems] = useState<item[]>([]);
   const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
   const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
   const refreshItems = useSelector(
@@ -83,7 +84,15 @@ export function HomeBottom() {
       nonCat = null;
       final = null;
     };
-  }, [itemsState.items.length, refreshItems]); // I will look for a solution in case of editing the items.
+  }, [itemsState.items.length, refreshItems]);
+
+  useEffect(() => {
+    setLaundryItems(
+      itemsState.items.filter(
+        (x) => (x.laundryCounter ?? 0) > storedSettings.laundryNumber,
+      ),
+    );
+  }, [storedSettings.laundryNumber, itemsState.logs, refreshItems]); // I will do another refresh for just Laundry
 
   useEffect(() => {
     setAllCategoriesFilter(filterCategories(allCategories, search));
@@ -134,7 +143,10 @@ export function HomeBottom() {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => setIsSearchVisible(!isSearchVisible)}
+              onPress={() => {
+                setIsSearchVisible(!isSearchVisible);
+                setSearch("");
+              }}
               className="h-14 w-[20%] bg-mainCyan rounded-tr-2xl justify-center items-center shadow-xl"
             >
               <Icon name="search" size={30} color={colors.white} />
@@ -170,6 +182,32 @@ export function HomeBottom() {
               borderBottomRightRadius: 20,
             }}
           >
+            {search.length == 0 &&
+              laundryItems.length > 0 &&
+              storedSettings.enableLaundry && (
+                <CollectionContainer
+                  color={colors.gray}
+                  label={"Laundry"}
+                  LaundryReminder={true}
+                >
+                  <>
+                    {laundryItems.map((item, index) => {
+                      return (
+                        <ItemBox
+                          primary={item.primaryColor || "#fff"}
+                          secondary={item.secondaryColor || "#fff"}
+                          tertiary={item.tertiaryColor || "#fff"}
+                          key={"laundry" + index}
+                          image={item.image}
+                          name={item.name}
+                          type={item.type}
+                          id={item.id}
+                        />
+                      );
+                    })}
+                  </>
+                </CollectionContainer>
+              )}
             {itemsState.collectionTags.map((collection, index) => {
               if (!search) {
                 if (allCategories[index]?.length ?? 0 != 0) {
