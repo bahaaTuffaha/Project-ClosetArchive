@@ -30,6 +30,7 @@ export const importStoreFromJson = async () => {
               logs: state.itemsList.logs,
               items: state.itemsList.items,
               refreshItems: state.itemsList.refreshItems,
+              refreshLaundry: state.itemsList.refreshLaundry,
             }),
           );
           store.dispatch(

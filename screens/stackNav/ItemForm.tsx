@@ -19,6 +19,7 @@ import {
   itemRefresher,
   deleteItem,
   resetLaundryCounter,
+  laundryRefresher,
 } from "../../redux/itemsSlice";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -117,11 +118,12 @@ export const ItemForm = ({
   function deleteItemHandler() {
     dispatch(deleteItem({ selectedId: storedItems.id }));
     dispatch(itemRefresher());
+    dispatch(laundryRefresher());
     navigation.popToTop("Category");
   }
   function resetLaundryCounterHandler() {
     dispatch(resetLaundryCounter({ selectedId: storedItems.id }));
-    dispatch(itemRefresher());
+    dispatch(laundryRefresher());
   }
 
   function addItemHandler() {

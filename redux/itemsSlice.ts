@@ -34,6 +34,7 @@ export type itemsList = {
   collectionTags: CollectionTag[];
   logs: logsType[];
   refreshItems: boolean;
+  refreshLaundry: boolean;
 };
 export type CollectionTag = {
   label: string;
@@ -44,22 +45,10 @@ export type CollectionTag = {
 
 const initialState: itemsList = {
   items: [],
-  collectionTags: [
-    {
-      label: "GreenCollection",
-      value: "GreenCollection",
-      color: "#008000",
-      isOpen: true,
-    },
-    {
-      label: "GoldCollection",
-      value: "GoldCollection",
-      color: "#FFD700",
-      isOpen: true,
-    },
-  ],
+  collectionTags: [],
   logs: [],
   refreshItems: false,
+  refreshLaundry: false,
 };
 
 const itemsSlice = createSlice({
@@ -187,6 +176,9 @@ const itemsSlice = createSlice({
     itemRefresher: (state) => {
       state.refreshItems = !state.refreshItems;
     },
+    laundryRefresher: (state) => {
+      state.refreshLaundry = !state.refreshLaundry;
+    },
     deleteItem: (state, action) => {
       const itemIndex = state.items.findIndex(
         (x) => x.id === action.payload.selectedId,
@@ -204,6 +196,7 @@ const itemsSlice = createSlice({
       state.collectionTags = action.payload.collectionTags;
       state.logs = action.payload.logs;
       state.refreshItems = action.payload.refreshItems;
+      state.refreshLaundry = action.payload.refreshLaundry;
     },
   },
 });
@@ -218,6 +211,7 @@ export const {
   addEventLog,
   deleteEventLog,
   itemRefresher,
+  laundryRefresher,
   deleteItem,
   resetLaundryCounter,
   importItems,

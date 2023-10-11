@@ -6,6 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { toggleCollection } from "../redux/itemsSlice";
 import { colors } from "../utils/colors";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 export const CollectionContainer = ({
   label,
@@ -26,8 +31,19 @@ export const CollectionContainer = ({
       ? false
       : collectionTags.find((x) => x.label === label)?.isOpen,
   );
+
   const isDarkMode = useColorScheme() === "dark";
   const dispatch = useDispatch();
+
+  const pulseAnimation = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulseAnimation.value }],
+    display: "flex",
+    flexDirection: "row",
+    paddingLeft: 8,
+    paddingRight: 8,
+  }));
   return (
     <View
       style={{ backgroundColor: color }}
@@ -49,7 +65,7 @@ export const CollectionContainer = ({
             : colors.white,
         }}
       >
-        <View className="flex flex-row px-2">
+        <Animated.View style={animatedStyle}>
           {LaundryReminder && (
             <Icon
               style={{ marginRight: 5 }}
@@ -64,7 +80,7 @@ export const CollectionContainer = ({
           >
             {label}
           </ThemeText>
-        </View>
+        </Animated.View>
         <Icon
           color={
             LaundryReminder

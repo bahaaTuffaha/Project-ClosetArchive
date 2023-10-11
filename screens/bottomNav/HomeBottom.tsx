@@ -55,6 +55,9 @@ export function HomeBottom() {
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
   );
+  const refreshLaundry = useSelector(
+    (state: RootState) => state.itemsList.refreshLaundry,
+  );
   const storedSettings = useSelector((state: RootState) => state.settings);
 
   useEffect(() => {
@@ -89,10 +92,10 @@ export function HomeBottom() {
   useEffect(() => {
     setLaundryItems(
       itemsState.items.filter(
-        (x) => (x.laundryCounter ?? 0) > storedSettings.laundryNumber,
+        (x) => (x.laundryCounter ?? 0) >= storedSettings.laundryNumber,
       ),
     );
-  }, [storedSettings.laundryNumber, itemsState.logs, refreshItems]); // I will do another refresh for just Laundry
+  }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);
 
   useEffect(() => {
     setAllCategoriesFilter(filterCategories(allCategories, search));

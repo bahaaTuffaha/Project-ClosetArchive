@@ -19,7 +19,7 @@ import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
-import { itemRefresher } from "../../redux/itemsSlice";
+import { itemRefresher, laundryRefresher } from "../../redux/itemsSlice";
 
 export const handleNumberChange = (
   func: any,
@@ -163,7 +163,7 @@ export const Settings = () => {
                         number: Number(text.nativeEvent.text),
                       }),
                     );
-                    dispatch(itemRefresher());
+                    dispatch(laundryRefresher());
                   },
                   text.nativeEvent.text,
                   0,
