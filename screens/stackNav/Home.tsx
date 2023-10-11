@@ -25,32 +25,7 @@ export async function GetAllPermissions() {
   return null;
 }
 
-const createChannels = (numberOfLaundry: number) => {
-  PushNotification.channelExists("channel-id-1", function (exists) {
-    if (!exists) {
-      PushNotification.createChannel(
-        {
-          channelId: "channel-id-1",
-          channelName: "ClosetArchive",
-        },
-        (created) => console.log(`createChannel returned '${created}'`),
-      );
-    }
-  });
-  const randomMessage = get_random(clothingReminderMessages);
-  const randomTitle = get_random(clothingReminderTitles);
-  PushNotification.cancelAllLocalNotifications();
-  PushNotification.localNotificationSchedule({
-    channelId: "channel-id-1",
-    message: randomMessage,
-    title: randomTitle,
-    date: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12 hours in milliseconds
-    repeatType: "hour",
-    repeatTime: 12,
-    id: "1",
-    allowWhileIdle: true,
-    ignoreInForeground: true,
-  });
+const laundryNotification = (numberOfLaundry: number) => {
   PushNotification.localNotificationSchedule({
     channelId: "channel-id-1",
     message: `You have ${numberOfLaundry} item${
@@ -67,6 +42,35 @@ const createChannels = (numberOfLaundry: number) => {
   });
 };
 
+const createChannels = () => {
+  PushNotification.channelExists("channel-id-1", function (exists) {
+    if (!exists) {
+      PushNotification.createChannel(
+        {
+          channelId: "channel-id-1",
+          channelName: "ClosetArchive",
+        },
+        (created) => console.log(`createChannel returned '${created}'`),
+      );
+    }
+  });
+  const randomMessage = get_random(clothingReminderMessages);
+  const randomTitle = get_random(clothingReminderTitles);
+  PushNotification.cancelLocalNotification("1");
+  PushNotification.cancelLocalNotification("2");
+  PushNotification.localNotificationSchedule({
+    channelId: "channel-id-1",
+    message: randomMessage,
+    title: randomTitle,
+    date: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12 hours in milliseconds
+    repeatType: "hour",
+    repeatTime: 12,
+    id: "1",
+    allowWhileIdle: true,
+    ignoreInForeground: true,
+  });
+};
+
 export function Home() {
   const storedSettings = useSelector((state: RootState) => state.settings);
   const storedItems = useSelector((state: RootState) => state.itemsList.items);
@@ -76,11 +80,15 @@ export function Home() {
   useEffect(() => {
     // PushNotification.deleteChannel("channel-id-1");
     GetAllPermissions();
-    createChannels(numberOfLaundry);
+    createChannels();
+  }, []);
+
+  useEffect(() => {
+    laundryNotification(numberOfLaundry);
     if (storedSettings.enableLaundry != true || numberOfLaundry == 0) {
       PushNotification.cancelLocalNotification("2");
     }
-  }, []);
+  }, [storedSettings.enableLaundry, numberOfLaundry]);
 
   return (
     <ThemeView>

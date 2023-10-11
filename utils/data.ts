@@ -111,18 +111,20 @@ const tops = [
   { value: "Turtleneck", label: "Turtleneck" },
   { value: "Hoodie", label: "Hoodie" },
   { value: "Blazer", label: "Blazer" },
+  { value: "Upper Underwear", label: "Upper Underwear" },
 ];
 
 const bottoms = [
+  { value: "Trousers", label: "Trousers" },
   { value: "Jeans", label: "Jeans" },
   { value: "Shorts", label: "Shorts" },
-  { value: "Skirt", label: "Skirt" },
-  { value: "Leggings", label: "Leggings" },
-  { value: "Trousers", label: "Trousers" },
-  { value: "Culottes", label: "Culottes" },
   { value: "Joggers", label: "Joggers" },
   { value: "Bermuda", label: "Bermuda" },
   { value: "Leather Pants", label: "Leather Pants" },
+  { value: "Skirt", label: "Skirt" },
+  { value: "Leggings", label: "Leggings" },
+  { value: "Culottes", label: "Culottes" },
+  { value: "Underwear", label: "Underwear" },
 ];
 
 const accessories = [
