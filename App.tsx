@@ -1,4 +1,9 @@
-import { SafeAreaView, StatusBar, useColorScheme } from "react-native";
+import {
+  I18nManager,
+  SafeAreaView,
+  StatusBar,
+  useColorScheme,
+} from "react-native";
 import Navigator from "./routers/stack";
 import { PaperProvider } from "react-native-paper";
 import SplashScreen from "react-native-splash-screen";
@@ -18,6 +23,8 @@ function App(): JSX.Element {
   };
 
   useEffect(() => {
+    I18nManager.allowRTL(false);
+    I18nManager.forceRTL(false);
     SplashScreen.hide();
   }, []);
   return (

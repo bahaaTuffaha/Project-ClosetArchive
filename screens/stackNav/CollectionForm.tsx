@@ -106,6 +106,7 @@ export const CollectionForm = () => {
               style={{ backgroundColor: colors[0] }}
               onPress={() => {
                 setVisible(true);
+                setColors([""]);
               }}
               className="flex justify-center items-center w-16 h-16 border-[2px] border-gray rounded-xl mt-2"
             >
@@ -152,34 +153,42 @@ export const CollectionForm = () => {
           <ThemeText classNameStyle="w-full text-center font-mono text-xl my-5">
             Collections
           </ThemeText>
-          <FlashList
-            showsVerticalScrollIndicator={false}
-            data={CollectionsState}
-            extraData={refresh}
-            renderItem={({ item }) => (
-              <View
-                style={{ backgroundColor: addOpacityToHex(item.color, 0.2) }}
-                className="w-[80%] rounded-lg p-5 self-center mb-5 relative border-mainGreen border-[1px]"
-              >
-                <ThemeText classNameStyle="font-bold ">{item.label}</ThemeText>
-                <TouchableOpacity
-                  className="w-16 h-[59px] absolute rounded-r-lg right-0 flex flex-row justify-center items-center"
-                  onPress={() => {
-                    dispatch(deleteCollection({ name: item.label }));
-                    setRefresh((prev) => !prev);
-                    dispatch(itemRefresher());
-                  }}
+          {CollectionsState.length > 0 ? (
+            <FlashList
+              showsVerticalScrollIndicator={false}
+              data={CollectionsState}
+              extraData={refresh}
+              renderItem={({ item }) => (
+                <View
+                  style={{ backgroundColor: addOpacityToHex(item.color, 0.2) }}
+                  className="w-[80%] rounded-lg p-5 self-center mb-5 relative border-mainGreen border-[1px]"
                 >
-                  <Icon
-                    name="delete"
-                    size={30}
-                    color={isDarkMode ? "#660000" : "red"}
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
-            estimatedItemSize={200}
-          />
+                  <ThemeText classNameStyle="font-bold ">
+                    {item.label}
+                  </ThemeText>
+                  <TouchableOpacity
+                    className="w-16 h-[59px] absolute rounded-r-lg right-0 flex flex-row justify-center items-center"
+                    onPress={() => {
+                      dispatch(deleteCollection({ name: item.label }));
+                      setRefresh((prev) => !prev);
+                      dispatch(itemRefresher());
+                    }}
+                  >
+                    <Icon
+                      name="delete"
+                      size={30}
+                      color={isDarkMode ? "#660000" : "red"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+              estimatedItemSize={200}
+            />
+          ) : (
+            <View className="flex flex-col justify-center items-center w-full h-[50%]">
+              <Text>There are no collections available</Text>
+            </View>
+          )}
         </>
       </ThemeView>
     </>

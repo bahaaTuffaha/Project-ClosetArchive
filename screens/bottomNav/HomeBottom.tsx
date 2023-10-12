@@ -64,21 +64,33 @@ export function HomeBottom() {
     let cat = [];
     let nonCat = [];
     let final = [];
-    for (let i = 0; i < itemsState.collectionTags.length; i++) {
-      cat = [];
+    if (itemsState.collectionTags.length > 0) {
+      // if there is a collection and items
+      for (let i = 0; i < itemsState.collectionTags.length; i++) {
+        cat = [];
+        nonCat = [];
+        for (let j = 0; j < itemsState.items.length; j++) {
+          if (
+            itemsState.items[j].collection?.includes(
+              itemsState.collectionTags[i].value,
+            )
+          ) {
+            cat.push(itemsState.items[j]);
+          } else if (itemsState.items[j].collection?.length == 0) {
+            nonCat.push(itemsState.items[j]);
+          }
+        }
+        final.push(cat);
+      }
+    } else {
+      // if there is no collections
       nonCat = [];
-      for (let j = 0; j < itemsState.items.length; j++) {
-        if (
-          itemsState.items[j].collection?.includes(
-            itemsState.collectionTags[i].value,
-          )
-        ) {
-          cat.push(itemsState.items[j]);
-        } else if (itemsState.items[j].collection?.length == 0) {
-          nonCat.push(itemsState.items[j]);
+      for (let i = 0; i < itemsState.items.length; i++) {
+        if (itemsState.items[i].collection?.length == 0) {
+          nonCat.push(itemsState.items[i]);
         }
       }
-      final.push(cat);
+      final.push([]);
     }
     setAllCategories(final);
     setNonCategorized(nonCat);
@@ -87,7 +99,7 @@ export function HomeBottom() {
       nonCat = null;
       final = null;
     };
-  }, [itemsState.items.length, refreshItems]);
+  }, [itemsState.items, refreshItems]);
 
   useEffect(() => {
     setLaundryItems(
