@@ -4,6 +4,7 @@ import {
   View,
   useColorScheme,
   Image,
+  ScrollView,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import Icon from "react-native-vector-icons/Feather";
@@ -16,12 +17,13 @@ import { ItemBox } from "../../components/ItemBox";
 import { CollectionContainer } from "../../components/CollectionContainer";
 import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native";
 import { addOpacityToHex } from "../stackNav/CollectionForm";
 // import IonIcon from "react-native-vector-icons/Ionicons";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
 import { colors } from "../../utils/colors";
+import { FlatList } from "react-native-gesture-handler";
+import { FlashList } from "@shopify/flash-list";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
@@ -49,10 +51,14 @@ export function HomeBottom() {
   const isDarkMode = useColorScheme() === "dark";
   const [allCategories, setAllCategories] = useState<item[][]>([]);
   const [nonCategorized, setNonCategorized] = useState<item[]>([]);
+  const [laundryItems, setLaundryItems] = useState<item[]>([]);
   const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
   const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
+  );
+  const refreshLaundry = useSelector(
+    (state: RootState) => state.itemsList.refreshLaundry,
   );
   const storedSettings = useSelector((state: RootState) => state.settings);
 
@@ -60,21 +66,33 @@ export function HomeBottom() {
     let cat = [];
     let nonCat = [];
     let final = [];
-    for (let i = 0; i < itemsState.collectionTags.length; i++) {
-      cat = [];
+    if (itemsState.collectionTags.length > 0) {
+      // if there is a collection and items
+      for (let i = 0; i < itemsState.collectionTags.length; i++) {
+        cat = [];
+        nonCat = [];
+        for (let j = 0; j < itemsState.items.length; j++) {
+          if (
+            itemsState.items[j].collection?.includes(
+              itemsState.collectionTags[i].value,
+            )
+          ) {
+            cat.push(itemsState.items[j]);
+          } else if (itemsState.items[j].collection?.length == 0) {
+            nonCat.push(itemsState.items[j]);
+          }
+        }
+        final.push(cat);
+      }
+    } else {
+      // if there is no collections
       nonCat = [];
-      for (let j = 0; j < itemsState.items.length; j++) {
-        if (
-          itemsState.items[j].collection?.includes(
-            itemsState.collectionTags[i].value,
-          )
-        ) {
-          cat.push(itemsState.items[j]);
-        } else if (itemsState.items[j].collection?.length == 0) {
-          nonCat.push(itemsState.items[j]);
+      for (let i = 0; i < itemsState.items.length; i++) {
+        if (itemsState.items[i].collection?.length == 0) {
+          nonCat.push(itemsState.items[i]);
         }
       }
-      final.push(cat);
+      final.push([]);
     }
     setAllCategories(final);
     setNonCategorized(nonCat);
@@ -83,7 +101,15 @@ export function HomeBottom() {
       nonCat = null;
       final = null;
     };
-  }, [itemsState.items.length, refreshItems]); // I will look for a solution in case of editing the items.
+  }, [itemsState.items, refreshItems]);
+
+  useEffect(() => {
+    setLaundryItems(
+      itemsState.items.filter(
+        (x) => (x.laundryCounter ?? 0) >= storedSettings.laundryNumber,
+      ),
+    );
+  }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);
 
   useEffect(() => {
     setAllCategoriesFilter(filterCategories(allCategories, search));
@@ -134,7 +160,10 @@ export function HomeBottom() {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => setIsSearchVisible(!isSearchVisible)}
+              onPress={() => {
+                setIsSearchVisible(!isSearchVisible);
+                setSearch("");
+              }}
               className="h-14 w-[20%] bg-mainCyan rounded-tr-2xl justify-center items-center shadow-xl"
             >
               <Icon name="search" size={30} color={colors.white} />
@@ -158,18 +187,42 @@ export function HomeBottom() {
             />
           )}
           <ScrollView
+            nestedScrollEnabled={true}
             contentContainerStyle={{
-              width: "100%",
-              height: "85%",
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
               backgroundColor: "#C9C9C9",
               marginTop: "1%",
               borderBottomLeftRadius: 20,
               borderBottomRightRadius: 20,
+              height: "85%",
+              paddingBottom: 10,
             }}
           >
+            {search.length == 0 &&
+              laundryItems.length > 0 &&
+              storedSettings.enableLaundry && (
+                <CollectionContainer
+                  color={colors.gray}
+                  label={"Laundry"}
+                  LaundryReminder={true}
+                >
+                  <>
+                    {laundryItems.map((item, index) => {
+                      return (
+                        <ItemBox
+                          primary={item.primaryColor || "#fff"}
+                          secondary={item.secondaryColor || "#fff"}
+                          tertiary={item.tertiaryColor || "#fff"}
+                          key={"laundry" + index}
+                          image={item.image}
+                          name={item.name}
+                          type={item.type}
+                          id={item.id}
+                        />
+                      );
+                    })}
+                  </>
+                </CollectionContainer>
+              )}
             {itemsState.collectionTags.map((collection, index) => {
               if (!search) {
                 if (allCategories[index]?.length ?? 0 != 0) {
@@ -230,35 +283,51 @@ export function HomeBottom() {
                 }
               }
             })}
-            {search == ""
-              ? nonCategorized.map((item, index) => {
-                  return (
-                    <ItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                    />
-                  );
-                })
-              : nonCategorizedFilter.map((item, index) => {
-                  return (
-                    <ItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                    />
-                  );
-                })}
+            {search == "" ? (
+              <FlashList
+                data={nonCategorized}
+                contentContainerStyle={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                }}
+                numColumns={4}
+                estimatedItemSize={100}
+                renderItem={({ item, index }) => (
+                  <ItemBox
+                    primary={item.primaryColor || "#fff"}
+                    secondary={item.secondaryColor || "#fff"}
+                    tertiary={item.tertiaryColor || "#fff"}
+                    key={index + item.id}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                  />
+                )}
+              />
+            ) : (
+              <FlashList
+                contentContainerStyle={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                }}
+                numColumns={4}
+                data={nonCategorizedFilter}
+                estimatedItemSize={100}
+                renderItem={({ item, index }) => (
+                  <ItemBox
+                    primary={item.primaryColor || "#fff"}
+                    secondary={item.secondaryColor || "#fff"}
+                    tertiary={item.tertiaryColor || "#fff"}
+                    key={index + item.id}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                  />
+                )}
+              />
+            )}
           </ScrollView>
         </View>
       </View>

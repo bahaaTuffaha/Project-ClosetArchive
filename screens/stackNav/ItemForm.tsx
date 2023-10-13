@@ -18,6 +18,8 @@ import {
   updateItem,
   itemRefresher,
   deleteItem,
+  resetLaundryCounter,
+  laundryRefresher,
 } from "../../redux/itemsSlice";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -40,6 +42,8 @@ import {
   sizeList,
 } from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
+import * as FileSystem from "expo-file-system";
+import ImageResizer from "@bam.tech/react-native-image-resizer";
 
 export function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -62,6 +66,7 @@ export const ItemForm = ({
   const storedItems = useSelector(
     (state: RootState) => state.itemsList.items[currentIndex],
   );
+  const storedSettings = useSelector((state: RootState) => state.settings);
   const [name, setName] = useState(storedItems ? storedItems.name : "");
   const [collection, setCollection] = useState(
     storedItems ? storedItems.collection : [],
@@ -115,7 +120,12 @@ export const ItemForm = ({
   function deleteItemHandler() {
     dispatch(deleteItem({ selectedId: storedItems.id }));
     dispatch(itemRefresher());
+    dispatch(laundryRefresher());
     navigation.popToTop("Category");
+  }
+  function resetLaundryCounterHandler() {
+    dispatch(resetLaundryCounter({ selectedId: storedItems.id }));
+    dispatch(laundryRefresher());
   }
 
   function addItemHandler() {
@@ -225,8 +235,6 @@ export const ItemForm = ({
         {
           mediaType: "photo",
           selectionLimit: 1,
-          quality: 0.5,
-          includeBase64: true,
         },
         (response) => {
           if (response.didCancel) {
@@ -234,23 +242,75 @@ export const ItemForm = ({
           } else if (response.errorCode) {
             console.log("Image picker error: ", response.errorMessage);
           } else {
-            setImageUrl(response.assets[0].base64 || "");
-            setImageModalVisible(false);
+            ImageResizer.createResizedImage(
+              response.assets[0].uri,
+              500,
+              500,
+              "JPEG",
+              40,
+              0,
+              null,
+            )
+              .then(async (response) => {
+                // response.uri is the URI of the new image that can now be displayed, uploaded...
+                // response.path is the path of the new image
+                // response.name is the name of the new image with the extension
+                // response.size is the size of the new image
+                const base64 = await FileSystem.readAsStringAsync(
+                  response.uri,
+                  { encoding: "base64" },
+                );
+                console.log("imageSize", response.size);
+                setImageUrl(base64 || "");
+                setImageModalVisible(false);
+              })
+              .catch((err) => {
+                // Oops, something went wrong. Check that the filename is correct and
+                // inspect err to get more details.
+                console.log("image comparison error: ", err);
+              });
           }
         },
       );
     } else if (1) {
       try {
         await launchCamera(
-          { mediaType: "photo", quality: 0.5, includeBase64: true },
+          {
+            mediaType: "photo",
+          },
           (response) => {
             if (response.didCancel) {
               console.log("Image picker cancelled");
             } else if (response.errorCode) {
               console.log("Image picker error: ", response.errorMessage);
             } else {
-              setImageUrl(response.assets[0].base64 || "");
-              setImageModalVisible(false);
+              ImageResizer.createResizedImage(
+                response.assets[0].uri,
+                500,
+                500,
+                "JPEG",
+                40,
+                0,
+                null,
+              )
+                .then(async (response) => {
+                  // response.uri is the URI of the new image that can now be displayed, uploaded...
+                  // response.path is the path of the new image
+                  // response.name is the name of the new image with the extension
+                  // response.size is the size of the new image
+                  const base64 = await FileSystem.readAsStringAsync(
+                    response.uri,
+                    { encoding: "base64" },
+                  );
+                  console.log("imageSize", response.size);
+                  setImageUrl(base64 || "");
+                  setImageModalVisible(false);
+                })
+                .catch((err) => {
+                  // Oops, something went wrong. Check that the filename is correct and
+                  // inspect err to get more details.
+                  console.log("image comparison error: ", err);
+                });
             }
           },
         );
@@ -317,7 +377,7 @@ export const ItemForm = ({
               }}
             >
               <Image
-                style={{ resizeMode: "contain" }}
+                style={{}}
                 source={
                   imageUrl == ""
                     ? addImage
@@ -547,6 +607,18 @@ export const ItemForm = ({
                   Delete
                 </Button>
               )}
+              {editingIndex &&
+                storedItems.laundryCounter > storedSettings.laundryNumber && (
+                  <Button
+                    // className="mb-5"
+                    mode="contained"
+                    buttonColor={"orange"}
+                    textColor={appColors.white}
+                    onPress={resetLaundryCounterHandler}
+                  >
+                    Cleaned
+                  </Button>
+                )}
             </View>
           </View>
         </>

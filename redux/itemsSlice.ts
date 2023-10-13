@@ -27,12 +27,14 @@ export type item = {
   secondaryColor?: string;
   tertiaryColor?: string;
   logIds?: string[];
+  laundryCounter: number;
 };
 export type itemsList = {
   items: item[];
   collectionTags: CollectionTag[];
   logs: logsType[];
   refreshItems: boolean;
+  refreshLaundry: boolean;
 };
 export type CollectionTag = {
   label: string;
@@ -43,22 +45,10 @@ export type CollectionTag = {
 
 const initialState: itemsList = {
   items: [],
-  collectionTags: [
-    {
-      label: "GreenCollection",
-      value: "GreenCollection",
-      color: "#008000",
-      isOpen: true,
-    },
-    {
-      label: "GoldCollection",
-      value: "GoldCollection",
-      color: "#FFD700",
-      isOpen: true,
-    },
-  ],
+  collectionTags: [],
   logs: [],
   refreshItems: false,
+  refreshLaundry: false,
 };
 
 const itemsSlice = createSlice({
@@ -86,6 +76,7 @@ const itemsSlice = createSlice({
         secondaryColor: action.payload.secondaryColor,
         tertiaryColor: action.payload.tertiaryColor,
         logIds: [],
+        laundryCounter: 0,
       } as item);
     },
     updateItem: (state, action) => {
@@ -160,6 +151,7 @@ const itemsSlice = createSlice({
         (x) => x.id === action.payload.selectedId,
       );
       state.items[itemIndex].logIds?.push(action.payload.logId);
+      state.items[itemIndex].laundryCounter += 1;
     },
     deleteLog: (state, action) => {
       const itemIndices = state.items.reduce(
@@ -184,17 +176,27 @@ const itemsSlice = createSlice({
     itemRefresher: (state) => {
       state.refreshItems = !state.refreshItems;
     },
+    laundryRefresher: (state) => {
+      state.refreshLaundry = !state.refreshLaundry;
+    },
     deleteItem: (state, action) => {
       const itemIndex = state.items.findIndex(
         (x) => x.id === action.payload.selectedId,
       );
       state.items.splice(itemIndex, 1);
     },
+    resetLaundryCounter: (state, action) => {
+      const itemIndex = state.items.findIndex(
+        (x) => x.id === action.payload.selectedId,
+      );
+      state.items[itemIndex].laundryCounter = 0;
+    },
     importItems: (state, action) => {
       state.items = action.payload.items;
       state.collectionTags = action.payload.collectionTags;
       state.logs = action.payload.logs;
       state.refreshItems = action.payload.refreshItems;
+      state.refreshLaundry = action.payload.refreshLaundry;
     },
   },
 });
@@ -209,7 +211,9 @@ export const {
   addEventLog,
   deleteEventLog,
   itemRefresher,
+  laundryRefresher,
   deleteItem,
+  resetLaundryCounter,
   importItems,
 } = itemsSlice.actions;
 export default itemsSlice.reducer;

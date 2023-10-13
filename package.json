@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.19.3",
+    "@bam.tech/react-native-image-resizer": "^3.0.7",
     "@react-native-community/datetimepicker": "^7.4.0",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
@@ -28,6 +28,7 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-blob-util": "^0.19.1",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "^2.12.0",
     "react-native-get-random-values": "^1.9.0",
@@ -46,6 +47,7 @@
     "react-native-wheel-color-picker": "^1.2.0",
     "react-redux": "^8.1.1",
     "redux-persist": "^6.0.0",
+    "redux-persist-filesystem-storage": "^4.2.0",
     "tailwindcss": "^3.3.2"
   },
   "expo": {
