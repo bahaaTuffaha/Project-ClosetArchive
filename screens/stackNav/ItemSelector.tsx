@@ -13,6 +13,7 @@ import { BackButton } from "../../components/BackButton";
 import { addOpacityToHex } from "./CollectionForm";
 import { ThemeText } from "../../components/ThemeText";
 import { colors } from "../../utils/colors";
+import { FlashList } from "@shopify/flash-list";
 
 export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
@@ -86,16 +87,14 @@ export const ItemSelector = () => {
           />
         </View>
         <ScrollView
+          nestedScrollEnabled={true}
           contentContainerStyle={{
-            width: "100%",
-            height: "90%",
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
             backgroundColor: "#C9C9C9",
             marginTop: "1%",
             borderBottomLeftRadius: 20,
             borderBottomRightRadius: 20,
+            height: "85%",
+            paddingBottom: 10,
           }}
         >
           {itemsState.collectionTags.map((collection, index) => {
@@ -162,39 +161,57 @@ export const ItemSelector = () => {
               }
             }
           })}
-          {search == ""
-            ? nonCategorized.map((item, index) => {
-                return (
-                  <SelectionItemBox
-                    primary={item.primaryColor || "#fff"}
-                    secondary={item.secondaryColor || "#fff"}
-                    tertiary={item.tertiaryColor || "#fff"}
-                    key={index + item.id}
-                    image={item.image}
-                    name={item.name}
-                    type={item.type}
-                    id={item.id}
-                    setSelectedIdCollector={setSelectedIdCollector}
-                    selectedIdCollector={selectedIdCollector}
-                  />
-                );
-              })
-            : nonCategorizedFilter.map((item, index) => {
-                return (
-                  <SelectionItemBox
-                    primary={item.primaryColor || "#fff"}
-                    secondary={item.secondaryColor || "#fff"}
-                    tertiary={item.tertiaryColor || "#fff"}
-                    key={index + item.id}
-                    image={item.image}
-                    name={item.name}
-                    type={item.type}
-                    id={item.id}
-                    setSelectedIdCollector={setSelectedIdCollector}
-                    selectedIdCollector={selectedIdCollector}
-                  />
-                );
-              })}
+          {search == "" ? (
+            <FlashList
+              data={nonCategorized}
+              contentContainerStyle={{
+                paddingLeft: 5,
+                paddingRight: 5,
+              }}
+              numColumns={4}
+              estimatedItemSize={100}
+              extraData={selectedIdCollector}
+              renderItem={({ item, index }) => (
+                <SelectionItemBox
+                  primary={item.primaryColor || "#fff"}
+                  secondary={item.secondaryColor || "#fff"}
+                  tertiary={item.tertiaryColor || "#fff"}
+                  key={index + item.id}
+                  image={item.image}
+                  name={item.name}
+                  type={item.type}
+                  id={item.id}
+                  setSelectedIdCollector={setSelectedIdCollector}
+                  selectedIdCollector={selectedIdCollector}
+                />
+              )}
+            />
+          ) : (
+            <FlashList
+              contentContainerStyle={{
+                paddingLeft: 5,
+                paddingRight: 5,
+              }}
+              extraData={selectedIdCollector}
+              numColumns={4}
+              data={nonCategorizedFilter}
+              estimatedItemSize={100}
+              renderItem={({ item, index }) => (
+                <SelectionItemBox
+                  primary={item.primaryColor || "#fff"}
+                  secondary={item.secondaryColor || "#fff"}
+                  tertiary={item.tertiaryColor || "#fff"}
+                  key={index + item.id}
+                  image={item.image}
+                  name={item.name}
+                  type={item.type}
+                  id={item.id}
+                  setSelectedIdCollector={setSelectedIdCollector}
+                  selectedIdCollector={selectedIdCollector}
+                />
+              )}
+            />
+          )}
         </ScrollView>
         <View className="absolute bottom-[2%] w-full">
           <Button
