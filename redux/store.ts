@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import categoriesSlice from "./categoriesSlice";
 import itemsSlice from "./itemsSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import FilesystemStorage from "redux-persist-filesystem-storage";
 import {
   persistStore,
   persistReducer,
@@ -16,7 +16,7 @@ import settingsSlice from "./settingsSlice";
 
 const persistConfig = {
   key: "root",
-  storage: AsyncStorage,
+  storage: FilesystemStorage,
 };
 const rootReducer = combineReducers({
   CategoryList: categoriesSlice,
