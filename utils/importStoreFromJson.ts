@@ -1,4 +1,4 @@
-import { RootState, store } from "../redux/store"; // Replace with the correct path to your rootReducer file
+import { RootState, persistor, store } from "../redux/store"; // Replace with the correct path to your rootReducer file
 import * as ScopedStorage from "react-native-scoped-storage";
 import * as FileSystem from "expo-file-system";
 import { importCategory } from "../redux/categoriesSlice";
@@ -40,6 +40,7 @@ export const importStoreFromJson = async () => {
               name: state.settings.name,
             }),
           );
+          await persistor.persist();
           console.log("Store imported successfully.");
           return true;
         } else {

@@ -4,6 +4,7 @@ import {
   View,
   useColorScheme,
   Image,
+  ScrollView,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import Icon from "react-native-vector-icons/Feather";
@@ -16,12 +17,13 @@ import { ItemBox } from "../../components/ItemBox";
 import { CollectionContainer } from "../../components/CollectionContainer";
 import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native";
 import { addOpacityToHex } from "../stackNav/CollectionForm";
 // import IonIcon from "react-native-vector-icons/Ionicons";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
 import { colors } from "../../utils/colors";
+import { FlatList } from "react-native-gesture-handler";
+import { FlashList } from "@shopify/flash-list";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
@@ -185,16 +187,14 @@ export function HomeBottom() {
             />
           )}
           <ScrollView
+            nestedScrollEnabled={true}
             contentContainerStyle={{
-              width: "100%",
-              height: "85%",
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
               backgroundColor: "#C9C9C9",
               marginTop: "1%",
               borderBottomLeftRadius: 20,
               borderBottomRightRadius: 20,
+              height: "85%",
+              paddingBottom: 10,
             }}
           >
             {search.length == 0 &&
@@ -283,35 +283,51 @@ export function HomeBottom() {
                 }
               }
             })}
-            {search == ""
-              ? nonCategorized.map((item, index) => {
-                  return (
-                    <ItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                    />
-                  );
-                })
-              : nonCategorizedFilter.map((item, index) => {
-                  return (
-                    <ItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                    />
-                  );
-                })}
+            {search == "" ? (
+              <FlashList
+                data={nonCategorized}
+                contentContainerStyle={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                }}
+                numColumns={4}
+                estimatedItemSize={100}
+                renderItem={({ item, index }) => (
+                  <ItemBox
+                    primary={item.primaryColor || "#fff"}
+                    secondary={item.secondaryColor || "#fff"}
+                    tertiary={item.tertiaryColor || "#fff"}
+                    key={index + item.id}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                  />
+                )}
+              />
+            ) : (
+              <FlashList
+                contentContainerStyle={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                }}
+                numColumns={4}
+                data={nonCategorizedFilter}
+                estimatedItemSize={100}
+                renderItem={({ item, index }) => (
+                  <ItemBox
+                    primary={item.primaryColor || "#fff"}
+                    secondary={item.secondaryColor || "#fff"}
+                    tertiary={item.tertiaryColor || "#fff"}
+                    key={index + item.id}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                  />
+                )}
+              />
+            )}
           </ScrollView>
         </View>
       </View>
