@@ -26,6 +26,7 @@ import { colors } from "../../utils/colors";
 import { FlashList } from "@shopify/flash-list";
 import { useSharedValue } from "react-native-reanimated";
 import { SideModal } from "../../components/SideModal";
+import { HomeFilter } from "../../utils/filters";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
@@ -111,7 +112,7 @@ export function HomeBottom() {
       }
       final.push([]);
     }
-    setAllCategories(final);
+    setAllCategories(HomeFilter({categories:[""],sortValue:"",types:[""]},final,true));
     setNonCategorized(nonCat);
     return () => {
       cat = null;

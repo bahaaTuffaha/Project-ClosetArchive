@@ -68,6 +68,24 @@ export const RandomNamesP1 = [
   "Relaxed Hoodie",
 ];
 
+export const seasonList = [
+  {
+    value: "Spring",
+    label: "Spring",
+  },
+  {
+    value: "Summer",
+    label: "Summer",
+  },
+  {
+    value: "Fall",
+    label: "Fall",
+  },
+  {
+    value: "Winter",
+    label: "Winter",
+  },
+];
 export const fitList = [
   {
     value: "Regular Fit",

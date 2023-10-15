@@ -40,6 +40,7 @@ import {
   RandomNamesP1,
   fitList,
   sizeList,
+  seasonList,
 } from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
 import * as FileSystem from "expo-file-system";
@@ -73,6 +74,7 @@ export const ItemForm = ({
   );
   const [type, setType] = useState(storedItems ? storedItems.type : "");
   const [fit, setFit] = useState(storedItems ? storedItems.fit : "");
+  const [season, setSeason] = useState(storedItems ? storedItems.season : "");
   const [quantity, setQuantity] = useState(
     storedItems ? storedItems.quantity : 1,
   );
@@ -95,6 +97,7 @@ export const ItemForm = ({
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
   const [openFit, setOpenFit] = useState(false);
+  const [openSeason, setOpenSeason] = useState(false);
   const [openSizeUnit, setOpenSizeUnit] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(
@@ -155,6 +158,7 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
+            season:season,
             size: size,
             sizeUnit: sizeUnit,
             quantity: quantity === 0 ? 1 : quantity,
@@ -173,6 +177,7 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
+            season:season,
             size: size,
             sizeUnit: sizeUnit,
             quantity: quantity === 0 ? 1 : quantity,
@@ -425,7 +430,7 @@ export const ItemForm = ({
               </View>
             )}
             {(selectedCategory ?? storedItems.category) < 2 && (
-              <View style={[{ zIndex: 3 }, styles.customWidth]}>
+              <View className="w-[80%] flex flex-row justify-between items-center z-[3]">
                 <DropDownPicker
                   open={openFit}
                   value={fit}
@@ -434,7 +439,21 @@ export const ItemForm = ({
                   setValue={setFit}
                   mode="SIMPLE"
                   placeholder="Fit"
-                  style={{ borderColor: appColors.mainGreen }}
+                  style={{ borderColor: appColors.mainGreen,width: "39%" }}
+                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                  theme={
+                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
+                  }
+                />
+                <DropDownPicker
+                  open={openSeason}
+                  value={season}
+                  items={seasonList}
+                  setOpen={setOpenSeason}
+                  setValue={setSeason}
+                  mode="SIMPLE"
+                  placeholder="Fit"
+                  style={{ borderColor: appColors.mainGreen,width: "39%" }}
                   dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
                   theme={
                     String(useColorScheme()?.toUpperCase()) as ThemeNameType
