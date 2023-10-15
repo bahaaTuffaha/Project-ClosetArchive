@@ -42,19 +42,19 @@ export const OutfitLog = () => {
   const [modalInfo, setModalInfo] = useState<logsType>();
   const [sortValue, setSortValue] = useState("LA");
 
-  const space = useSharedValue(-10);
+  const space = useSharedValue(-20);
   const { width } = Dimensions.get("window");
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenDrawer = () => {
     // Update the space value to trigger the animation
     setIsOpen((prev) => !prev);
-    space.value = width / 2 - 15;
+    space.value = width / 2 - 20;
   };
   const handleCloseDrawer = () => {
     // Update the space value to trigger the animation
     setIsOpen((prev) => !prev);
-    space.value = -10;
+    space.value = -20;
   };
 
   useEffect(() => {

@@ -10,7 +10,7 @@ import {
 import { ThemeView } from "../../components/ThemeView";
 import Icon from "react-native-vector-icons/Feather";
 import { useEffect, useState } from "react";
-import { Button, Searchbar } from "react-native-paper";
+import { Button, RadioButton, Searchbar } from "react-native-paper";
 import { ThemeText } from "../../components/ThemeText";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -27,6 +27,8 @@ import { FlashList } from "@shopify/flash-list";
 import { useSharedValue } from "react-native-reanimated";
 import { SideModal } from "../../components/SideModal";
 import { HomeFilter } from "../../utils/filters";
+import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
+import { clothesList } from "../../utils/data";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
@@ -57,6 +59,12 @@ export function HomeBottom() {
   const [laundryItems, setLaundryItems] = useState<item[]>([]);
   const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
   const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
+  const [sortValue, setSortValue] = useState("LA");
+  const [categoriesFilter, setCategoriesFilter] = useState([]);
+  const [TypeFilter, setTypeFilter] = useState<string[]>([]);
+  const [OpenCategoriesFilter, setOpenCategoriesFilter] = useState(false);
+  const [OpenTypeFilter, setOpenTypeFilter] = useState(false);
+
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
   );
@@ -65,19 +73,28 @@ export function HomeBottom() {
   );
   const storedSettings = useSelector((state: RootState) => state.settings);
 
-  const space = useSharedValue(-10);
+  const storedCategories = useSelector(
+    (state: RootState) => state.CategoryList.Categories,
+  );
+  const CategoriesList = storedCategories.map((item) => ({
+    label: item.name,
+    value: item.index,
+  }));
+
+  const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
+  const space = useSharedValue(-20);
   const { width } = Dimensions.get("window");
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenDrawer = () => {
     // Update the space value to trigger the animation
     setIsOpen((prev) => !prev);
-    space.value = width / 2 - 15;
+    space.value = width / 2 - 20;
   };
   const handleCloseDrawer = () => {
     // Update the space value to trigger the animation
     setIsOpen((prev) => !prev);
-    space.value = -10;
+    space.value = -20;
   };
 
   useEffect(() => {
@@ -112,14 +129,34 @@ export function HomeBottom() {
       }
       final.push([]);
     }
-    setAllCategories(HomeFilter({categories:[""],sortValue:"",types:[""]},final,true));
-    setNonCategorized(nonCat);
+    setAllCategories(
+      HomeFilter(
+        {
+          categories: categoriesFilter,
+          sortValue: sortValue,
+          types: TypeFilter,
+        },
+        final,
+        true,
+      ) as item[][],
+    );
+    setNonCategorized(
+      HomeFilter(
+        {
+          categories: categoriesFilter,
+          sortValue: sortValue,
+          types: TypeFilter,
+        },
+        nonCat,
+        false,
+      ) as item[],
+    );
     return () => {
       cat = null;
       nonCat = null;
       final = null;
     };
-  }, [itemsState.items, refreshItems]);
+  }, [itemsState.items, refreshItems, categoriesFilter, sortValue, TypeFilter]);
 
   useEffect(() => {
     setLaundryItems(
@@ -139,16 +176,60 @@ export function HomeBottom() {
       <>
         <SideModal space={space} isOpen={isOpen} setIsOpen={setIsOpen}>
           <>
-            {/* <RadioButton.Group
+            <RadioButton.Group
               onValueChange={(value) => setSortValue(value)}
               value={sortValue}
             >
               <RadioButton.Item label="Last Added" value="LA" />
               <RadioButton.Item label="Name Asc" value="NA" />
               <RadioButton.Item label="Name Desc" value="ND" />
-              <RadioButton.Item label="Date Asc" value="DA" />
-              <RadioButton.Item label="Date Desc" value="DD" />
-            </RadioButton.Group> */}
+              <RadioButton.Item label="Purchase Date Asc" value="PDA" />
+              <RadioButton.Item label="Purchase Date Desc" value="PDD" />
+            </RadioButton.Group>
+            <View style={{ zIndex: 2, width: "90%" }}>
+              <DropDownPicker
+                open={OpenCategoriesFilter}
+                value={categoriesFilter}
+                items={CategoriesList}
+                setOpen={setOpenCategoriesFilter}
+                setValue={setCategoriesFilter}
+                multiple={true}
+                theme={colorScheme}
+                showBadgeDot={false}
+                badgeTextStyle={{ color: colors.black }}
+                mode="BADGE"
+                placeholder="Collection Filter"
+                style={{ borderColor: colors.mainGreen }}
+                dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+              />
+            </View>
+            {categoriesFilter.length == 1 && (
+              <View style={{ zIndex: 1, width: "90%" }}>
+                <DropDownPicker
+                  open={OpenTypeFilter}
+                  value={TypeFilter}
+                  items={
+                    clothesList[
+                      storedCategories.find(
+                        (x) => x.name == categoriesFilter[0],
+                      )?.index ?? 0
+                    ]
+                  }
+                  setOpen={setOpenTypeFilter}
+                  setValue={setTypeFilter}
+                  multiple={true}
+                  theme={colorScheme}
+                  showBadgeDot={false}
+                  badgeTextStyle={{ color: colors.black }}
+                  mode="BADGE"
+                  listMode="MODAL"
+                  placeholder="Collection"
+                  style={{ borderColor: colors.mainGreen }}
+                  dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+                />
+              </View>
+            )}
+
             <Button
               mode="contained-tonal"
               buttonColor={colors.mainCyan}

@@ -103,17 +103,7 @@ export const ItemForm = ({
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
   );
-  // const [CollectionColors, setCollectionColors] = useState<string[]>([]);
-
-  // useEffect(() => {
-  //   // separating the color collection
-  //   let colorCollector = [];
-  //   for (let i = 0; i < collectionState.length; i++) {
-  //     // console.log(collectionState[i].color);
-  //     colorCollector.unshift(collectionState[i].color);
-  //   }
-  //   setCollectionColors(colorCollector);
-  // }, [collectionState]);
+  const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
 
   const dispatch = useDispatch();
 
@@ -158,7 +148,7 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
-            season:season,
+            season: season,
             size: size,
             sizeUnit: sizeUnit,
             quantity: quantity === 0 ? 1 : quantity,
@@ -177,7 +167,7 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
-            season:season,
+            season: season,
             size: size,
             sizeUnit: sizeUnit,
             quantity: quantity === 0 ? 1 : quantity,
@@ -215,24 +205,6 @@ export const ItemForm = ({
     } catch (e) {
       console.log("colorExtractor error:", e);
     }
-    // getAllSwatches(
-    //   { quality: "medium" },
-    //   imageUrl,
-    //   (error: any, swatches: any) => {
-    //     if (error) {
-    //       console.log(error);
-    //     } else {
-    //       swatches.sort((a: any, b: any) => {
-    //         return b.population - a.population;
-    //       });
-    //       setColors([
-    //         swatches[0].hex.slice(0, -2),
-    //         swatches[1].hex.slice(0, -2),
-    //         swatches[2].hex.slice(0, -2),
-    //       ]);
-    //     }
-    //   },
-    // );
   };
   const handleImagePicker = async (type: number) => {
     if (type == 0) {
@@ -423,42 +395,44 @@ export const ItemForm = ({
                   placeholder="Type"
                   style={{ borderColor: appColors.mainGreen }}
                   dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={
-                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
-                  }
+                  theme={colorScheme}
                 />
               </View>
             )}
             {(selectedCategory ?? storedItems.category) < 2 && (
               <View className="w-[80%] flex flex-row justify-between items-center z-[3]">
-                <DropDownPicker
-                  open={openFit}
-                  value={fit}
-                  items={fitList}
-                  setOpen={setOpenFit}
-                  setValue={setFit}
-                  mode="SIMPLE"
-                  placeholder="Fit"
-                  style={{ borderColor: appColors.mainGreen,width: "39%" }}
-                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={
-                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
-                  }
-                />
-                <DropDownPicker
-                  open={openSeason}
-                  value={season}
-                  items={seasonList}
-                  setOpen={setOpenSeason}
-                  setValue={setSeason}
-                  mode="SIMPLE"
-                  placeholder="Fit"
-                  style={{ borderColor: appColors.mainGreen,width: "39%" }}
-                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={
-                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
-                  }
-                />
+                <View style={{ width: "49%" }}>
+                  <DropDownPicker
+                    open={openFit}
+                    value={fit}
+                    items={fitList}
+                    setOpen={setOpenFit}
+                    setValue={setFit}
+                    mode="SIMPLE"
+                    placeholder="Fit"
+                    style={{ borderColor: appColors.mainGreen }}
+                    dropDownContainerStyle={{
+                      borderColor: appColors.mainGreen,
+                    }}
+                    theme={colorScheme}
+                  />
+                </View>
+                <View style={{ width: "49%" }}>
+                  <DropDownPicker
+                    open={openSeason}
+                    value={season}
+                    items={seasonList}
+                    setOpen={setOpenSeason}
+                    setValue={setSeason}
+                    mode="SIMPLE"
+                    placeholder="Season"
+                    style={{ borderColor: appColors.mainGreen }}
+                    dropDownContainerStyle={{
+                      borderColor: appColors.mainGreen,
+                    }}
+                    theme={colorScheme}
+                  />
+                </View>
               </View>
             )}
             <View className="w-[80%] flex flex-row justify-between items-center z-[2]">
@@ -485,9 +459,7 @@ export const ItemForm = ({
                   placeholder="Unit"
                   style={{ borderColor: appColors.mainGreen, marginTop: 5 }}
                   dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={
-                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
-                  }
+                  theme={colorScheme}
                 />
               </View>
               <CustomInput
@@ -518,7 +490,7 @@ export const ItemForm = ({
                 setOpen={setOpenCollection}
                 setValue={setCollection}
                 multiple={true}
-                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+                theme={colorScheme}
                 // badgeDotColors={CollectionColors}
                 showBadgeDot={false}
                 badgeTextStyle={{ color: appColors.black }}

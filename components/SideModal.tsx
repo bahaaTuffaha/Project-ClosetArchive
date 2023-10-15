@@ -37,9 +37,9 @@ export const SideModal = ({
         <TouchableOpacity
           onPress={() => {
             setIsOpen((prev) => !prev);
-            space.value = -10;
+            space.value = -20;
           }}
-          className="z-40 h-full w-full absolute right-5 bg-black opacity-30 rounded-xl"
+          className="z-40 h-full w-full absolute bg-black opacity-30 rounded-xl"
         />
       )}
       <Animated.View
