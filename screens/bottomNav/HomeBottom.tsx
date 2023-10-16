@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import Icon from "react-native-vector-icons/Feather";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, RadioButton, Searchbar } from "react-native-paper";
 import { ThemeText } from "../../components/ThemeText";
 import { useSelector } from "react-redux";
@@ -53,6 +53,7 @@ export function HomeBottom() {
   const navigation = useNavigation<any>();
   const itemsState = useSelector((state: RootState) => state.itemsList);
   const [search, setSearch] = useState("");
+  const searchFocus = useRef(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const isDarkMode = useColorScheme() === "dark";
   const [allCollections, setAllCollections] = useState<item[][]>([]);
@@ -104,33 +105,33 @@ export function HomeBottom() {
     }
   };
   useEffect(() => {
-    let cat = [];
-    let nonCat = [];
+    let col = [];
+    let nonCol = [];
     let final = [];
     if (itemsState.collectionTags.length > 0) {
       // if there is a collection and items
       for (let i = 0; i < itemsState.collectionTags.length; i++) {
-        cat = [];
-        nonCat = [];
+        col = [];
+        nonCol = [];
         for (let j = 0; j < itemsState.items.length; j++) {
           if (
             itemsState.items[j].collection?.includes(
               itemsState.collectionTags[i].value,
             )
           ) {
-            cat.push(itemsState.items[j]);
+            col.push(itemsState.items[j]);
           } else if (itemsState.items[j].collection?.length == 0) {
-            nonCat.push(itemsState.items[j]);
+            nonCol.push(itemsState.items[j]);
           }
         }
-        final.push(cat);
+        final.push(col);
       }
     } else {
       // if there is no collections
-      nonCat = [];
+      nonCol = [];
       for (let i = 0; i < itemsState.items.length; i++) {
         if (itemsState.items[i].collection?.length == 0) {
-          nonCat.push(itemsState.items[i]);
+          nonCol.push(itemsState.items[i]);
         }
       }
       final.push([]);
@@ -155,13 +156,13 @@ export function HomeBottom() {
           types: TypeFilter,
           season: seasonFilter,
         },
-        nonCat,
+        nonCol,
         false,
       ) as item[],
     );
     return () => {
-      cat = null;
-      nonCat = null;
+      col = null;
+      nonCol = null;
       final = null;
     };
   }, [
@@ -392,9 +393,18 @@ export function HomeBottom() {
                 <Icon name="filter" size={26} color={colors.white} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  setIsSearchVisible(!isSearchVisible);
+                onPress={async () => {
+                  await setIsSearchVisible(!isSearchVisible);
                   setSearch("");
+                  if (!isSearchVisible) {
+                    setTimeout(() => {
+                      try {
+                        searchFocus.current.focus();
+                      } catch (e) {
+                        console.log("searchFocus has an error:", e);
+                      }
+                    }, 100);
+                  }
                 }}
                 className="h-14 w-[20%] bg-mainCyan rounded-tr-2xl justify-center items-center shadow-xl"
               >
@@ -404,6 +414,7 @@ export function HomeBottom() {
             {isSearchVisible && (
               <Searchbar
                 className="mt-[1%]"
+                ref={searchFocus}
                 theme={{
                   roundness: 0,
                   colors: {

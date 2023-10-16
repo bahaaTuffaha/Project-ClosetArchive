@@ -3,7 +3,7 @@ import { ThemeView } from "../../components/ThemeView";
 import { ScrollView, View, useColorScheme } from "react-native";
 import { useEffect, useState } from "react";
 import { CollectionContainer } from "../../components/CollectionContainer";
-import { filter, filterCategories } from "../bottomNav/HomeBottom";
+import { filter, filterCollectionsBySearch } from "../bottomNav/HomeBottom";
 import { Button, Searchbar, Snackbar } from "react-native-paper";
 import { RootState } from "../../redux/store";
 import { item } from "../../redux/itemsSlice";
@@ -19,9 +19,11 @@ export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
   const [search, setSearch] = useState("");
   const isDarkMode = useColorScheme() === "dark";
-  const [allCategories, setAllCategories] = useState<item[][]>([]);
-  const [nonCategorized, setNonCategorized] = useState<item[]>([]);
-  const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
+  const [allCollections, setAllCollections] = useState<item[][]>([]);
+  const [nonCollectnized, setNonCollectnized] = useState<item[]>([]);
+  const [allCollectionsFilter, setAllCollectionsFilter] = useState<item[][]>(
+    [],
+  );
   const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
   const [selectedIdCollector, setSelectedIdCollector] = useState<string[]>([]);
   const navigation = useNavigation<any>();
@@ -30,37 +32,37 @@ export const ItemSelector = () => {
   const onDismissSnackBar = () => setVisible(false);
 
   useEffect(() => {
-    let cat = [];
-    let nonCat = [];
+    let col = [];
+    let nonCol = [];
     let final = [];
     for (let i = 0; i < itemsState.collectionTags.length; i++) {
-      cat = [];
-      nonCat = [];
+      col = [];
+      nonCol = [];
       for (let j = 0; j < itemsState.items.length; j++) {
         if (
           itemsState.items[j].collection?.includes(
             itemsState.collectionTags[i].value,
           )
         ) {
-          cat.push(itemsState.items[j]);
+          col.push(itemsState.items[j]);
         } else if (itemsState.items[j].collection?.length == 0) {
-          nonCat.push(itemsState.items[j]);
+          nonCol.push(itemsState.items[j]);
         }
       }
-      final.push(cat);
+      final.push(col);
     }
-    setAllCategories(final);
-    setNonCategorized(nonCat);
+    setAllCollections(final);
+    setNonCollectnized(nonCol);
     return () => {
-      cat = null;
-      nonCat = null;
+      col = null;
+      nonCol = null;
       final = null;
     };
   }, [itemsState.items.length]);
 
   useEffect(() => {
-    setAllCategoriesFilter(filterCategories(allCategories, search));
-    setNonCategorizedFilter(filter(nonCategorized, search));
+    setAllCollectionsFilter(filterCollectionsBySearch(allCollections, search));
+    setNonCategorizedFilter(filter(nonCollectnized, search));
   }, [search]);
   return (
     <ThemeView>
@@ -99,15 +101,15 @@ export const ItemSelector = () => {
         >
           {itemsState.collectionTags.map((collection, index) => {
             if (!search) {
-              if (allCategories[index]?.length ?? 0 != 0) {
+              if (allCollections[index]?.length ?? 0 != 0) {
                 return (
                   <CollectionContainer
                     key={index}
-                    color={addOpacityToHex(collection.color, 0.2)}
+                    color={addOpacityToHex(collection.color ?? "#fff", 0.2)}
                     label={collection.label}
                   >
                     <>
-                      {allCategories[index].map((item) => {
+                      {allCollections[index].map((item) => {
                         return (
                           <SelectionItemBox
                             primary={item.primaryColor || "#fff"}
@@ -128,7 +130,7 @@ export const ItemSelector = () => {
                 );
               }
             } else {
-              if (allCategoriesFilter[index]?.length ?? 0 != 0) {
+              if (allCollectionsFilter[index]?.length ?? 0 != 0) {
                 return (
                   //searching & filtering
                   <CollectionContainer
@@ -137,24 +139,24 @@ export const ItemSelector = () => {
                     label={collection.label}
                   >
                     <>
-                      {filterCategories(allCategories, search)[index].map(
-                        (item) => {
-                          return (
-                            <SelectionItemBox
-                              primary={item.primaryColor || "#fff"}
-                              secondary={item.secondaryColor || "#fff"}
-                              tertiary={item.tertiaryColor || "#fff"}
-                              key={item.id}
-                              image={item.image}
-                              name={item.name}
-                              type={item.type}
-                              id={item.id}
-                              setSelectedIdCollector={setSelectedIdCollector}
-                              selectedIdCollector={selectedIdCollector}
-                            />
-                          );
-                        },
-                      )}
+                      {filterCollectionsBySearch(allCollections, search)[
+                        index
+                      ].map((item) => {
+                        return (
+                          <SelectionItemBox
+                            primary={item.primaryColor || "#fff"}
+                            secondary={item.secondaryColor || "#fff"}
+                            tertiary={item.tertiaryColor || "#fff"}
+                            key={item.id}
+                            image={item.image}
+                            name={item.name}
+                            type={item.type}
+                            id={item.id}
+                            setSelectedIdCollector={setSelectedIdCollector}
+                            selectedIdCollector={selectedIdCollector}
+                          />
+                        );
+                      })}
                     </>
                   </CollectionContainer>
                 );
@@ -163,7 +165,7 @@ export const ItemSelector = () => {
           })}
           {search == "" ? (
             <FlashList
-              data={nonCategorized}
+              data={nonCollectnized}
               contentContainerStyle={{
                 paddingLeft: 5,
                 paddingRight: 5,

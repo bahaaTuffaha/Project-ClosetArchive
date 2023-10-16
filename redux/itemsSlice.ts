@@ -15,7 +15,7 @@ export type item = {
   name: string;
   type: string;
   fit: string;
-  season?:string;
+  season?: string;
   quantity: number;
   size: number;
   sizeUnit: string;
@@ -78,7 +78,7 @@ const itemsSlice = createSlice({
         tertiaryColor: action.payload.tertiaryColor,
         logIds: [],
         laundryCounter: 0,
-        season:action.payload.season,
+        season: action.payload.season,
       } as item);
     },
     updateItem: (state, action) => {

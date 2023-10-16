@@ -599,7 +599,7 @@ export const ItemForm = ({
                 </Button>
               )}
               {editingIndex &&
-                storedItems.laundryCounter > storedSettings.laundryNumber && (
+                storedItems.laundryCounter >= storedSettings.laundryNumber && (
                   <Button
                     // className="mb-5"
                     mode="contained"
