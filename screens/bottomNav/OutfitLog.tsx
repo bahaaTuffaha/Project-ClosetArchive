@@ -4,6 +4,7 @@ import {
   useColorScheme,
   Pressable,
   StyleSheet,
+  Keyboard,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import React, { useEffect, useRef, useState } from "react";
@@ -12,7 +13,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { LogComponent } from "../../components/LogComponent";
-import { Button, RadioButton, Searchbar } from "react-native-paper";
+import { RadioButton, Searchbar } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import CustomModal from "../../components/CustomModal";
 import { logsType } from "../../redux/itemsSlice";
@@ -48,8 +49,11 @@ export const OutfitLog = () => {
 
   const handleOpenDrawer = () => {
     // Update the space value to trigger the animation
+    Keyboard.dismiss();
     setIsOpen((prev) => !prev);
-    space.value = width / 2 - 20;
+    if (!isOpen) {
+      space.value = width / 2 - 5;
+    }
   };
   useEffect(() => {
     let info = logsState.find((x) => x.eventId == modalEventId);

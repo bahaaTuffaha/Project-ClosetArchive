@@ -34,7 +34,9 @@ export const SideModal = ({
   const handleCloseDrawer = () => {
     // Update the space value to trigger the animation
     setIsOpen((prev) => !prev);
-    space.value = -20;
+    if (isOpen) {
+      space.value = -20;
+    }
   };
 
   return (
@@ -68,7 +70,7 @@ export const SideModal = ({
         <Button
           mode="contained-tonal"
           buttonColor={colors.mainCyan}
-          className="self-center mt-5"
+          className="self-center mt-5 w-[80%]"
           textColor="white"
           onPress={() => {
             handleCloseDrawer();

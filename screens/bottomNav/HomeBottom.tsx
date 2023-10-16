@@ -6,11 +6,12 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  Keyboard,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import Icon from "react-native-vector-icons/Feather";
 import { useEffect, useState } from "react";
-import { RadioButton, Searchbar } from "react-native-paper";
+import { Button, RadioButton, Searchbar } from "react-native-paper";
 import { ThemeText } from "../../components/ThemeText";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -30,16 +31,16 @@ import { HomeFilter } from "../../utils/filters";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { clothesList, seasonList } from "../../utils/data";
 
-export function filterCategories(array: item[][], search: string) {
-  let newAllCategories = [];
+export function filterCollectionsBySearch(array: item[][], search: string) {
+  let newAllCollections = [];
   for (let i in array) {
-    newAllCategories.push(
+    newAllCollections.push(
       array[i].filter((x) =>
         x.name.toLowerCase().includes(search.toLowerCase()),
       ),
     );
   }
-  return newAllCategories;
+  return newAllCollections;
 }
 export function filter(array: item[], search: string) {
   return array.filter((x) =>
@@ -54,15 +55,21 @@ export function HomeBottom() {
   const [search, setSearch] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const isDarkMode = useColorScheme() === "dark";
-  const [allCategories, setAllCategories] = useState<item[][]>([]);
-  const [nonCategorized, setNonCategorized] = useState<item[]>([]);
+  const [allCollections, setAllCollections] = useState<item[][]>([]);
+  const [nonCollectnized, setNonCollectnized] = useState<item[]>([]);
   const [laundryItems, setLaundryItems] = useState<item[]>([]);
-  const [allCategoriesFilter, setAllCategoriesFilter] = useState<item[][]>([]);
-  const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
+  const [allCollectnizedFilter, setAllCollectnizedFilter] = useState<item[][]>(
+    [],
+  );
+  const [nonCollectnizedFilter, setNonCollectnizedFilter] = useState<item[]>(
+    [],
+  );
+
   const [sortValue, setSortValue] = useState("LA");
   const [categoriesFilter, setCategoriesFilter] = useState([]);
   const [TypeFilter, setTypeFilter] = useState<string[]>([]);
   const [seasonFilter, setSeasonFilter] = useState("");
+
   const [OpenCategoriesFilter, setOpenCategoriesFilter] = useState(false);
   const [OpenTypeFilter, setOpenTypeFilter] = useState(false);
   const [OpenSeasonFilter, setOpenSeasonFilter] = useState(false);
@@ -90,8 +97,11 @@ export function HomeBottom() {
 
   const handleOpenDrawer = () => {
     // Update the space value to trigger the animation
+    Keyboard.dismiss();
     setIsOpen((prev) => !prev);
-    space.value = width / 2 - 20;
+    if (!isOpen) {
+      space.value = width / 2 - 20;
+    }
   };
   useEffect(() => {
     let cat = [];
@@ -125,7 +135,7 @@ export function HomeBottom() {
       }
       final.push([]);
     }
-    setAllCategories(
+    setAllCollections(
       HomeFilter(
         {
           categories: categoriesFilter,
@@ -137,7 +147,7 @@ export function HomeBottom() {
         true,
       ) as item[][],
     );
-    setNonCategorized(
+    setNonCollectnized(
       HomeFilter(
         {
           categories: categoriesFilter,
@@ -172,9 +182,37 @@ export function HomeBottom() {
   }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);
 
   useEffect(() => {
-    setAllCategoriesFilter(filterCategories(allCategories, search));
-    setNonCategorizedFilter(filter(nonCategorized, search));
-  }, [search]);
+    setAllCollectnizedFilter(
+      filterCollectionsBySearch(
+        HomeFilter(
+          {
+            categories: categoriesFilter,
+            sortValue: sortValue,
+            types: TypeFilter,
+            season: seasonFilter,
+          },
+          allCollections,
+          true,
+        ) as item[][],
+        search,
+      ),
+    );
+    setNonCollectnizedFilter(
+      filter(
+        HomeFilter(
+          {
+            categories: categoriesFilter,
+            sortValue: sortValue,
+            types: TypeFilter,
+            season: seasonFilter,
+          },
+          nonCollectnized,
+          false,
+        ) as item[],
+        search,
+      ),
+    );
+  }, [search, categoriesFilter, sortValue, TypeFilter, seasonFilter]);
 
   useEffect(() => {
     if (categoriesFilter.length != 1) setTypeFilter([]);
@@ -252,7 +290,7 @@ export function HomeBottom() {
                 showBadgeDot={false}
                 badgeTextStyle={{ color: colors.black }}
                 mode="BADGE"
-                placeholder="Collection Filter"
+                placeholder="Category Filter"
                 style={{ borderColor: colors.mainGreen, marginBottom: 20 }}
                 dropDownContainerStyle={{ borderColor: colors.mainGreen }}
               />
@@ -283,8 +321,23 @@ export function HomeBottom() {
                 />
               </View>
             )}
+            <Button
+              mode="contained-tonal"
+              buttonColor={colors.mainCyan}
+              className="self-center mt-5 w-[80%]"
+              textColor="white"
+              onPress={() => {
+                setSeasonFilter("");
+                setCategoriesFilter([]);
+                setTypeFilter([]);
+                setSortValue("LA");
+              }}
+            >
+              Reset
+            </Button>
           </>
         </SideModal>
+
         <View className="flex flex-col">
           <View className="w-full flex flex-row justify-between items-center pt-5">
             <View className="flex flex-row space-x-2 justify-center items-center">
@@ -404,7 +457,7 @@ export function HomeBottom() {
                 )}
               {itemsState.collectionTags.map((collection, index) => {
                 if (!search) {
-                  if (allCategories[index]?.length ?? 0 != 0) {
+                  if (allCollections[index]?.length ?? 0 != 0) {
                     return (
                       <CollectionContainer
                         key={index}
@@ -412,7 +465,7 @@ export function HomeBottom() {
                         label={collection.label}
                       >
                         <>
-                          {allCategories[index].map((item) => {
+                          {allCollections[index].map((item) => {
                             return (
                               <ItemBox
                                 primary={item.primaryColor || "#fff"}
@@ -431,7 +484,7 @@ export function HomeBottom() {
                     );
                   }
                 } else {
-                  if (allCategoriesFilter[index]?.length ?? 0 != 0) {
+                  if (allCollectnizedFilter[index]?.length ?? 0 != 0) {
                     return (
                       //searching & filtering
                       <CollectionContainer
@@ -440,22 +493,22 @@ export function HomeBottom() {
                         label={collection.label}
                       >
                         <>
-                          {filterCategories(allCategories, search)[index].map(
-                            (item) => {
-                              return (
-                                <ItemBox
-                                  primary={item.primaryColor || "#fff"}
-                                  secondary={item.secondaryColor || "#fff"}
-                                  tertiary={item.tertiaryColor || "#fff"}
-                                  key={item.id}
-                                  image={item.image}
-                                  name={item.name}
-                                  type={item.type}
-                                  id={item.id}
-                                />
-                              );
-                            },
-                          )}
+                          {filterCollectionsBySearch(allCollections, search)[
+                            index
+                          ].map((item) => {
+                            return (
+                              <ItemBox
+                                primary={item.primaryColor || "#fff"}
+                                secondary={item.secondaryColor || "#fff"}
+                                tertiary={item.tertiaryColor || "#fff"}
+                                key={item.id}
+                                image={item.image}
+                                name={item.name}
+                                type={item.type}
+                                id={item.id}
+                              />
+                            );
+                          })}
                         </>
                       </CollectionContainer>
                     );
@@ -464,7 +517,7 @@ export function HomeBottom() {
               })}
               {search == "" ? (
                 <FlashList
-                  data={nonCategorized}
+                  data={nonCollectnized}
                   contentContainerStyle={{
                     paddingLeft: 5,
                     paddingRight: 5,
@@ -491,7 +544,7 @@ export function HomeBottom() {
                     paddingRight: 5,
                   }}
                   numColumns={4}
-                  data={nonCategorizedFilter}
+                  data={nonCollectnizedFilter}
                   estimatedItemSize={100}
                   renderItem={({ item, index }) => (
                     <ItemBox
