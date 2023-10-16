@@ -10,7 +10,7 @@ import {
 import { ThemeView } from "../../components/ThemeView";
 import Icon from "react-native-vector-icons/Feather";
 import { useEffect, useState } from "react";
-import { Button, RadioButton, Searchbar } from "react-native-paper";
+import { RadioButton, Searchbar } from "react-native-paper";
 import { ThemeText } from "../../components/ThemeText";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -28,7 +28,7 @@ import { useSharedValue } from "react-native-reanimated";
 import { SideModal } from "../../components/SideModal";
 import { HomeFilter } from "../../utils/filters";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
-import { clothesList } from "../../utils/data";
+import { clothesList, seasonList } from "../../utils/data";
 
 export function filterCategories(array: item[][], search: string) {
   let newAllCategories = [];
@@ -62,8 +62,10 @@ export function HomeBottom() {
   const [sortValue, setSortValue] = useState("LA");
   const [categoriesFilter, setCategoriesFilter] = useState([]);
   const [TypeFilter, setTypeFilter] = useState<string[]>([]);
+  const [seasonFilter, setSeasonFilter] = useState("");
   const [OpenCategoriesFilter, setOpenCategoriesFilter] = useState(false);
   const [OpenTypeFilter, setOpenTypeFilter] = useState(false);
+  const [OpenSeasonFilter, setOpenSeasonFilter] = useState(false);
 
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
@@ -91,12 +93,6 @@ export function HomeBottom() {
     setIsOpen((prev) => !prev);
     space.value = width / 2 - 20;
   };
-  const handleCloseDrawer = () => {
-    // Update the space value to trigger the animation
-    setIsOpen((prev) => !prev);
-    space.value = -20;
-  };
-
   useEffect(() => {
     let cat = [];
     let nonCat = [];
@@ -135,6 +131,7 @@ export function HomeBottom() {
           categories: categoriesFilter,
           sortValue: sortValue,
           types: TypeFilter,
+          season: seasonFilter,
         },
         final,
         true,
@@ -146,6 +143,7 @@ export function HomeBottom() {
           categories: categoriesFilter,
           sortValue: sortValue,
           types: TypeFilter,
+          season: seasonFilter,
         },
         nonCat,
         false,
@@ -156,7 +154,14 @@ export function HomeBottom() {
       nonCat = null;
       final = null;
     };
-  }, [itemsState.items, refreshItems, categoriesFilter, sortValue, TypeFilter]);
+  }, [
+    itemsState.items,
+    refreshItems,
+    categoriesFilter,
+    sortValue,
+    TypeFilter,
+    seasonFilter,
+  ]);
 
   useEffect(() => {
     setLaundryItems(
@@ -171,6 +176,10 @@ export function HomeBottom() {
     setNonCategorizedFilter(filter(nonCategorized, search));
   }, [search]);
 
+  useEffect(() => {
+    if (categoriesFilter.length != 1) setTypeFilter([]);
+  }, [categoriesFilter]);
+
   return (
     <ThemeView classNameStyle="px-5">
       <>
@@ -180,12 +189,57 @@ export function HomeBottom() {
               onValueChange={(value) => setSortValue(value)}
               value={sortValue}
             >
-              <RadioButton.Item label="Last Added" value="LA" />
-              <RadioButton.Item label="Name Asc" value="NA" />
-              <RadioButton.Item label="Name Desc" value="ND" />
-              <RadioButton.Item label="Purchase Date Asc" value="PDA" />
-              <RadioButton.Item label="Purchase Date Desc" value="PDD" />
+              <RadioButton.Item
+                label="Last Added"
+                value="LA"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Name Asc"
+                value="NA"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Name Desc"
+                value="ND"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Purchase Date Asc"
+                value="PDA"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Purchase Date Desc"
+                value="PDD"
+                color={colors.mainCyan}
+              />
             </RadioButton.Group>
+            <View
+              style={{
+                zIndex: 3,
+                width: "90%",
+                marginTop: 5,
+                marginBottom: 20,
+              }}
+            >
+              <DropDownPicker
+                open={OpenSeasonFilter}
+                value={seasonFilter}
+                items={[
+                  { label: "Season not specified", value: "" },
+                  ...seasonList,
+                ]}
+                setOpen={setOpenSeasonFilter}
+                setValue={setSeasonFilter}
+                theme={colorScheme}
+                showBadgeDot={false}
+                badgeTextStyle={{ color: colors.black }}
+                placeholder="Season filter"
+                style={{ borderColor: colors.mainGreen }}
+                dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+              />
+            </View>
             <View style={{ zIndex: 2, width: "90%" }}>
               <DropDownPicker
                 open={OpenCategoriesFilter}
@@ -199,11 +253,11 @@ export function HomeBottom() {
                 badgeTextStyle={{ color: colors.black }}
                 mode="BADGE"
                 placeholder="Collection Filter"
-                style={{ borderColor: colors.mainGreen }}
+                style={{ borderColor: colors.mainGreen, marginBottom: 20 }}
                 dropDownContainerStyle={{ borderColor: colors.mainGreen }}
               />
             </View>
-            {categoriesFilter.length == 1 && (
+            {categoriesFilter.length == 1 && categoriesFilter[0] <= 3 && (
               <View style={{ zIndex: 1, width: "90%" }}>
                 <DropDownPicker
                   open={OpenTypeFilter}
@@ -211,7 +265,7 @@ export function HomeBottom() {
                   items={
                     clothesList[
                       storedCategories.find(
-                        (x) => x.name == categoriesFilter[0],
+                        (x) => x.index == categoriesFilter[0],
                       )?.index ?? 0
                     ]
                   }
@@ -223,23 +277,12 @@ export function HomeBottom() {
                   badgeTextStyle={{ color: colors.black }}
                   mode="BADGE"
                   listMode="MODAL"
-                  placeholder="Collection"
+                  placeholder="Type Filter"
                   style={{ borderColor: colors.mainGreen }}
                   dropDownContainerStyle={{ borderColor: colors.mainGreen }}
                 />
               </View>
             )}
-
-            <Button
-              mode="contained-tonal"
-              buttonColor={colors.mainCyan}
-              className="self-center"
-              onPress={() => {
-                handleCloseDrawer();
-              }}
-            >
-              Apply
-            </Button>
           </>
         </SideModal>
         <View className="flex flex-col">

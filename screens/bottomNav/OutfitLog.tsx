@@ -51,12 +51,6 @@ export const OutfitLog = () => {
     setIsOpen((prev) => !prev);
     space.value = width / 2 - 20;
   };
-  const handleCloseDrawer = () => {
-    // Update the space value to trigger the animation
-    setIsOpen((prev) => !prev);
-    space.value = -20;
-  };
-
   useEffect(() => {
     let info = logsState.find((x) => x.eventId == modalEventId);
     setModalInfo(info);
@@ -131,22 +125,32 @@ export const OutfitLog = () => {
               onValueChange={(value) => setSortValue(value)}
               value={sortValue}
             >
-              <RadioButton.Item label="Last Added" value="LA" />
-              <RadioButton.Item label="Name Asc" value="NA" />
-              <RadioButton.Item label="Name Desc" value="ND" />
-              <RadioButton.Item label="Date Asc" value="DA" />
-              <RadioButton.Item label="Date Desc" value="DD" />
+              <RadioButton.Item
+                label="Last Added"
+                value="LA"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Name Asc"
+                value="NA"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Name Desc"
+                value="ND"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Date Asc"
+                value="DA"
+                color={colors.mainCyan}
+              />
+              <RadioButton.Item
+                label="Date Desc"
+                value="DD"
+                color={colors.mainCyan}
+              />
             </RadioButton.Group>
-            <Button
-              mode="contained-tonal"
-              buttonColor={colors.mainCyan}
-              className="self-center"
-              onPress={() => {
-                handleCloseDrawer();
-              }}
-            >
-              Apply
-            </Button>
           </>
         </SideModal>
         <View className="flex flex-row items-center justify-center w-full h-14 rounded-t-2xl shadow-2xl bg-mainCyan mb-[1%]">

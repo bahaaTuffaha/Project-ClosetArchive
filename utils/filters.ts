@@ -1,5 +1,57 @@
 import { item, logsType } from "../redux/itemsSlice";
 
+function desc(array: any[], sub: string) {
+  array.sort((a, b) => {
+    if (a[`${sub}`] > b[`${sub}`]) {
+      return -1;
+    }
+    if (a[`${sub}`] < b[`${sub}`]) {
+      return 1;
+    }
+    return 0;
+  });
+}
+function asc(array: any[], sub: string) {
+  array.sort((a, b) => {
+    if (a[`${sub}`] < b[`${sub}`]) {
+      return -1;
+    }
+    if (a[`${sub}`] > b[`${sub}`]) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
+function nameAsc(array: any[], sub: string) {
+  array.sort((a, b) => {
+    const nameA = a[`${sub}`].toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+    const nameB = b[`${sub}`].toUpperCase();
+
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+}
+function nameDesc(array: any[], sub: string) {
+  array.sort((a, b) => {
+    const nameA = a[`${sub}`].toUpperCase();
+    const nameB = b[`${sub}`].toUpperCase();
+
+    if (nameA > nameB) {
+      return -1;
+    }
+    if (nameA < nameB) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
 export function LogFilter(
   sortValue: string,
   array: logsType[],
@@ -9,68 +61,21 @@ export function LogFilter(
     x.eventName.toLowerCase().includes(search.toLowerCase()),
   );
   switch (sortValue) {
+    //lastAdded
     case "LA":
-      newArray.sort((a, b) => {
-        if (a.logTime > b.logTime) {
-          return -1;
-        }
-        if (a.logTime < b.logTime) {
-          return 1;
-        }
-        return 0;
-      });
+      desc(newArray, "logTime");
       break;
     case "NA":
-      newArray.sort((a, b) => {
-        const nameA = a.eventName.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
-        const nameB = b.eventName.toUpperCase();
-
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-        return 0;
-      });
+      nameAsc(newArray, "eventName");
       break;
     case "ND":
-      newArray.sort((a, b) => {
-        const nameA = a.eventName.toUpperCase();
-        const nameB = b.eventName.toUpperCase();
-
-        if (nameA > nameB) {
-          return -1;
-        }
-        if (nameA < nameB) {
-          return 1;
-        }
-        return 0;
-      });
-
+      nameDesc(newArray, "eventName");
       break;
     case "DA":
-      newArray.sort((a, b) => {
-        if (a.eventDate < b.eventDate) {
-          return -1;
-        }
-        if (a.eventDate > b.eventDate) {
-          return 1;
-        }
-        return 0;
-      });
-
+      asc(newArray, "eventDate");
       break;
     case "DD":
-      newArray.sort((a, b) => {
-        if (a.eventDate > b.eventDate) {
-          return -1;
-        }
-        if (a.eventDate < b.eventDate) {
-          return 1;
-        }
-        return 0;
-      });
+      desc(newArray, "eventDate");
       break;
   }
   return newArray;
@@ -80,6 +85,7 @@ export type SortValuesType = {
   sortValue: string;
   categories: number[];
   types: string[];
+  season: string;
 };
 export function HomeFilter(
   filters: SortValuesType,
@@ -94,67 +100,34 @@ export function HomeFilter(
           newArray = array;
           break;
         case "NA":
-          newArray[i].sort((a, b) => {
-            const nameA = a.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
-            const nameB = b.name.toUpperCase();
-
-            if (nameA < nameB) {
-              return -1;
-            }
-            if (nameA > nameB) {
-              return 1;
-            }
-            return 0;
-          });
+          nameAsc(newArray[i], "name");
           break;
         case "ND":
-          newArray[i].sort((a, b) => {
-            const nameA = a.name.toUpperCase();
-            const nameB = b.name.toUpperCase();
-
-            if (nameA > nameB) {
-              return -1;
-            }
-            if (nameA < nameB) {
-              return 1;
-            }
-            return 0;
-          });
-
+          nameDesc(newArray[i], "name");
           break;
         case "PDA":
-          newArray[i].sort((a, b) => {
-            if (a.purchaseDate < b.purchaseDate) {
-              return -1;
-            }
-            if (a.purchaseDate > b.purchaseDate) {
-              return 1;
-            }
-            return 0;
-          });
-
+          asc(newArray[i], "purchaseDate");
           break;
         case "PDD":
-          newArray[i].sort((a, b) => {
-            if (a.purchaseDate > b.purchaseDate) {
-              return -1;
-            }
-            if (a.purchaseDate < b.purchaseDate) {
-              return 1;
-            }
-            return 0;
-          });
+          desc(newArray[i], "purchaseDate");
           break;
       }
 
       if (filters.categories.length > 0) {
-        newArray = newArray.filter((item) =>
+        newArray[i] = newArray[i].filter((item) =>
           filters.categories.includes(item.category),
         );
       }
 
       if (filters.types.length > 0) {
-        newArray = newArray.filter((item) => filters.types.includes(item.type));
+        newArray[i] = newArray[i].filter((item) =>
+          filters.types.includes(item.type),
+        );
+      }
+      if (filters.season != "") {
+        newArray[i] = newArray[i].filter(
+          (item) => filters.season == item.season,
+        );
       }
     }
     return newArray;
@@ -164,56 +137,16 @@ export function HomeFilter(
       case "LA":
         break;
       case "NA":
-        newArray.sort((a, b) => {
-          const nameA = a.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
-          const nameB = b.name.toUpperCase();
-
-          if (nameA < nameB) {
-            return -1;
-          }
-          if (nameA > nameB) {
-            return 1;
-          }
-          return 0;
-        });
+        nameAsc(newArray, "name");
         break;
       case "ND":
-        newArray.sort((a, b) => {
-          const nameA = a.name.toUpperCase();
-          const nameB = b.name.toUpperCase();
-
-          if (nameA > nameB) {
-            return -1;
-          }
-          if (nameA < nameB) {
-            return 1;
-          }
-          return 0;
-        });
-
+        nameDesc(newArray, "name");
         break;
       case "PDA":
-        newArray.sort((a, b) => {
-          if (a.purchaseDate < b.purchaseDate) {
-            return -1;
-          }
-          if (a.purchaseDate > b.purchaseDate) {
-            return 1;
-          }
-          return 0;
-        });
-
+        asc(newArray, "purchaseDate");
         break;
       case "PDD":
-        newArray.sort((a, b) => {
-          if (a.purchaseDate > b.purchaseDate) {
-            return -1;
-          }
-          if (a.purchaseDate < b.purchaseDate) {
-            return 1;
-          }
-          return 0;
-        });
+        desc(newArray, "purchaseDate");
         break;
     }
 
@@ -225,6 +158,9 @@ export function HomeFilter(
 
     if (filters.types.length > 0) {
       newArray = newArray.filter((item) => filters.types.includes(item.type));
+    }
+    if (filters.season != "") {
+      newArray = newArray.filter((item) => filters.season == item.season);
     }
     return newArray;
   }
