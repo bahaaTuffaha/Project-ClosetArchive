@@ -186,37 +186,15 @@ export const clothesList = [tops, bottoms, shoeTypes, accessories];
 
 export const languagesList = [
   {
-    value: "En",
+    value: "0",
     label: "En",
   },
   {
-    value: "Ar",
+    value: "1",
     label: "Ar",
   },
   {
-    value: "Es",
+    value: "2",
     label: "Es",
   },
-];
-
-export const clothingReminderMessages = [
-  "Don't forget to log what you wore today!",
-  "It's time to update your outfit history.",
-  "Have you recorded your outfit for the day?",
-  "Time to add your stylish outfit to your wardrobe.",
-  "Remember to keep track of your fashion choices.",
-  "What did you wear today? Log it now!",
-  "Your clothing history is waiting for an update.",
-  "It's outfit-logging time!",
-];
-
-export const clothingReminderTitles = [
-  "Clothing Event Reminder",
-  "Fashion Log Alert",
-  "Wardrobe Update Reminder",
-  "Outfit Logging Time",
-  "Dress Record Notification",
-  "Stay Fashionably Organized",
-  "Keep Your Wardrobe Updated",
-  "Remember to Log Your Outfit",
 ];
