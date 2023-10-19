@@ -7,19 +7,21 @@ import { ThemeView } from "../../components/ThemeView";
 import { CustomInput } from "../../components/CustomInput";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 import ColorModal from "../../components/ColorModal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { RootState } from "../../redux/store";
 import { ThemeText } from "../../components/ThemeText";
 import { addCategory } from "../../redux/categoriesSlice";
 import { CommonActions } from "@react-navigation/native";
 import { colors as appColors } from "../../utils/colors";
+import { localization } from "../../utils/localization";
+import { RootState } from "../../redux/store";
 
 export const CategoryForm = ({ navigation }: { navigation: any }) => {
   // const navigation = useNavigation<any>();
   const [name, setName] = useState("");
   const [visible, setVisible] = useState(false);
   const [colors, setColors] = useState([""]);
-  // const categoriesState = useSelector((state: RootState) => state.CategoryList);
+  const storedSettings = useSelector((state: RootState) => state.settings);
   const [errorsList, setErrorsList] = useState<string[]>([]);
   const dispatch = useDispatch();
 
@@ -66,7 +68,7 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
               <Text className="text-black">Color</Text>
             </TouchableOpacity> */}
             <ThemeText classNameStyle="text-xl mt-4 font-mono">
-              Add a category
+              {localization.Add_a_Category[storedSettings.language]}
             </ThemeText>
             <CustomInput
               mode="outlined"
@@ -75,7 +77,7 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
               activeOutlineColor={appColors.mainGreen}
               textContentType="name"
               style={styles.customWidth}
-              label="Category Name"
+              label={localization.Category_Name[storedSettings.language]}
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
             />
@@ -100,7 +102,7 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
             onPress={addCategoryHandler}
             className="mx-10 my-5"
           >
-            Save
+            {localization.Save[storedSettings.language]}
           </Button>
         </>
       </ThemeView>

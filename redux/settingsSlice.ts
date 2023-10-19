@@ -1,15 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-type language = "En" | "Ar" | "Es";
-
 export type SettingsType = {
-  language: language;
+  language: number;
   name: string;
   laundryNumber: number;
   enableLaundry: boolean;
 };
 const initialState: SettingsType = {
-  language: "En",
+  language: 0,
   name: "User",
   laundryNumber: 5,
   enableLaundry: true,

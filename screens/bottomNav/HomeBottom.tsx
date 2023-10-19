@@ -29,7 +29,8 @@ import { useSharedValue } from "react-native-reanimated";
 import { SideModal } from "../../components/SideModal";
 import { HomeFilter } from "../../utils/filters";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
-import { clothesList, seasonList } from "../../utils/data";
+import { seasonList } from "../../utils/data";
+import { clothesList, localization } from "../../utils/localization";
 
 export function filterCollectionsBySearch(array: item[][], search: string) {
   let newAllCollections = [];
@@ -302,7 +303,7 @@ export function HomeBottom() {
                   open={OpenTypeFilter}
                   value={TypeFilter}
                   items={
-                    clothesList[
+                    clothesList[storedSettings.language][
                       storedCategories.find(
                         (x) => x.index == categoriesFilter[0],
                       )?.index ?? 0
@@ -343,7 +344,8 @@ export function HomeBottom() {
           <View className="w-full flex flex-row justify-between items-center pt-5">
             <View className="flex flex-row space-x-2 justify-center items-center">
               <ThemeText classNameStyle="font-light text-lg italic">
-                {`Welcome back, ${storedSettings.name}`}
+                {localization.Welcome[storedSettings.language] +
+                  storedSettings.name}
               </ThemeText>
               <TouchableOpacity
                 onPress={() => navigation.navigate("Settings")}
@@ -365,7 +367,9 @@ export function HomeBottom() {
               className="flex flex-col bg-mainGreen w-[20%] h-12 justify-center items-center rounded-t-2xl"
             >
               <Icon name="plus-square" size={20} color={colors.white} />
-              <Text className="text-xs text-white">Collection</Text>
+              <Text className="text-xs text-white">
+                {localization.Collection[storedSettings.language]}
+              </Text>
             </TouchableOpacity>
             <View className="bg-mainCyan w-[20%] h-12 rounded-t-2xl absolute -z-10 right-1 bottom-1 " />
             <View className="bg-mainPink w-[20%] h-12 rounded-t-2xl absolute -z-20 right-2 bottom-2 " />

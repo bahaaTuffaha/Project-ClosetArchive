@@ -24,6 +24,7 @@ import { FlashList } from "@shopify/flash-list";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon2 from "react-native-vector-icons/MaterialIcons";
 import { colors as appColors } from "./../../utils/colors";
+import { localization } from "../../utils/localization";
 
 export function addOpacityToHex(hexColor: string, opacity: any) {
   // Remove the "#" character if it's present
@@ -55,6 +56,7 @@ export const CollectionForm = () => {
   const CollectionsState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
   );
+  const storedSettings = useSelector((state: RootState) => state.settings);
   const [errorsList, setErrorsList] = useState<string[]>([]);
   const dispatch = useDispatch();
 
@@ -100,7 +102,7 @@ export const CollectionForm = () => {
 
           <View className="flex flex-col items-center space-y-3">
             <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
-              Add a Collection
+              {localization.Add_a_collection[storedSettings.language]}
             </ThemeText>
             <TouchableOpacity
               style={{ backgroundColor: colors[0] }}
@@ -119,7 +121,7 @@ export const CollectionForm = () => {
               activeOutlineColor={appColors.mainGreen}
               textContentType="name"
               style={styles.customWidth}
-              label="Collection Name"
+              label={localization.Collection_name[storedSettings.language]}
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
             />
@@ -147,11 +149,11 @@ export const CollectionForm = () => {
             }}
             className="mx-10 my-5"
           >
-            Save
+            {localization.Save[storedSettings.language]}
           </Button>
           <View className="w-full h-1 bg-gray" />
           <ThemeText classNameStyle="w-full text-center font-mono text-xl my-5">
-            Collections
+            {localization.Collections[storedSettings.language]}
           </ThemeText>
           {CollectionsState.length > 0 ? (
             <FlashList
@@ -186,7 +188,9 @@ export const CollectionForm = () => {
             />
           ) : (
             <View className="flex flex-col justify-center items-center w-full h-[50%]">
-              <Text>There are no collections available</Text>
+              <Text>
+                {localization.There_is_no_collection[storedSettings.language]}
+              </Text>
             </View>
           )}
         </>

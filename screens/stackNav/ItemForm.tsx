@@ -35,16 +35,11 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
-import {
-  clothesList,
-  RandomNamesP1,
-  fitList,
-  sizeList,
-  seasonList,
-} from "../../utils/data";
+import { RandomNamesP1, fitList, sizeList, seasonList } from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
 import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
+import { clothesList } from "../../utils/localization";
 
 export function get_random(list: string[]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -387,7 +382,11 @@ export const ItemForm = ({
                 <DropDownPicker
                   open={openType}
                   value={type}
-                  items={clothesList[selectedCategory ?? storedItems.category]}
+                  items={
+                    clothesList[storedSettings.language][
+                      selectedCategory ?? storedItems.category
+                    ]
+                  }
                   setOpen={setOpenType}
                   setValue={setType}
                   mode="SIMPLE"

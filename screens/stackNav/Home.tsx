@@ -42,7 +42,7 @@ const laundryNotification = (numberOfLaundry: number) => {
   });
 };
 
-const createChannels = (selectedLang:string) => {
+const createChannels = (selectedLang: number) => {
   PushNotification.channelExists("channel-id-1", function (exists) {
     if (!exists) {
       PushNotification.createChannel(
@@ -54,8 +54,8 @@ const createChannels = (selectedLang:string) => {
       );
     }
   });
-  const randomMessage = get_random(clothingReminderMessages[Number(selectedLang) || 0]);
-  const randomTitle = get_random(clothingReminderTitles[Number(selectedLang) || 0]);
+  const randomMessage = get_random(clothingReminderMessages[selectedLang || 0]);
+  const randomTitle = get_random(clothingReminderTitles[selectedLang || 0]);
   PushNotification.cancelLocalNotification("1");
   PushNotification.cancelLocalNotification("2");
   PushNotification.localNotificationSchedule({
@@ -77,9 +77,12 @@ export function Home() {
   const numberOfLaundry = storedItems.filter(
     (item) => item.laundryCounter >= storedSettings.laundryNumber,
   ).length;
+  const selectedLang = useSelector(
+    (state: RootState) => state.settings.language,
+  );
   useEffect(() => {
     // PushNotification.deleteChannel("channel-id-1");
-    const selectedLang = useSelector((state: RootState) => state.settings.language);
+
     GetAllPermissions();
     createChannels(selectedLang);
   }, []);

@@ -19,7 +19,7 @@ import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
-import { itemRefresher, laundryRefresher } from "../../redux/itemsSlice";
+import { laundryRefresher } from "../../redux/itemsSlice";
 
 export const handleNumberChange = (
   func: any,
@@ -42,9 +42,6 @@ export const Settings = () => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    // return () => {
-
-    // }
     dispatch(changeLanguage({ lang: lang }));
   }, [lang]);
   const [visible, setVisible] = useState(false);
