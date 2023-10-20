@@ -68,8 +68,8 @@ export const localization = {
     "تذكير الغسيل",
     "Recordatorio de lavandería",
   ],
-  Tops: ["Tops", "قمم", "Tops"],
-  Bottoms: ["Bottoms", "أسفل", "Parte inferior"],
+  Tops: ["Tops", "العلوي", "Tops"],
+  Bottoms: ["Bottoms", "السفلي", "Parte inferior"],
   Shoes: ["Shoes", "أحذية", "Zapatos"],
   Accessories: ["Accessories", "إكسسوارات", "Accesorios"],
   Add_New_Category: [
@@ -85,7 +85,7 @@ export const localization = {
     "Agregar una nueva prenda de vestir",
   ],
   Record_a_log: [
-    "Record a log for a piece of clothing",
+    "Record a log for a piece of clothing ",
     "تسجيل سجل لقطعة ملابس",
     "Registrar un registro para una prenda de vestir",
   ],

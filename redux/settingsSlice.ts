@@ -5,12 +5,14 @@ export type SettingsType = {
   name: string;
   laundryNumber: number;
   enableLaundry: boolean;
+  appVer: string;
 };
 const initialState: SettingsType = {
   language: 0,
   name: "User",
   laundryNumber: 5,
   enableLaundry: true,
+  appVer: "1.0.0",
 };
 const settingsSlice = createSlice({
   name: "settings",
@@ -33,6 +35,9 @@ const settingsSlice = createSlice({
       state.laundryNumber = action.payload.laundryNumber;
       state.name = action.payload.name;
     },
+    setAppVer: (state, action) => {
+      state.appVer = action.payload.appVer;
+    },
   },
 });
 export const {
@@ -41,5 +46,6 @@ export const {
   laundryNumberSetter,
   setEnableLaundry,
   importSettings,
+  setAppVer,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

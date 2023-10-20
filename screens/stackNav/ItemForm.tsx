@@ -41,7 +41,7 @@ import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 import { clothesList } from "../../utils/localization";
 
-export function get_random(list: string[]) {
+export function get_random(list: string[] | string[][]) {
   return list[Math.floor(Math.random() * list.length)];
 }
 export const ItemForm = ({

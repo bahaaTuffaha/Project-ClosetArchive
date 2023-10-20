@@ -12,12 +12,13 @@ import { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { newCategory } from "./images";
+import { accessories, newCategory, shoes, trousers, tshirt } from "./images";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { BackButton } from "../../components/BackButton";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { delCategory } from "../../redux/categoriesSlice";
+import { localization } from "../../utils/localization";
 const centerIndex = Math.round(36);
 export type TAnimationStyle = (value: number) => AnimatedStyleProp<ViewStyle>;
 
@@ -26,6 +27,7 @@ export function Category() {
   const navigation = useNavigation<any>();
 
   const categoriesState = useSelector((state: RootState) => state.CategoryList);
+  const storedSettings = useSelector((state: RootState) => state.settings);
   const animationStyle: TAnimationStyle = useCallback((value: number) => {
     "worklet";
 
@@ -50,9 +52,33 @@ export function Category() {
           height={height}
           autoPlay={false} // do redux + array for
           data={[
+            {
+              name: localization.Tops,
+              sprites: tshirt,
+              screen: "ItemForm",
+              index: 0,
+            },
+            {
+              name: localization.Bottoms,
+              sprites: trousers,
+              screen: "ItemForm",
+              index: 1,
+            },
+            {
+              name: localization.Shoes,
+              sprites: shoes,
+              screen: "ItemForm",
+              index: 2,
+            },
+            {
+              name: localization.Accessories,
+              sprites: accessories,
+              screen: "ItemForm",
+              index: 3,
+            },
             ...categoriesState.Categories,
             {
-              name: "Add New Category",
+              name: localization.Add_New_Category,
               sprites: newCategory,
               screen: "CategoryForm",
               index: -1,
@@ -77,7 +103,7 @@ export function Category() {
                 }
               >
                 <ThemeText classNameStyle="text-3xl mt-10 uppercase mx-auto font-bold">
-                  {item.name}
+                  {item.name[storedSettings.language]}
                 </ThemeText>
                 <ImageSequence
                   framesPerSecond={24}
@@ -92,6 +118,7 @@ export function Category() {
                 <Icon
                   onPress={() => {
                     dispatch(delCategory({ index: item.index }));
+                    console.log(item.index);
                   }}
                   name="delete"
                   size={50}

@@ -88,7 +88,7 @@ export function HomeBottom() {
     (state: RootState) => state.CategoryList.Categories,
   );
   const CategoriesList = storedCategories.map((item) => ({
-    label: item.name,
+    label: item.name[storedSettings.language],
     value: item.index,
   }));
 
@@ -341,7 +341,11 @@ export function HomeBottom() {
         </SideModal>
 
         <View className="flex flex-col">
-          <View className="w-full flex flex-row justify-between items-center pt-5">
+          <View
+            className={`w-full flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } justify-between items-center pt-5`}
+          >
             <View className="flex flex-row space-x-2 justify-center items-center">
               <ThemeText classNameStyle="font-light text-lg italic">
                 {localization.Welcome[storedSettings.language] +
@@ -426,6 +430,7 @@ export function HomeBottom() {
                     elevation: { level3: "#aebb77b0" },
                   },
                 }}
+                //rtl please
                 value={search}
                 selectionColor="#C0C0C0"
                 // label="Search"

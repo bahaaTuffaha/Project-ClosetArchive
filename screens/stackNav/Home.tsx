@@ -54,8 +54,8 @@ const createChannels = (selectedLang: number) => {
       );
     }
   });
-  const randomMessage = get_random(clothingReminderMessages[selectedLang || 0]);
-  const randomTitle = get_random(clothingReminderTitles[selectedLang || 0]);
+  const randomMessage = get_random(clothingReminderMessages)[selectedLang || 0];
+  const randomTitle = get_random(clothingReminderTitles)[selectedLang || 0];
   PushNotification.cancelLocalNotification("1");
   PushNotification.cancelLocalNotification("2");
   PushNotification.localNotificationSchedule({
