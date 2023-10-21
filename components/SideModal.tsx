@@ -8,6 +8,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { colors } from "../utils/colors";
 import { Button } from "react-native-paper";
+import { localization } from "../utils/localization";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 export const SideModal = ({
   space,
@@ -22,6 +25,7 @@ export const SideModal = ({
 }) => {
   const { width, height } = Dimensions.get("window");
   const isDarkMode = useColorScheme() === "dark";
+  const storedSettings = useSelector((state: RootState) => state.settings);
   const closeDrawerAnimation = useAnimatedStyle(() => {
     return {
       marginRight: withTiming(space.value, {
@@ -76,7 +80,7 @@ export const SideModal = ({
             handleCloseDrawer();
           }}
         >
-          Close
+          {localization.Close[storedSettings.language]}
         </Button>
       </Animated.View>
     </>

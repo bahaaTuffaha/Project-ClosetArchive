@@ -24,6 +24,7 @@ import { useSharedValue } from "react-native-reanimated";
 import { colors } from "../../utils/colors";
 import { SideModal } from "../../components/SideModal";
 import { LogFilter } from "../../utils/filters";
+import { localization } from "../../utils/localization";
 
 export const OutfitLog = () => {
   const animationRef = useRef<Lottie>(null);
@@ -64,7 +65,7 @@ export const OutfitLog = () => {
     setFilteredLogs(LogFilter(sortValue, logsState, search));
   }, [logsState.length, search, sortValue]);
 
-  //filter : last added  and first added (from logTime), today, last week ,search by name
+  const storedSettings = useSelector((state: RootState) => state.settings);
   return (
     <ThemeView classNameStyle="px-1">
       <>
@@ -115,7 +116,7 @@ export const OutfitLog = () => {
 
             <View className="p-2">
               <ThemeText customStyle={styles.notes}>
-                Additional Notes:
+                {localization.Additional_notes[storedSettings.language]}
               </ThemeText>
               <ThemeText classNameStyle="h-fit text-[14px]">
                 {modalInfo?.additionalNotes}
@@ -130,27 +131,27 @@ export const OutfitLog = () => {
               value={sortValue}
             >
               <RadioButton.Item
-                label="Last Added"
+                label={localization.Last_Added[storedSettings.language]}
                 value="LA"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Name Asc"
+                label={localization.Name_Asc[storedSettings.language]}
                 value="NA"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Name Desc"
+                label={localization.Name_Desc[storedSettings.language]}
                 value="ND"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Date Asc"
+                label={localization.Date_Asc[storedSettings.language]}
                 value="DA"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Date Desc"
+                label={localization.Date_Desc[storedSettings.language]}
                 value="DD"
                 color={colors.mainCyan}
               />
@@ -158,7 +159,9 @@ export const OutfitLog = () => {
           </>
         </SideModal>
         <View className="flex flex-row items-center justify-center w-full h-14 rounded-t-2xl shadow-2xl bg-mainCyan mb-[1%]">
-          <Text className="text-xl text-white font-bold">LOGS</Text>
+          <Text className="text-xl text-white font-bold">
+            {localization.Logs[storedSettings.language]}
+          </Text>
           <View className="w-[1%] h-full bg-white absolute right-[15%]" />
           <Pressable
             onPress={() => {
@@ -179,6 +182,12 @@ export const OutfitLog = () => {
             },
           }}
           value={search}
+          style={{
+            flexDirection: storedSettings.language == 1 ? "row-reverse" : "row",
+          }}
+          inputStyle={{
+            textAlign: storedSettings.language == 1 ? "right" : "left",
+          }}
           selectionColor="#C0C0C0"
           // label="Search"
           onChange={(text) => setSearch(text.nativeEvent.text)}
@@ -205,7 +214,7 @@ export const OutfitLog = () => {
                 lightColor={colors.white}
                 classNameStyle="self-center"
               >
-                Your closet history is empty
+                {localization.ClosetHistoryEmpty[storedSettings.language]}
               </ThemeText>
             </View>
           )}

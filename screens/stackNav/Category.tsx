@@ -22,6 +22,32 @@ import { localization } from "../../utils/localization";
 const centerIndex = Math.round(36);
 export type TAnimationStyle = (value: number) => AnimatedStyleProp<ViewStyle>;
 
+export const defaultCategories = [
+  {
+    name: localization.Tops,
+    sprites: tshirt,
+    screen: "ItemForm",
+    index: 0,
+  },
+  {
+    name: localization.Bottoms,
+    sprites: trousers,
+    screen: "ItemForm",
+    index: 1,
+  },
+  {
+    name: localization.Shoes,
+    sprites: shoes,
+    screen: "ItemForm",
+    index: 2,
+  },
+  {
+    name: localization.Accessories,
+    sprites: accessories,
+    screen: "ItemForm",
+    index: 3,
+  },
+];
 export function Category() {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation<any>();
@@ -52,30 +78,7 @@ export function Category() {
           height={height}
           autoPlay={false} // do redux + array for
           data={[
-            {
-              name: localization.Tops,
-              sprites: tshirt,
-              screen: "ItemForm",
-              index: 0,
-            },
-            {
-              name: localization.Bottoms,
-              sprites: trousers,
-              screen: "ItemForm",
-              index: 1,
-            },
-            {
-              name: localization.Shoes,
-              sprites: shoes,
-              screen: "ItemForm",
-              index: 2,
-            },
-            {
-              name: localization.Accessories,
-              sprites: accessories,
-              screen: "ItemForm",
-              index: 3,
-            },
+            ...defaultCategories,
             ...categoriesState.Categories,
             {
               name: localization.Add_New_Category,

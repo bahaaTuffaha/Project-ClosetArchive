@@ -9,6 +9,9 @@ import outfitLogIcon from "../assets/images/outfitLog.png";
 import outfitLogUnselectedIcon from "../assets/images/outfitUnselected.png";
 import { OutfitLog } from "../screens/bottomNav/OutfitLog";
 import { colors } from "../utils/colors";
+import { localization } from "../utils/localization";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 const Tab = createBottomTabNavigator();
 
 const CustomTabButton = ({
@@ -40,6 +43,7 @@ const CustomTabButton = ({
   );
 };
 export default function MyTabs() {
+  const storedSettings = useSelector((state: RootState) => state.settings);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -54,10 +58,10 @@ export default function MyTabs() {
           paddingBottom: 5,
         },
       }}
-      initialRouteName="My closet"
+      initialRouteName={localization.My_closet[storedSettings.language]}
     >
       <Tab.Screen
-        name="My closet"
+        name={localization.My_closet[storedSettings.language]}
         component={HomeBottom}
         options={{
           tabBarActiveTintColor: colors.white,
@@ -103,7 +107,7 @@ export default function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Outfit log"
+        name={localization.Outfit_Log[storedSettings.language]}
         component={OutfitLog}
         options={{
           tabBarActiveTintColor: colors.white,

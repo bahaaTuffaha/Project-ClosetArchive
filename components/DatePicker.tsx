@@ -1,4 +1,4 @@
-import { Pressable, useColorScheme } from "react-native";
+import { Pressable, Text, useColorScheme } from "react-native";
 import { ThemeText } from "./ThemeText";
 import dayjs from "dayjs";
 import { Dispatch, SetStateAction } from "react";
@@ -33,7 +33,7 @@ export const DatePicker = ({
         }}
       >
         <ThemeText lightColor={colors.black} darkColor="#CCCCCC">
-          {title + ":"}
+          {title}
         </ThemeText>
         <ThemeText>{date ? dayjs(date).format("DD/MM/YYYY") : ""}</ThemeText>
         {type == "time" ||

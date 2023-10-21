@@ -68,7 +68,7 @@ export const RandomNamesP1 = [
   "Relaxed Hoodie",
 ];
 
-export const seasonList = [
+const seasonList_en = [
   {
     value: "Spring",
     label: "Spring",
@@ -86,6 +86,43 @@ export const seasonList = [
     label: "Winter",
   },
 ];
+const seasonList_ar = [
+  {
+    value: "Spring",
+    label: "ربيع",
+  },
+  {
+    value: "Summer",
+    label: "صيف",
+  },
+  {
+    value: "Fall",
+    label: "خريف",
+  },
+  {
+    value: "Winter",
+    label: "شتاء",
+  },
+];
+const seasonList_es = [
+  {
+    value: "Spring",
+    label: "Primavera",
+  },
+  {
+    value: "Summer",
+    label: "Verano",
+  },
+  {
+    value: "Fall",
+    label: "Otoño",
+  },
+  {
+    value: "Winter",
+    label: "Invierno",
+  },
+];
+export const seasonList = [seasonList_en, seasonList_ar, seasonList_es];
 export const fitList = [
   {
     value: "Regular Fit",

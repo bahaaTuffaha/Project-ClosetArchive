@@ -31,6 +31,7 @@ import { HomeFilter } from "../../utils/filters";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { seasonList } from "../../utils/data";
 import { clothesList, localization } from "../../utils/localization";
+import { defaultCategories } from "../stackNav/Category";
 
 export function filterCollectionsBySearch(array: item[][], search: string) {
   let newAllCollections = [];
@@ -87,10 +88,12 @@ export function HomeBottom() {
   const storedCategories = useSelector(
     (state: RootState) => state.CategoryList.Categories,
   );
-  const CategoriesList = storedCategories.map((item) => ({
-    label: item.name[storedSettings.language],
-    value: item.index,
-  }));
+  const CategoriesList = defaultCategories
+    .concat(storedCategories)
+    .map((item) => ({
+      label: item.name[storedSettings.language],
+      value: item.index,
+    }));
 
   const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
   const space = useSharedValue(-20);
@@ -230,27 +233,27 @@ export function HomeBottom() {
               value={sortValue}
             >
               <RadioButton.Item
-                label="Last Added"
+                label={localization.Last_Added[storedSettings.language]}
                 value="LA"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Name Asc"
+                label={localization.Name_Asc[storedSettings.language]}
                 value="NA"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Name Desc"
+                label={localization.Name_Desc[storedSettings.language]}
                 value="ND"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Purchase Date Asc"
+                label={localization.PurchaseDateAsc[storedSettings.language]}
                 value="PDA"
                 color={colors.mainCyan}
               />
               <RadioButton.Item
-                label="Purchase Date Desc"
+                label={localization.PurchaseDateDesc[storedSettings.language]}
                 value="PDD"
                 color={colors.mainCyan}
               />
@@ -267,8 +270,12 @@ export function HomeBottom() {
                 open={OpenSeasonFilter}
                 value={seasonFilter}
                 items={[
-                  { label: "Season not specified", value: "" },
-                  ...seasonList,
+                  {
+                    label:
+                      localization.SeasonNotSpecified[storedSettings.language],
+                    value: "",
+                  },
+                  ...seasonList[storedSettings.language],
                 ]}
                 setOpen={setOpenSeasonFilter}
                 setValue={setSeasonFilter}
@@ -292,7 +299,9 @@ export function HomeBottom() {
                 showBadgeDot={false}
                 badgeTextStyle={{ color: colors.black }}
                 mode="BADGE"
-                placeholder="Category Filter"
+                placeholder={
+                  localization.CategoryFilter[storedSettings.language]
+                }
                 style={{ borderColor: colors.mainGreen, marginBottom: 20 }}
                 dropDownContainerStyle={{ borderColor: colors.mainGreen }}
               />
@@ -317,7 +326,7 @@ export function HomeBottom() {
                   badgeTextStyle={{ color: colors.black }}
                   mode="BADGE"
                   listMode="MODAL"
-                  placeholder="Type Filter"
+                  placeholder={localization.TypeFilter[storedSettings.language]}
                   style={{ borderColor: colors.mainGreen }}
                   dropDownContainerStyle={{ borderColor: colors.mainGreen }}
                 />
@@ -335,7 +344,7 @@ export function HomeBottom() {
                 setSortValue("LA");
               }}
             >
-              Reset
+              {localization.Reset[storedSettings.language]}
             </Button>
           </>
         </SideModal>
@@ -432,6 +441,13 @@ export function HomeBottom() {
                 }}
                 //rtl please
                 value={search}
+                style={{
+                  flexDirection:
+                    storedSettings.language == 1 ? "row-reverse" : "row",
+                }}
+                inputStyle={{
+                  textAlign: storedSettings.language == 1 ? "right" : "left",
+                }}
                 selectionColor="#C0C0C0"
                 // label="Search"
                 onChange={(text) => setSearch(text.nativeEvent.text)}

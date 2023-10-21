@@ -39,7 +39,7 @@ import { RandomNamesP1, fitList, sizeList, seasonList } from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
 import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
-import { clothesList } from "../../utils/localization";
+import { clothesList, localization } from "../../utils/localization";
 
 export function get_random(list: string[] | string[][]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -364,8 +364,13 @@ export const ItemForm = ({
               selectionColor="#C0C0C0"
               activeOutlineColor={appColors.mainGreen}
               textContentType="name"
-              style={styles.customWidth}
-              label="Name"
+              style={[
+                styles.customWidth,
+                {
+                  textAlign: storedSettings.language == 1 ? "right" : "left",
+                },
+              ]}
+              label={localization.Name[storedSettings.language]}
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
               right={
@@ -391,7 +396,7 @@ export const ItemForm = ({
                   setValue={setType}
                   mode="SIMPLE"
                   listMode="MODAL"
-                  placeholder="Type"
+                  placeholder={localization.Type[storedSettings.language]}
                   style={{ borderColor: appColors.mainGreen }}
                   dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
                   theme={colorScheme}
@@ -408,7 +413,7 @@ export const ItemForm = ({
                     setOpen={setOpenFit}
                     setValue={setFit}
                     mode="SIMPLE"
-                    placeholder="Fit"
+                    placeholder={localization.Fit[storedSettings.language]}
                     style={{ borderColor: appColors.mainGreen }}
                     dropDownContainerStyle={{
                       borderColor: appColors.mainGreen,
@@ -420,11 +425,11 @@ export const ItemForm = ({
                   <DropDownPicker
                     open={openSeason}
                     value={season}
-                    items={seasonList}
+                    items={seasonList[storedSettings.language]}
                     setOpen={setOpenSeason}
                     setValue={setSeason}
                     mode="SIMPLE"
-                    placeholder="Season"
+                    placeholder={localization.Season[storedSettings.language]}
                     style={{ borderColor: appColors.mainGreen }}
                     dropDownContainerStyle={{
                       borderColor: appColors.mainGreen,
@@ -441,7 +446,7 @@ export const ItemForm = ({
                 selectionColor="#C0C0C0"
                 activeOutlineColor={appColors.mainGreen}
                 style={{ width: "40%" }}
-                label="Quantity"
+                label={localization.Quantity[storedSettings.language]}
                 value={String(quantity)}
                 onChange={(text) => setQuantity(Number(text.nativeEvent.text))}
                 keyboardType="numeric"
@@ -455,7 +460,7 @@ export const ItemForm = ({
                   setOpen={setOpenSizeUnit}
                   setValue={setSizeUnit}
                   mode="SIMPLE"
-                  placeholder="Unit"
+                  placeholder={localization.Unit[storedSettings.language]}
                   style={{ borderColor: appColors.mainGreen, marginTop: 5 }}
                   dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
                   theme={colorScheme}
@@ -467,7 +472,7 @@ export const ItemForm = ({
                 selectionColor="#C0C0C0"
                 activeOutlineColor={appColors.mainGreen}
                 style={{ width: "28%" }}
-                label="Size"
+                label={localization.Size[storedSettings.language]}
                 value={String(size)}
                 onChange={(text) => setSize(text.nativeEvent.text)}
                 maxLength={6}
@@ -475,7 +480,7 @@ export const ItemForm = ({
             </View>
             <View></View>
             <DatePicker
-              title="Purchase Date"
+              title={localization.Purchase_Date[storedSettings.language]}
               date={purchaseDate}
               isDatePickerVisible={isDatePickerVisible}
               setDate={setPurchaseDate}
@@ -494,16 +499,20 @@ export const ItemForm = ({
                 showBadgeDot={false}
                 badgeTextStyle={{ color: appColors.black }}
                 mode="BADGE"
-                placeholder="Collection"
+                placeholder={localization.Collection[storedSettings.language]}
                 style={{ borderColor: appColors.mainGreen }}
                 dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
               />
             </View>
 
-            <View className="flex flex-row">
+            <View
+              className={`flex ${
+                storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+              }`}
+            >
               <Icon name="info-circle" size={15} color={appColors.mainCyan} />
-              <ThemeText classNameStyle="text-xs ml-2">
-                You can add this Item under a collection
+              <ThemeText classNameStyle="text-xs mx-2">
+                {localization.You_can_add[storedSettings.language]}
               </ThemeText>
             </View>
 
