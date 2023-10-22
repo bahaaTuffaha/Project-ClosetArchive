@@ -76,7 +76,12 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
               selectionColor="#C0C0C0"
               activeOutlineColor={appColors.mainGreen}
               textContentType="name"
-              style={styles.customWidth}
+              style={[
+                styles.customWidth,
+                {
+                  textAlign: storedSettings.language == 1 ? "right" : "left",
+                },
+              ]}
               label={localization.Category_Name[storedSettings.language]}
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}

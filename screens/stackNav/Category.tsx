@@ -113,7 +113,6 @@ export function Category() {
                 <Icon
                   onPress={() => {
                     dispatch(delCategory({ index: item.index }));
-                    console.log(item.index);
                   }}
                   name="delete"
                   size={50}
