@@ -1,10 +1,4 @@
-import {
-  Dimensions,
-  Pressable,
-  View,
-  ViewStyle,
-  TouchableOpacity,
-} from "react-native";
+import { Dimensions, Pressable, View, ViewStyle } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import ImageSequence from "react-native-image-sequence-2";
 import { AnimatedStyleProp, interpolate } from "react-native-reanimated";
@@ -111,9 +105,7 @@ export function Category() {
                 <ImageSequence
                   framesPerSecond={24}
                   images={item.sprites}
-                  // downsampleHeight={32}
-                  // downsampleWidth={32}
-                  startFrameIndex={centerIndex}
+                  startFrameIndex={0}
                   style={{ width: 500, height: 500 }}
                 />
               </Pressable>

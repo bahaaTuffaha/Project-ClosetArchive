@@ -14,9 +14,11 @@ import { addOpacityToHex } from "./CollectionForm";
 import { ThemeText } from "../../components/ThemeText";
 import { colors } from "../../utils/colors";
 import { FlashList } from "@shopify/flash-list";
+import { localization } from "../../utils/localization";
 
 export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
+  const storedSettings = useSelector((state: RootState) => state.settings);
   const [search, setSearch] = useState("");
   const isDarkMode = useColorScheme() === "dark";
   const [allCollections, setAllCollections] = useState<item[][]>([]);
@@ -69,7 +71,9 @@ export const ItemSelector = () => {
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
-          <ThemeText classNameStyle="text-xl italic">Select Items</ThemeText>
+          <ThemeText classNameStyle="text-xl italic">
+            {localization.SelectItems[storedSettings.language]}
+          </ThemeText>
         </View>
         <View className="flex flex-row justify-end">
           <Searchbar
@@ -80,6 +84,13 @@ export const ItemSelector = () => {
                 onSurfaceVariant: isDarkMode ? colors.white : colors.black,
                 elevation: { level3: colors.mainCyan },
               },
+            }}
+            style={{
+              flexDirection:
+                storedSettings.language == 1 ? "row-reverse" : "row",
+            }}
+            inputStyle={{
+              textAlign: storedSettings.language == 1 ? "right" : "left",
             }}
             value={search}
             selectionColor="#C0C0C0"
@@ -231,7 +242,7 @@ export const ItemSelector = () => {
               }
             }}
           >
-            Next
+            {localization.Next[storedSettings.language]}
           </Button>
           <Snackbar
             visible={visible}
@@ -243,7 +254,7 @@ export const ItemSelector = () => {
             //   },
             // }}
           >
-            Please select at least 1 item.
+            {localization.SelectAtLeastOneItem[storedSettings.language]}
           </Snackbar>
         </View>
       </>

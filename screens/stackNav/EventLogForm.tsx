@@ -4,13 +4,15 @@ import { BackButton } from "../../components/BackButton";
 import { CustomInput } from "../../components/CustomInput";
 import { useState } from "react";
 import { DatePicker } from "../../components/DatePicker";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addEventLog, addLog } from "../../redux/itemsSlice";
 import { nanoid } from "nanoid";
 import { CommonActions } from "@react-navigation/native";
 import { Button } from "react-native-paper";
 import { ThemeText } from "../../components/ThemeText";
 import { colors } from "../../utils/colors";
+import { localization } from "../../utils/localization";
+import { RootState } from "../../redux/store";
 
 export const EventLogForm = ({
   navigation,
@@ -27,6 +29,7 @@ export const EventLogForm = ({
   const [errorsList, setErrorsList] = useState<string[]>([]);
   const { selectedIDs } = route.params;
   const dispatch = useDispatch();
+  const storedSettings = useSelector((state: RootState) => state.settings);
 
   async function addEventHandler() {
     const generatedId = nanoid(); // event Id
@@ -64,7 +67,9 @@ export const EventLogForm = ({
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
-          <ThemeText classNameStyle="text-xl italic">Event info</ThemeText>
+          <ThemeText classNameStyle="text-xl italic">
+            {localization.EventInfo[storedSettings.language]}
+          </ThemeText>
         </View>
         <View className="flex items-center space-y-3">
           <CustomInput
@@ -73,14 +78,19 @@ export const EventLogForm = ({
             selectionColor="#C0C0C0"
             activeOutlineColor={colors.mainGreen}
             textContentType="name"
-            style={styles.customWidth}
+            style={[
+              styles.customWidth,
+              {
+                textAlign: storedSettings.language == 1 ? "right" : "left",
+              },
+            ]}
             className="mb-5"
-            label="Event Name"
+            label={localization.EventName[storedSettings.language]}
             value={eventName}
             onChange={(text) => setEventName(text.nativeEvent.text)}
           />
           <DatePicker
-            title="Event Date"
+            title={localization.EventDate[storedSettings.language]}
             type="both"
             date={eventDate}
             isDatePickerVisible={isDatePickerVisible}
@@ -93,9 +103,14 @@ export const EventLogForm = ({
             selectionColor="#C0C0C0"
             activeOutlineColor={colors.mainGreen}
             textContentType="name"
-            style={styles.customWidth}
+            style={[
+              styles.customWidth,
+              {
+                textAlign: storedSettings.language == 1 ? "right" : "left",
+              },
+            ]}
             textArea={true}
-            label="Additional Notes"
+            label={localization.Additional_notes[storedSettings.language]}
             value={additionalNotes}
             onChange={(text) => setAdditionalNotes(text.nativeEvent.text)}
           />
@@ -117,7 +132,7 @@ export const EventLogForm = ({
             textColor={colors.white}
             onPress={addEventHandler}
           >
-            Save
+            {localization.Save[storedSettings.language]}
           </Button>
         </View>
       </>

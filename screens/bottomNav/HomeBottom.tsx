@@ -389,7 +389,11 @@ export function HomeBottom() {
           </View>
           <View className="w-full flex flex-col mt-5">
             <View className="w-full flex flex-row justify-between">
-              <TouchableOpacity className="flex flex-row items-center h-14 w-[58%] bg-mainPink rounded-tl-2xl shadow-2xl">
+              <TouchableOpacity
+                className={`flex ${
+                  storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+                } items-center h-14 w-[58%] bg-mainPink rounded-tl-2xl shadow-2xl`}
+              >
                 <View className="mx-3">
                   <FontAwesome5
                     name="question-circle"
@@ -398,7 +402,7 @@ export function HomeBottom() {
                   />
                 </View>
                 <Text className="text-white font-bold w-3/4 capitalize">
-                  Closet Info
+                  {localization.ClosetInfo[storedSettings.language]}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -439,7 +443,6 @@ export function HomeBottom() {
                     elevation: { level3: "#aebb77b0" },
                   },
                 }}
-                //rtl please
                 value={search}
                 style={{
                   flexDirection:
@@ -449,7 +452,6 @@ export function HomeBottom() {
                   textAlign: storedSettings.language == 1 ? "right" : "left",
                 }}
                 selectionColor="#C0C0C0"
-                // label="Search"
                 onChange={(text) => setSearch(text.nativeEvent.text)}
                 onClearIconPress={() => setSearch("")}
               />

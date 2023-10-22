@@ -307,7 +307,7 @@ export const ItemForm = ({
       <CustomModal
         setVisible={setImageModalVisible}
         visible={imageModalVisible}
-        label="Import image"
+        label={localization.import_image[storedSettings.language]}
       >
         <View className="px-6 space-y-5 mt-5">
           <Button
@@ -316,7 +316,7 @@ export const ItemForm = ({
             mode="contained"
             onPress={() => handleImagePicker(1)}
           >
-            Use Camera
+            {localization.Use_Camera[storedSettings.language]}
           </Button>
           <Button
             buttonColor={appColors.mainCyan}
@@ -324,7 +324,7 @@ export const ItemForm = ({
             mode="contained"
             onPress={() => handleImagePicker(0)}
           >
-            Import From Device
+            {localization.import_from_device[storedSettings.language]}
           </Button>
           <Button
             buttonColor={appColors.mainCyan}
@@ -332,7 +332,7 @@ export const ItemForm = ({
             mode="contained"
             onPress={() => setImageUrl("")}
           >
-            Reset Image
+            {localization.Reset_Image[storedSettings.language]}
           </Button>
         </View>
       </CustomModal>
@@ -341,7 +341,9 @@ export const ItemForm = ({
           <BackButton />
           <View className="flex items-center space-y-2">
             <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
-              {editingIndex ? "Editing Item" : "Adding an Item"}
+              {editingIndex
+                ? localization.EditingItem[storedSettings.language]
+                : localization.Adding_an_item[storedSettings.language]}
             </ThemeText>
             <TouchableOpacity
               onPress={() => {
@@ -517,7 +519,13 @@ export const ItemForm = ({
             </View>
 
             <View className="flex-row items-center">
-              <ThemeText>Automatic color selection</ThemeText>
+              <ThemeText>
+                {
+                  localization.Automatic_color_selection[
+                    storedSettings.language
+                  ]
+                }
+              </ThemeText>
               <Switch
                 color={appColors.mainCyan}
                 value={isAutoOn}
@@ -527,7 +535,9 @@ export const ItemForm = ({
 
             {!isAutoOn && (
               <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>Primary color</ThemeText>
+                <ThemeText>
+                  {localization.Primary_color[storedSettings.language]}
+                </ThemeText>
                 <Pressable
                   onPress={() => {
                     setVisible(true);
@@ -543,7 +553,9 @@ export const ItemForm = ({
             )}
             {!isAutoOn && (
               <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>Secondary</ThemeText>
+                <ThemeText>
+                  {localization.Secondary_color[storedSettings.language]}
+                </ThemeText>
                 <Pressable
                   onPress={() => {
                     setVisible(true);
@@ -559,7 +571,9 @@ export const ItemForm = ({
             )}
             {!isAutoOn && (
               <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>Tertiary color</ThemeText>
+                <ThemeText>
+                  {localization.Tertiary_color[storedSettings.language]}
+                </ThemeText>
                 <Pressable
                   onPress={() => {
                     setVisible(true);
@@ -593,7 +607,7 @@ export const ItemForm = ({
                 textColor={appColors.white}
                 onPress={addItemHandler}
               >
-                Save
+                {localization.Save[storedSettings.language]}
               </Button>
               {editingIndex && (
                 <Button
@@ -603,7 +617,7 @@ export const ItemForm = ({
                   textColor={appColors.white}
                   onPress={deleteItemHandler}
                 >
-                  Delete
+                  {localization.Delete[storedSettings.language]}
                 </Button>
               )}
               {editingIndex &&
@@ -615,7 +629,7 @@ export const ItemForm = ({
                     textColor={appColors.white}
                     onPress={resetLaundryCounterHandler}
                   >
-                    Cleaned
+                    {localization.Cleaned[storedSettings.language]}
                   </Button>
                 )}
             </View>

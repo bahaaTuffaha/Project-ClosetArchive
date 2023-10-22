@@ -1,5 +1,5 @@
 export const localization = {
-  Welcome: ["Welcome back, ", "مرحبًا بك", "Bienvenido de nuevo"],
+  Welcome: ["Welcome back, ", "مرحبًا بك ", "Bienvenido de nuevo, "],
   Collection: ["Collection", "مجموعة", "Colección"],
   Collections: ["Collections", "مجموعات", "Colecciones"],
   Collection_name: [
@@ -24,6 +24,9 @@ export const localization = {
     "ملاحظات إضافية:",
     "Notas adicionales:",
   ],
+  EventInfo: ["Event info", "معلومات الحدث", "Información del evento"],
+  EventDate: ["Event Date", "تاريخ الحدث", "Fecha del evento"],
+  EventName: ["Event Name", "اسم الحدث", "Nombre del evento"],
   Last_Added: ["Last Added", "أضيف مؤخراً", "Último agregado"],
   Name_Asc: ["Name Asc", "اسم تصاعدي", "Nombre Asc"],
   Name_Desc: ["Name Desc", "اسم تنازلي", "Nombre Desc"],
@@ -39,6 +42,14 @@ export const localization = {
   Unit: ["Unit", "الوحدة", "Unidad"],
   Size: ["Size", "الحجم", "Tamaño"],
   Purchase_Date: ["Purchase Date", "تاريخ الشراء", "Fecha de compra"],
+  Settings: ["Settings", "الإعدادات", "Configuración"],
+  SelectItems: ["Select Items", "تحديد العناصر", "Seleccionar artículos"],
+  Next: ["Next", "التالي", "Siguiente"],
+  SelectAtLeastOneItem: [
+    "Please select at least 1 item.",
+    "يرجى تحديد ما لا يقل عن عنصر واحد.",
+    "Por favor, seleccione al menos 1 artículo.",
+  ],
   PurchaseDateAsc: [
     "Purchase Date Asc",
     "تاريخ الشراء تصاعدي",
@@ -75,12 +86,18 @@ export const localization = {
   Secondary_color: ["Secondary color", "اللون الثانوي", "Color secundario"],
   Tertiary_color: ["Tertiary color", "اللون الثالثي", "Color terciario"],
   Adding_an_item: ["Adding an item", "إضافة عنصر", "Añadir un ítem"],
+  EditingItem: ["Editing Item", "تحرير العنصر", "Editando el artículo"],
   import_image: ["import image", "استيراد صورة", "Importar imagen"],
   Use_Camera: ["Use Camera", "استخدم الكاميرا", "Usar la cámara"],
   import_from_device: [
     "import from device",
     "استيراد من الجهاز",
     "Importar desde el dispositivo",
+  ],
+  ThisWillRemind: [
+    "This will remind you to put an item in the laundry after n number of uses.",
+    "سيُذكِرك بوضع القطعة في الغسيل بعد عدد من الاستخدامات.",
+    "Esto te recordará poner una prenda en la lavandería después de n usos.",
   ],
   Reset_Image: ["Reset Image", "إعادة تعيين الصورة", "Restablecer imagen"],
   Reset: ["Reset", "إعادة ضبط", "Restablecer"],
@@ -92,6 +109,9 @@ export const localization = {
   Language: ["Language", "اللغة", "Idioma"],
   Export: ["Export", "تصدير", "Exportar"],
   Import: ["Import", "استيراد", "Importar"],
+  ClosetInfo: ["Closet Info", "معلومات الخزانة", "Información del armario"],
+  Times: ["Times", "مرات", "Veces"],
+  N: ["n", "ن", "n"],
   Laundry_reminder: [
     "Laundry reminder",
     "تذكير الغسيل",
