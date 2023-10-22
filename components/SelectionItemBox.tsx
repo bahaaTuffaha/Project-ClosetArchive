@@ -25,7 +25,9 @@ export const SelectionItemBox = ({
   selectedIdCollector: string[];
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
-  const [isSelected, setIsSelected] = useState(false);
+  const [isSelected, setIsSelected] = useState(
+    selectedIdCollector.includes(id),
+  );
   useEffect(() => {
     if (isSelected) {
       setSelectedIdCollector((prevArray) => [...prevArray, id]);

@@ -19,7 +19,8 @@ import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
-import { itemRefresher, laundryRefresher } from "../../redux/itemsSlice";
+import { laundryRefresher } from "../../redux/itemsSlice";
+import { localization } from "../../utils/localization";
 
 export const handleNumberChange = (
   func: any,
@@ -42,9 +43,6 @@ export const Settings = () => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    // return () => {
-
-    // }
     dispatch(changeLanguage({ lang: lang }));
   }, [lang]);
   const [visible, setVisible] = useState(false);
@@ -58,7 +56,9 @@ export const Settings = () => {
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
-          <ThemeText classNameStyle="text-xl italic">Settings</ThemeText>
+          <ThemeText classNameStyle="text-xl italic">
+            {localization.Settings[storedSettings.language]}
+          </ThemeText>
         </View>
         <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
           {exportOrImport == 0
@@ -66,9 +66,13 @@ export const Settings = () => {
             : "Imported successfully"}
         </Snackbar>
         <View className="w-full px-5 space-y-3 pt-2">
-          <View className="flex flex-row space-x-2 justify-between items-center">
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } space-x-2 justify-between items-center`}
+          >
             <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              Your Name
+              {localization.Your_Name[storedSettings.language]}
             </ThemeText>
             <CustomInput
               mode="outlined"
@@ -76,8 +80,11 @@ export const Settings = () => {
               selectionColor="#C0C0C0"
               activeOutlineColor={colors.mainGreen}
               textContentType="name"
-              style={{ width: "50%" }}
-              label="User Name"
+              style={{
+                width: "50%",
+                textAlign: storedSettings.language == 1 ? "right" : "left",
+              }}
+              label={localization.User_Name[storedSettings.language]}
               value={storedSettings.name}
               onChange={(text) =>
                 text.nativeEvent.text.length < 8 &&
@@ -85,9 +92,13 @@ export const Settings = () => {
               }
             />
           </View>
-          <View className="flex flex-row space-x-2 justify-between items-center z-20">
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } space-x-2 justify-between items-center z-20`}
+          >
             <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              Language
+              {localization.Language[storedSettings.language]}
             </ThemeText>
             <View style={{ marginBottom: 10, width: "50%" }}>
               <DropDownPicker
@@ -106,9 +117,13 @@ export const Settings = () => {
               />
             </View>
           </View>
-          <View className="flex flex-row justify-between items-center">
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } justify-between items-center`}
+          >
             <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              Export
+              {localization.Export[storedSettings.language]}
             </ThemeText>
             <Button
               onPress={async () => {
@@ -121,12 +136,16 @@ export const Settings = () => {
               className="w-[50%]"
               buttonColor={colors.mainCyan}
             >
-              Export
+              {localization.Export[storedSettings.language]}
             </Button>
           </View>
-          <View className="flex flex-row justify-between items-center z-0 ">
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } justify-between items-center z-0 `}
+          >
             <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              Import
+              {localization.Import[storedSettings.language]}
             </ThemeText>
             <Button
               onPress={async () => {
@@ -139,12 +158,16 @@ export const Settings = () => {
               className="w-[50%]"
               buttonColor={colors.mainCyan}
             >
-              Import
+              {localization.Import[storedSettings.language]}
             </Button>
           </View>
-          <View className="flex flex-row justify-between items-center">
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } justify-between items-center`}
+          >
             <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-              Laundry Reminder
+              {localization.Laundry_reminder[storedSettings.language]}
             </ThemeText>
             <CustomInput
               mode="outlined"
@@ -153,7 +176,7 @@ export const Settings = () => {
               activeOutlineColor={colors.mainGreen}
               textContentType="name"
               className="w-[50px] mx-5"
-              label="n"
+              label={localization.N[storedSettings.language]}
               value={storedSettings.laundryNumber.toString()}
               onChange={(text) =>
                 handleNumberChange(
@@ -173,7 +196,7 @@ export const Settings = () => {
               keyboardType="numeric"
             />
             <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-              times
+              {localization.Times[storedSettings.language]}
             </ThemeText>
             <Checkbox
               status={checked ? "checked" : "unchecked"}
@@ -183,11 +206,14 @@ export const Settings = () => {
               }}
             />
           </View>
-          <View className="flex flex-row">
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            }`}
+          >
             <Icon name="info-circle" size={15} color={colors.mainCyan} />
             <ThemeText classNameStyle="text-xs mx-5">
-              This will remind you to put an item in the laundry after n number
-              of uses.
+              {localization.ThisWillRemind[storedSettings.language]}
             </ThemeText>
           </View>
         </View>

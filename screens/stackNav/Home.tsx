@@ -6,7 +6,7 @@ import { get_random } from "./ItemForm";
 import {
   clothingReminderMessages,
   clothingReminderTitles,
-} from "../../utils/data";
+} from "../../utils/localization";
 import { PermissionsAndroid, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -42,7 +42,7 @@ const laundryNotification = (numberOfLaundry: number) => {
   });
 };
 
-const createChannels = () => {
+const createChannels = (selectedLang: number) => {
   PushNotification.channelExists("channel-id-1", function (exists) {
     if (!exists) {
       PushNotification.createChannel(
@@ -54,8 +54,8 @@ const createChannels = () => {
       );
     }
   });
-  const randomMessage = get_random(clothingReminderMessages);
-  const randomTitle = get_random(clothingReminderTitles);
+  const randomMessage = get_random(clothingReminderMessages)[selectedLang || 0];
+  const randomTitle = get_random(clothingReminderTitles)[selectedLang || 0];
   PushNotification.cancelLocalNotification("1");
   PushNotification.cancelLocalNotification("2");
   PushNotification.localNotificationSchedule({
@@ -77,10 +77,14 @@ export function Home() {
   const numberOfLaundry = storedItems.filter(
     (item) => item.laundryCounter >= storedSettings.laundryNumber,
   ).length;
+  const selectedLang = useSelector(
+    (state: RootState) => state.settings.language,
+  );
   useEffect(() => {
     // PushNotification.deleteChannel("channel-id-1");
+
     GetAllPermissions();
-    createChannels();
+    createChannels(selectedLang);
   }, []);
 
   useEffect(() => {

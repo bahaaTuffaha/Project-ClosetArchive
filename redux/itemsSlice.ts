@@ -15,6 +15,7 @@ export type item = {
   name: string;
   type: string;
   fit: string;
+  season?: string;
   quantity: number;
   size: number;
   sizeUnit: string;
@@ -77,6 +78,7 @@ const itemsSlice = createSlice({
         tertiaryColor: action.payload.tertiaryColor,
         logIds: [],
         laundryCounter: 0,
+        season: action.payload.season,
       } as item);
     },
     updateItem: (state, action) => {
@@ -95,6 +97,7 @@ const itemsSlice = createSlice({
       state.items[itemIndex].primaryColor = action.payload.primaryColor;
       state.items[itemIndex].secondaryColor = action.payload.secondaryColor;
       state.items[itemIndex].tertiaryColor = action.payload.tertiaryColor;
+      state.items[itemIndex].season = action.payload.season;
     },
     addCollection: (state, action) => {
       state.collectionTags.push({

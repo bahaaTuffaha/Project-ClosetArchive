@@ -35,17 +35,13 @@ import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
-import {
-  clothesList,
-  RandomNamesP1,
-  fitList,
-  sizeList,
-} from "../../utils/data";
+import { RandomNamesP1, fitList, sizeList, seasonList } from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
 import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
+import { clothesList, localization } from "../../utils/localization";
 
-export function get_random(list: string[]) {
+export function get_random(list: string[] | string[][]) {
   return list[Math.floor(Math.random() * list.length)];
 }
 export const ItemForm = ({
@@ -73,6 +69,7 @@ export const ItemForm = ({
   );
   const [type, setType] = useState(storedItems ? storedItems.type : "");
   const [fit, setFit] = useState(storedItems ? storedItems.fit : "");
+  const [season, setSeason] = useState(storedItems ? storedItems.season : "");
   const [quantity, setQuantity] = useState(
     storedItems ? storedItems.quantity : 1,
   );
@@ -95,22 +92,13 @@ export const ItemForm = ({
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
   const [openFit, setOpenFit] = useState(false);
+  const [openSeason, setOpenSeason] = useState(false);
   const [openSizeUnit, setOpenSizeUnit] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
   );
-  // const [CollectionColors, setCollectionColors] = useState<string[]>([]);
-
-  // useEffect(() => {
-  //   // separating the color collection
-  //   let colorCollector = [];
-  //   for (let i = 0; i < collectionState.length; i++) {
-  //     // console.log(collectionState[i].color);
-  //     colorCollector.unshift(collectionState[i].color);
-  //   }
-  //   setCollectionColors(colorCollector);
-  // }, [collectionState]);
+  const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
 
   const dispatch = useDispatch();
 
@@ -155,6 +143,7 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
+            season: season,
             size: size,
             sizeUnit: sizeUnit,
             quantity: quantity === 0 ? 1 : quantity,
@@ -173,6 +162,7 @@ export const ItemForm = ({
             category: selectedCategory,
             type: type,
             fit: fit,
+            season: season,
             size: size,
             sizeUnit: sizeUnit,
             quantity: quantity === 0 ? 1 : quantity,
@@ -210,24 +200,6 @@ export const ItemForm = ({
     } catch (e) {
       console.log("colorExtractor error:", e);
     }
-    // getAllSwatches(
-    //   { quality: "medium" },
-    //   imageUrl,
-    //   (error: any, swatches: any) => {
-    //     if (error) {
-    //       console.log(error);
-    //     } else {
-    //       swatches.sort((a: any, b: any) => {
-    //         return b.population - a.population;
-    //       });
-    //       setColors([
-    //         swatches[0].hex.slice(0, -2),
-    //         swatches[1].hex.slice(0, -2),
-    //         swatches[2].hex.slice(0, -2),
-    //       ]);
-    //     }
-    //   },
-    // );
   };
   const handleImagePicker = async (type: number) => {
     if (type == 0) {
@@ -335,7 +307,7 @@ export const ItemForm = ({
       <CustomModal
         setVisible={setImageModalVisible}
         visible={imageModalVisible}
-        label="Import image"
+        label={localization.import_image[storedSettings.language]}
       >
         <View className="px-6 space-y-5 mt-5">
           <Button
@@ -344,7 +316,7 @@ export const ItemForm = ({
             mode="contained"
             onPress={() => handleImagePicker(1)}
           >
-            Use Camera
+            {localization.Use_Camera[storedSettings.language]}
           </Button>
           <Button
             buttonColor={appColors.mainCyan}
@@ -352,7 +324,7 @@ export const ItemForm = ({
             mode="contained"
             onPress={() => handleImagePicker(0)}
           >
-            Import From Device
+            {localization.import_from_device[storedSettings.language]}
           </Button>
           <Button
             buttonColor={appColors.mainCyan}
@@ -360,7 +332,7 @@ export const ItemForm = ({
             mode="contained"
             onPress={() => setImageUrl("")}
           >
-            Reset Image
+            {localization.Reset_Image[storedSettings.language]}
           </Button>
         </View>
       </CustomModal>
@@ -369,7 +341,9 @@ export const ItemForm = ({
           <BackButton />
           <View className="flex items-center space-y-2">
             <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
-              {editingIndex ? "Editing Item" : "Adding an Item"}
+              {editingIndex
+                ? localization.EditingItem[storedSettings.language]
+                : localization.Adding_an_item[storedSettings.language]}
             </ThemeText>
             <TouchableOpacity
               onPress={() => {
@@ -392,8 +366,13 @@ export const ItemForm = ({
               selectionColor="#C0C0C0"
               activeOutlineColor={appColors.mainGreen}
               textContentType="name"
-              style={styles.customWidth}
-              label="Name"
+              style={[
+                styles.customWidth,
+                {
+                  textAlign: storedSettings.language == 1 ? "right" : "left",
+                },
+              ]}
+              label={localization.Name[storedSettings.language]}
               value={name}
               onChange={(text) => setName(text.nativeEvent.text)}
               right={
@@ -410,36 +389,56 @@ export const ItemForm = ({
                 <DropDownPicker
                   open={openType}
                   value={type}
-                  items={clothesList[selectedCategory ?? storedItems.category]}
+                  items={
+                    clothesList[storedSettings.language][
+                      selectedCategory ?? storedItems.category
+                    ]
+                  }
                   setOpen={setOpenType}
                   setValue={setType}
                   mode="SIMPLE"
                   listMode="MODAL"
-                  placeholder="Type"
+                  placeholder={localization.Type[storedSettings.language]}
                   style={{ borderColor: appColors.mainGreen }}
                   dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={
-                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
-                  }
+                  theme={colorScheme}
                 />
               </View>
             )}
             {(selectedCategory ?? storedItems.category) < 2 && (
-              <View style={[{ zIndex: 3 }, styles.customWidth]}>
-                <DropDownPicker
-                  open={openFit}
-                  value={fit}
-                  items={fitList}
-                  setOpen={setOpenFit}
-                  setValue={setFit}
-                  mode="SIMPLE"
-                  placeholder="Fit"
-                  style={{ borderColor: appColors.mainGreen }}
-                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={
-                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
-                  }
-                />
+              <View className="w-[80%] flex flex-row justify-between items-center z-[3]">
+                <View style={{ width: "49%" }}>
+                  <DropDownPicker
+                    open={openFit}
+                    value={fit}
+                    items={fitList}
+                    setOpen={setOpenFit}
+                    setValue={setFit}
+                    mode="SIMPLE"
+                    placeholder={localization.Fit[storedSettings.language]}
+                    style={{ borderColor: appColors.mainGreen }}
+                    dropDownContainerStyle={{
+                      borderColor: appColors.mainGreen,
+                    }}
+                    theme={colorScheme}
+                  />
+                </View>
+                <View style={{ width: "49%" }}>
+                  <DropDownPicker
+                    open={openSeason}
+                    value={season}
+                    items={seasonList[storedSettings.language]}
+                    setOpen={setOpenSeason}
+                    setValue={setSeason}
+                    mode="SIMPLE"
+                    placeholder={localization.Season[storedSettings.language]}
+                    style={{ borderColor: appColors.mainGreen }}
+                    dropDownContainerStyle={{
+                      borderColor: appColors.mainGreen,
+                    }}
+                    theme={colorScheme}
+                  />
+                </View>
               </View>
             )}
             <View className="w-[80%] flex flex-row justify-between items-center z-[2]">
@@ -449,7 +448,7 @@ export const ItemForm = ({
                 selectionColor="#C0C0C0"
                 activeOutlineColor={appColors.mainGreen}
                 style={{ width: "40%" }}
-                label="Quantity"
+                label={localization.Quantity[storedSettings.language]}
                 value={String(quantity)}
                 onChange={(text) => setQuantity(Number(text.nativeEvent.text))}
                 keyboardType="numeric"
@@ -463,12 +462,10 @@ export const ItemForm = ({
                   setOpen={setOpenSizeUnit}
                   setValue={setSizeUnit}
                   mode="SIMPLE"
-                  placeholder="Unit"
+                  placeholder={localization.Unit[storedSettings.language]}
                   style={{ borderColor: appColors.mainGreen, marginTop: 5 }}
                   dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={
-                    String(useColorScheme()?.toUpperCase()) as ThemeNameType
-                  }
+                  theme={colorScheme}
                 />
               </View>
               <CustomInput
@@ -477,7 +474,7 @@ export const ItemForm = ({
                 selectionColor="#C0C0C0"
                 activeOutlineColor={appColors.mainGreen}
                 style={{ width: "28%" }}
-                label="Size"
+                label={localization.Size[storedSettings.language]}
                 value={String(size)}
                 onChange={(text) => setSize(text.nativeEvent.text)}
                 maxLength={6}
@@ -485,7 +482,7 @@ export const ItemForm = ({
             </View>
             <View></View>
             <DatePicker
-              title="Purchase Date"
+              title={localization.Purchase_Date[storedSettings.language]}
               date={purchaseDate}
               isDatePickerVisible={isDatePickerVisible}
               setDate={setPurchaseDate}
@@ -499,26 +496,36 @@ export const ItemForm = ({
                 setOpen={setOpenCollection}
                 setValue={setCollection}
                 multiple={true}
-                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+                theme={colorScheme}
                 // badgeDotColors={CollectionColors}
                 showBadgeDot={false}
                 badgeTextStyle={{ color: appColors.black }}
                 mode="BADGE"
-                placeholder="Collection"
+                placeholder={localization.Collection[storedSettings.language]}
                 style={{ borderColor: appColors.mainGreen }}
                 dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
               />
             </View>
 
-            <View className="flex flex-row">
+            <View
+              className={`flex ${
+                storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+              }`}
+            >
               <Icon name="info-circle" size={15} color={appColors.mainCyan} />
-              <ThemeText classNameStyle="text-xs ml-2">
-                You can add this Item under a collection
+              <ThemeText classNameStyle="text-xs mx-2">
+                {localization.You_can_add[storedSettings.language]}
               </ThemeText>
             </View>
 
             <View className="flex-row items-center">
-              <ThemeText>Automatic color selection</ThemeText>
+              <ThemeText>
+                {
+                  localization.Automatic_color_selection[
+                    storedSettings.language
+                  ]
+                }
+              </ThemeText>
               <Switch
                 color={appColors.mainCyan}
                 value={isAutoOn}
@@ -528,7 +535,9 @@ export const ItemForm = ({
 
             {!isAutoOn && (
               <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>Primary color</ThemeText>
+                <ThemeText>
+                  {localization.Primary_color[storedSettings.language]}
+                </ThemeText>
                 <Pressable
                   onPress={() => {
                     setVisible(true);
@@ -544,7 +553,9 @@ export const ItemForm = ({
             )}
             {!isAutoOn && (
               <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>Secondary</ThemeText>
+                <ThemeText>
+                  {localization.Secondary_color[storedSettings.language]}
+                </ThemeText>
                 <Pressable
                   onPress={() => {
                     setVisible(true);
@@ -560,7 +571,9 @@ export const ItemForm = ({
             )}
             {!isAutoOn && (
               <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>Tertiary color</ThemeText>
+                <ThemeText>
+                  {localization.Tertiary_color[storedSettings.language]}
+                </ThemeText>
                 <Pressable
                   onPress={() => {
                     setVisible(true);
@@ -594,7 +607,7 @@ export const ItemForm = ({
                 textColor={appColors.white}
                 onPress={addItemHandler}
               >
-                Save
+                {localization.Save[storedSettings.language]}
               </Button>
               {editingIndex && (
                 <Button
@@ -604,11 +617,11 @@ export const ItemForm = ({
                   textColor={appColors.white}
                   onPress={deleteItemHandler}
                 >
-                  Delete
+                  {localization.Delete[storedSettings.language]}
                 </Button>
               )}
               {editingIndex &&
-                storedItems.laundryCounter > storedSettings.laundryNumber && (
+                storedItems.laundryCounter >= storedSettings.laundryNumber && (
                   <Button
                     // className="mb-5"
                     mode="contained"
@@ -616,7 +629,7 @@ export const ItemForm = ({
                     textColor={appColors.white}
                     onPress={resetLaundryCounterHandler}
                   >
-                    Cleaned
+                    {localization.Cleaned[storedSettings.language]}
                   </Button>
                 )}
             </View>

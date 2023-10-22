@@ -20,6 +20,9 @@ import recordImage from "../../assets/images/record.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ThemeView } from "../../components/ThemeView";
 import { colors } from "../../utils/colors";
+import { localization } from "../../utils/localization";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export const AddNewCloths = ({ navigation }: { navigation: any }) => {
   const { width, height } = Dimensions.get("window");
@@ -41,6 +44,8 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
       opacity: withTiming(invisibility4Content.value, { duration: 500 }),
     };
   }, []);
+
+  const storedSettings = useSelector((state: RootState) => state.settings);
 
   useFocusEffect(
     useCallback(() => {
@@ -96,7 +101,9 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
         </View>
         <Animated.View style={[{ elevation: 2, flex: 1 }, showTextAnimation]}>
           <View style={[styles.labelButton, { top: 0, right: 0 }]}>
-            <Text style={styles.labelText}>Add a new piece of clothing</Text>
+            <Text style={styles.labelText}>
+              {localization.Add_a_new[storedSettings.language]}
+            </Text>
             <Image
               resizeMode="contain"
               source={hangerImage}
@@ -110,7 +117,7 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
               style={{ width: width * 0.3, alignSelf: "flex-start" }}
             />
             <Text style={styles.labelText}>
-              Record a log for a piece of clothing{" "}
+              {localization.Record_a_log[storedSettings.language]}
             </Text>
           </View>
         </Animated.View>
@@ -149,7 +156,8 @@ export const AddNewCloths = ({ navigation }: { navigation: any }) => {
           //   styles.backButton,
           // ]}
           style={{
-            backgroundColor: useColorScheme() == "dark" ? colors.gray : colors.white,
+            backgroundColor:
+              useColorScheme() == "dark" ? colors.gray : colors.white,
           }}
           className="w-16 absolute top-2 left-1 rounded-md justify-center items-center"
         >
@@ -169,8 +177,8 @@ const styles = StyleSheet.create({
     width: "60%",
   },
   labelText: {
-    fontFamily: "LibreBarcode128Text-Regular",
-    fontSize: 64,
+    fontFamily: "TSMorabaat-Regular",
+    fontSize: 50,
     color: colors.white,
     textAlign: "center",
     marginVertical: 15,
