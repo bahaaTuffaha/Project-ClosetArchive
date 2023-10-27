@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "closetArchive.app"
-               BlueprintName = "closetArchive"
-               ReferencedContainer = "container:closetArchive.xcodeproj">
+               BuildableName = "ClosetArchive.app"
+               BlueprintName = "ClosetArchive"
+               ReferencedContainer = "container:ClosetArchive.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "closetArchiveTests.xctest"
-               BlueprintName = "closetArchiveTests"
-               ReferencedContainer = "container:closetArchive.xcodeproj">
+               BuildableName = "ClosetArchiveTests.xctest"
+               BlueprintName = "ClosetArchiveTests"
+               ReferencedContainer = "container:ClosetArchive.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "closetArchive.app"
-            BlueprintName = "closetArchive"
-            ReferencedContainer = "container:closetArchive.xcodeproj">
+            BuildableName = "ClosetArchive.app"
+            BlueprintName = "ClosetArchive"
+            ReferencedContainer = "container:ClosetArchive.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "closetArchive.app"
-            BlueprintName = "closetArchive"
-            ReferencedContainer = "container:closetArchive.xcodeproj">
+            BuildableName = "ClosetArchive.app"
+            BlueprintName = "ClosetArchive"
+            ReferencedContainer = "container:ClosetArchive.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
