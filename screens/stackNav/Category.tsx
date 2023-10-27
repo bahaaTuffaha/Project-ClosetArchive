@@ -13,7 +13,6 @@ import { BackButton } from "../../components/BackButton";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { delCategory } from "../../redux/categoriesSlice";
 import { localization } from "../../utils/localization";
-const centerIndex = Math.round(36);
 export type TAnimationStyle = (value: number) => AnimatedStyleProp<ViewStyle>;
 
 export const defaultCategories = [
