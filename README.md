@@ -97,6 +97,10 @@ Closet-Archive is an open-source app designed to assist people in organizing, ca
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- Donations -->
+### Donations
+
+<a href="https://paypal.me/BahaaTuffaha?country.x=SA&locale.x=en_US" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 <!-- GETTING STARTED -->
 
 ## Getting Started
@@ -154,10 +158,12 @@ Use the "Import" and "Export" features in the app's settings to manage your data
 
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-  - [ ] Nested Feature
+- [ ] Fixing issues.
+- [ ] Improving filters.
+- [ ] Selecting a whole collection when logging an event.
+- [ ] Adding a bulk by snapping images for a quick way.
+  - [ ] color filter
+  - [ ] Adding Ai to recongnize and recommend what to wear maybe later?
 
 See the [open issues](https://github.com/bahaaTuffaha/Project-ClosetArchive/issues) for a full list of proposed features (and known issues).
 
