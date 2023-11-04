@@ -105,18 +105,21 @@ export function Category() {
                   framesPerSecond={24}
                   images={item.sprites}
                   startFrameIndex={0}
-                  style={{ width: 500, height: 500 }}
+                  style={{
+                    width: 500,
+                    height: 500,
+                    margin: -10,
+                  }}
                 />
               </Pressable>
               {item.index > 3 && (
-                <Icon
+                <Pressable
                   onPress={() => {
                     dispatch(delCategory({ index: item.index }));
                   }}
-                  name="delete"
-                  size={50}
-                  color="red"
-                />
+                >
+                  <Icon name="delete" size={50} color="red" />
+                </Pressable>
               )}
             </View>
           )}

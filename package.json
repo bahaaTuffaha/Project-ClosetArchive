@@ -22,8 +22,6 @@
     "@types/react-redux": "^7.1.25",
     "dayjs": "^1.11.9",
     "expo": "^48.0.0",
-    "lottie-ios": "^3.4.0",
-    "lottie-react-native": "^5.1.6",
     "nanoid": "^4.0.2",
     "nativewind": "^2.0.11",
     "react": "18.2.0",

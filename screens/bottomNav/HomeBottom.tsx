@@ -236,26 +236,31 @@ export function HomeBottom() {
                 label={localization.Last_Added[storedSettings.language]}
                 value="LA"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.Name_Asc[storedSettings.language]}
                 value="NA"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.Name_Desc[storedSettings.language]}
                 value="ND"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.PurchaseDateAsc[storedSettings.language]}
                 value="PDA"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.PurchaseDateDesc[storedSettings.language]}
                 value="PDD"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
             </RadioButton.Group>
             <View

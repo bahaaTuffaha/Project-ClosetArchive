@@ -225,7 +225,7 @@ const tops_en = [
   { value: "Jacket", label: "Jacket" },
   { value: "Tank Top", label: "Tank Top" },
   { value: "Polo Shirt", label: "Polo Shirt" },
-  { value: "Button-Down Shirt", label: "Button-Down Shirt" },
+  { value: "Short Sleeve Shirt", label: "Short Sleeve Shirt" },
   { value: "Peplum Top", label: "Peplum Top" },
   { value: "Sweater", label: "Sweater" },
   { value: "Turtleneck", label: "Turtleneck" },
@@ -247,7 +247,7 @@ const bottoms_en = [
   { value: "Underwear", label: "Underwear" },
 ];
 
-const accessories_en = [
+export const accessories_en = [
   { value: "Necklace", label: "Necklace" },
   { value: "Bracelet", label: "Bracelet" },
   { value: "Ring", label: "Ring" },
@@ -291,7 +291,7 @@ const tops_ar = [
   { value: "Jacket", label: "جاكيت" },
   { value: "Tank Top", label: "تانك توب" },
   { value: "Polo Shirt", label: "قميص بولو" },
-  { value: "Button-Down Shirt", label: "قميص ذو أزرار" },
+  { value: "Short Sleeve Shirt", label: "قميص أكمام قصيرة" },
   { value: "Peplum Top", label: "بلوزة بيبلم" },
   { value: "Sweater", label: "كنزة" },
   { value: "Turtleneck", label: "قلنسوة" },
@@ -357,7 +357,7 @@ const tops_es = [
   { value: "Jacket", label: "Chaqueta" },
   { value: "Tank Top", label: "Camiseta sin mangas" },
   { value: "Polo Shirt", label: "Camisa polo" },
-  { value: "Button-Down Shirt", label: "Camisa de botones" },
+  { value: "Short Sleeve Shirt", label: "Camisa de manga corta" },
   { value: "Peplum Top", label: "Blusa peplum" },
   { value: "Sweater", label: "Suéter" },
   { value: "Turtleneck", label: "Cuello alto" },
