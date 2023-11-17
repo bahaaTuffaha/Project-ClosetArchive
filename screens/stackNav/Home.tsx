@@ -29,8 +29,8 @@ const laundryNotification = (numberOfLaundry: number) => {
   PushNotification.localNotificationSchedule({
     channelId: "channel-id-1",
     message: `You have ${numberOfLaundry} item${
-      numberOfLaundry > 1 && "s"
-    } need laundry`,
+      Boolean(numberOfLaundry > 1) ? "s" : ""
+    } need${Boolean(numberOfLaundry == 1) ? "s" : ""} laundry`,
     title: "Laundry Reminder",
     date: new Date(Date.now() + 24 * 60 * 60 * 1000),
     repeatType: "day",

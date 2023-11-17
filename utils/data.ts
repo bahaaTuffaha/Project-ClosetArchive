@@ -1,3 +1,5 @@
+import { accessories_en } from "./localization";
+
 export const categoryLayoutImages = [
   require("../assets/images/layoutTshirt.png"),
   require("../assets/images/layoutTrousers.png"),
@@ -13,30 +15,31 @@ export function layoutFinder(type: string) {
     case "Blouse":
     case "Polo Shirt":
     case "Shirt":
+    case "Short Sleeve Shirt":
       return categoryLayoutImages[0];
-      break;
-
     case "Jeans":
     case "Trousers":
     case "Joggers":
     case "Leather Pants":
       return categoryLayoutImages[1];
-      break;
 
     case "Jacket":
     case "blazer":
       return categoryLayoutImages[3];
-      break;
 
     case "Casual Shoes":
     case "Boots":
     case "Sneakers":
       return categoryLayoutImages[2];
-      break;
 
+    case "Tie":
+      return categoryLayoutImages[4];
     default:
-      return layout;
-      break;
+      if (accessories_en.find((x) => x.label == type)) {
+        return categoryLayoutImages[5];
+      } else {
+        return layout;
+      }
   }
 }
 

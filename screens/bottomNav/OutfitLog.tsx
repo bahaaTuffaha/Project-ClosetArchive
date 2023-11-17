@@ -5,10 +5,10 @@ import {
   Pressable,
   StyleSheet,
   Keyboard,
+  Image,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
-import React, { useEffect, useRef, useState } from "react";
-import Lottie from "lottie-react-native";
+import React, { useEffect, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -27,13 +27,6 @@ import { LogFilter } from "../../utils/filters";
 import { localization } from "../../utils/localization";
 
 export const OutfitLog = () => {
-  const animationRef = useRef<Lottie>(null);
-  useEffect(() => {
-    animationRef.current?.play();
-
-    // Or set a specific startFrame and endFrame with:
-    // animationRef.current?.play(30, 120);
-  }, []);
   const [search, setSearch] = useState("");
   const [filteredLogs, setFilteredLogs] = useState<logsType[]>([]);
   const isDarkMode = useColorScheme() === "dark";
@@ -134,26 +127,31 @@ export const OutfitLog = () => {
                 label={localization.Last_Added[storedSettings.language]}
                 value="LA"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.Name_Asc[storedSettings.language]}
                 value="NA"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.Name_Desc[storedSettings.language]}
                 value="ND"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.Date_Asc[storedSettings.language]}
                 value="DA"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
               <RadioButton.Item
                 label={localization.Date_Desc[storedSettings.language]}
                 value="DD"
                 color={colors.mainCyan}
+                labelStyle={{ fontSize: 14 }}
               />
             </RadioButton.Group>
           </>
@@ -203,11 +201,10 @@ export const OutfitLog = () => {
           className="flex flex-row flex-wrap bg-gray mx-auto mt-[1%] px-5"
         >
           {logsState.length <= 0 && (
-            <View className="flex flex-col">
-              <Lottie
-                ref={animationRef}
-                style={{ width: "100%", alignSelf: "center" }}
-                source={require("../../assets/jsonAnimations/cloths1.json")}
+            <View className="flex flex-col w-full justify-center">
+              <Image
+                style={{ width: "100%", height: 150, resizeMode: "contain" }}
+                source={require("../../assets/images/empty.png")}
               />
               <ThemeText
                 darkColor={colors.black}

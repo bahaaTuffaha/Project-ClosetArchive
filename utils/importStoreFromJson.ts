@@ -35,7 +35,10 @@ export const importStoreFromJson = async () => {
           );
           store.dispatch(
             importSettings({
-              language: state.settings.language,
+              language:
+                typeof state.settings.language === "string"
+                  ? 0
+                  : state.settings.language,
               laundryNumber: state.settings.laundryNumber,
               name: state.settings.name,
             }),
