@@ -8,8 +8,7 @@ import {
   Image,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
-import React, { useEffect, useRef, useState } from "react";
-import Lottie from "lottie-react-native";
+import React, { useEffect, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -28,13 +27,6 @@ import { LogFilter } from "../../utils/filters";
 import { localization } from "../../utils/localization";
 
 export const OutfitLog = () => {
-  const animationRef = useRef<Lottie>(null);
-  useEffect(() => {
-    animationRef.current?.play();
-
-    // Or set a specific startFrame and endFrame with:
-    // animationRef.current?.play(30, 120);
-  }, []);
   const [search, setSearch] = useState("");
   const [filteredLogs, setFilteredLogs] = useState<logsType[]>([]);
   const isDarkMode = useColorScheme() === "dark";

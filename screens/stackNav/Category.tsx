@@ -1,4 +1,10 @@
-import { Dimensions, Pressable, View, ViewStyle } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  View,
+  ViewStyle,
+  TouchableOpacity,
+} from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import ImageSequence from "react-native-image-sequence-2";
 import { AnimatedStyleProp, interpolate } from "react-native-reanimated";
@@ -10,7 +16,7 @@ import { accessories, newCategory, shoes, trousers, tshirt } from "./images";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { BackButton } from "../../components/BackButton";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { delCategory } from "../../redux/categoriesSlice";
 import { localization } from "../../utils/localization";
 export type TAnimationStyle = (value: number) => AnimatedStyleProp<ViewStyle>;
@@ -89,6 +95,7 @@ export function Category() {
                 flex: 1,
                 // borderWidth: 1,
                 alignItems: "center",
+                position: "relative",
               }}
             >
               <Pressable
@@ -98,7 +105,7 @@ export function Category() {
                   })
                 }
               >
-                <ThemeText classNameStyle="text-3xl mt-10 uppercase mx-auto font-bold">
+                <ThemeText classNameStyle="text-3xl mt-20 uppercase mx-auto font-bold">
                   {item.name[storedSettings.language]}
                 </ThemeText>
                 <ImageSequence
@@ -113,13 +120,14 @@ export function Category() {
                 />
               </Pressable>
               {item.index > 3 && (
-                <Pressable
+                <TouchableOpacity
+                  className="absolute top-0 bg-mainPink border-solid rounded-full p-2"
                   onPress={() => {
                     dispatch(delCategory({ index: item.index }));
                   }}
                 >
-                  <Icon name="delete" size={50} color="red" />
-                </Pressable>
+                  <Icon name="delete-forever" size={30} color="white" />
+                </TouchableOpacity>
               )}
             </View>
           )}
