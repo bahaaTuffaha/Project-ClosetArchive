@@ -1,0 +1,12 @@
+ desc "Submit a new Beta Build to fdroid"
+  lane :beta do
+    
+    # tests must pass
+    sh "npm test"
+
+    gradle(task: "assembleRelease")
+    
+    # Upload to beta
+    supply(track: 'beta')
+
+  end

@@ -1,0 +1,8 @@
+Features
+
+- Adding a Clothing Item.
+- Filtring clothes.
+- Logging an Event.
+- Managing Collections.
+- Laundry alert/notification.
+- "Import" and "Export" your data localy.
