@@ -1,0 +1,1 @@
+Closet-Archive is an open-source app designed to assist people in organizing, categorizing, and, most importantly, logging their recent outfit choices. This functionality prevents the inadvertent repetition of clothing items, aids in laundry management, and offers various other features.
