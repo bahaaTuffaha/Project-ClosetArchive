@@ -181,7 +181,9 @@ export function HomeBottom() {
   useEffect(() => {
     setLaundryItems(
       itemsState.items.filter(
-        (x) => (x.laundryCounter ?? 0) >= storedSettings.laundryNumber,
+        (x) =>
+          (x.laundryCounter ?? 0) >= storedSettings.laundryNumber &&
+          x.laundryable,
       ),
     );
   }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);

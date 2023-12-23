@@ -138,6 +138,11 @@ export const localization = {
     "تسجيل سجل لقطعة ملابس",
     "Registrar un registro para una prenda de vestir",
   ],
+  Washable: [
+    "Laundry Reminder?",
+    "تذكير بالغسيل؟",
+    "¿Recordatorio de lavandería?",
+  ],
 };
 
 export const clothingReminderMessages = [

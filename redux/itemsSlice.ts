@@ -29,6 +29,7 @@ export type item = {
   tertiaryColor?: string;
   logIds?: string[];
   laundryCounter: number;
+  laundryable: boolean;
 };
 export type itemsList = {
   items: item[];
@@ -79,6 +80,7 @@ const itemsSlice = createSlice({
         logIds: [],
         laundryCounter: 0,
         season: action.payload.season,
+        laundryable: true,
       } as item);
     },
     updateItem: (state, action) => {
@@ -153,8 +155,14 @@ const itemsSlice = createSlice({
       const itemIndex = state.items.findIndex(
         (x) => x.id === action.payload.selectedId,
       );
-      state.items[itemIndex].logIds?.push(action.payload.logId);
-      state.items[itemIndex].laundryCounter += 1;
+      const logIdsSet = new Set(state.items[itemIndex].logIds || []);
+      if (!logIdsSet.has(action.payload.logId)) {
+        logIdsSet.add(action.payload.logId);
+        state.items[itemIndex].logIds = Array.from(logIdsSet);
+        state.items[itemIndex].laundryCounter = logIdsSet.size;
+      }
+      // state.items[itemIndex].logIds?.push(action.payload.logId);
+      // state.items[itemIndex].laundryCounter += 1;
     },
     deleteLog: (state, action) => {
       const itemIndices = state.items.reduce(
@@ -194,6 +202,12 @@ const itemsSlice = createSlice({
       );
       state.items[itemIndex].laundryCounter = 0;
     },
+    enableLaundry4Object: (state, action) => {
+      const itemIndex = state.items.findIndex(
+        (x) => x.id === action.payload.selectedId,
+      );
+      state.items[itemIndex].laundryable = action.payload.laundryValue;
+    },
     importItems: (state, action) => {
       state.items = action.payload.items;
       state.collectionTags = action.payload.collectionTags;
@@ -217,6 +231,7 @@ export const {
   laundryRefresher,
   deleteItem,
   resetLaundryCounter,
+  enableLaundry4Object,
   importItems,
 } = itemsSlice.actions;
 export default itemsSlice.reducer;

@@ -8,7 +8,7 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import { Button, Switch } from "react-native-paper";
+import { Button, Checkbox, Switch } from "react-native-paper";
 import { useState } from "react";
 import addImage from "../../assets/images/addImage.png";
 import { BackButton } from "../../components/BackButton";
@@ -20,6 +20,7 @@ import {
   deleteItem,
   resetLaundryCounter,
   laundryRefresher,
+  enableLaundry4Object,
 } from "../../redux/itemsSlice";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -40,6 +41,7 @@ import { colors as appColors } from "./../../utils/colors";
 import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 import { clothesList, localization } from "../../utils/localization";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export function get_random(list: string[] | string[][]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -98,6 +100,7 @@ export const ItemForm = ({
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
   );
+  const [checked, setChecked] = useState(storedItems.laundryable ?? true);
   const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
 
   const dispatch = useDispatch();
@@ -345,21 +348,54 @@ export const ItemForm = ({
                 ? localization.EditingItem[storedSettings.language]
                 : localization.Adding_an_item[storedSettings.language]}
             </ThemeText>
-            <TouchableOpacity
-              onPress={() => {
-                setImageModalVisible(true);
-              }}
-            >
-              <Image
-                style={{}}
-                source={
-                  imageUrl == ""
-                    ? addImage
-                    : { uri: `data:image/*;base64,${imageUrl}` }
-                }
-                className="w-20 h-20 rounded-md object-contain"
-              />
-            </TouchableOpacity>
+            <View className="flex flex-row">
+              <View className="w-1/3"></View>
+              <View className="w-1/3 flex flex-row justify-center">
+                <TouchableOpacity
+                  onPress={() => {
+                    setImageModalVisible(true);
+                  }}
+                >
+                  <Image
+                    source={
+                      imageUrl == ""
+                        ? addImage
+                        : { uri: `data:image/*;base64,${imageUrl}` }
+                    }
+                    className="w-20 h-20 rounded-md object-contain"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View className="w-1/3 flex flex-row justify-center items-center">
+                <View className="flex flex-col items-center mr-5">
+                  <ThemeText classNameStyle="text-xs">
+                    {localization.Washable[storedSettings.language]}
+                  </ThemeText>
+                  <View className="flex flex-row items-center">
+                    <Checkbox
+                      status={checked ? "checked" : "unchecked"}
+                      onPress={() => {
+                        setChecked((prev) => !prev);
+                        dispatch(
+                          enableLaundry4Object({
+                            selectedId: storedItems.id,
+                            laundryValue: !checked,
+                          }),
+                        );
+                        dispatch(laundryRefresher());
+                      }}
+                      color={appColors.mainGreen}
+                    />
+                    <MaterialCommunityIcons
+                      name="bell-ring"
+                      size={25}
+                      color={appColors.mainGreen}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
             <CustomInput
               mode="outlined"
               outlineColor={appColors.mainGreen}
