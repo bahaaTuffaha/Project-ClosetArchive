@@ -12,7 +12,7 @@ const initialState: SettingsType = {
   name: "User",
   laundryNumber: 5,
   enableLaundry: true,
-  appVer: "1.0.0",
+  appVer: "1.0.1",
 };
 const settingsSlice = createSlice({
   name: "settings",

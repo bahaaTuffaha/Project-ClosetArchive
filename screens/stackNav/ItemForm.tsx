@@ -100,7 +100,7 @@ export const ItemForm = ({
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
   );
-  const [checked, setChecked] = useState(storedItems.laundryable ?? true);
+  const [checked, setChecked] = useState(storedItems?.laundryable ?? true);
   const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
 
   const dispatch = useDispatch();
@@ -137,46 +137,55 @@ export const ItemForm = ({
       return;
     }
     setErrorsList([]);
-    editingIndex
-      ? dispatch(
-          updateItem({
-            itemIndex: currentIndex,
-            name: name,
-            collection: collection,
-            category: selectedCategory,
-            type: type,
-            fit: fit,
-            season: season,
-            size: size,
-            sizeUnit: sizeUnit,
-            quantity: quantity === 0 ? 1 : quantity,
-            purchaseDate: JSON.stringify(purchaseDate),
-            image: imageUrl,
-            automaticColor: isAutoOn,
-            primaryColor: colors[0],
-            secondaryColor: colors[1],
-            tertiaryColor: colors[2],
-          }),
-        )
-      : dispatch(
-          addItem({
-            name: name,
-            collection: collection,
-            category: selectedCategory,
-            type: type,
-            fit: fit,
-            season: season,
-            size: size,
-            sizeUnit: sizeUnit,
-            quantity: quantity === 0 ? 1 : quantity,
-            purchaseDate: JSON.stringify(purchaseDate),
-            image: imageUrl,
-            automaticColor: isAutoOn,
-            primaryColor: colors[0],
-            secondaryColor: colors[1],
-            tertiaryColor: colors[2],
-          }),
-        );
+    if (editingIndex) {
+      dispatch(
+        updateItem({
+          itemIndex: currentIndex,
+          name: name,
+          collection: collection,
+          category: selectedCategory,
+          type: type,
+          fit: fit,
+          season: season,
+          size: size,
+          sizeUnit: sizeUnit,
+          quantity: quantity === 0 ? 1 : quantity,
+          purchaseDate: JSON.stringify(purchaseDate),
+          image: imageUrl,
+          automaticColor: isAutoOn,
+          primaryColor: colors[0],
+          secondaryColor: colors[1],
+          tertiaryColor: colors[2],
+        }),
+      );
+      dispatch(
+        enableLaundry4Object({
+          selectedId: storedItems.id,
+          laundryValue: checked,
+        }),
+      );
+      dispatch(laundryRefresher());
+    } else {
+      dispatch(
+        addItem({
+          name: name,
+          collection: collection,
+          category: selectedCategory,
+          type: type,
+          fit: fit,
+          season: season,
+          size: size,
+          sizeUnit: sizeUnit,
+          quantity: quantity === 0 ? 1 : quantity,
+          purchaseDate: JSON.stringify(purchaseDate),
+          image: imageUrl,
+          automaticColor: isAutoOn,
+          primaryColor: colors[0],
+          secondaryColor: colors[1],
+          tertiaryColor: colors[2],
+        }),
+      );
+    }
     navigation.popToTop("Category");
     if (!editingIndex) {
       navigation.dispatch(CommonActions.goBack());
@@ -184,6 +193,7 @@ export const ItemForm = ({
       dispatch(itemRefresher());
     }
   }
+
   const onToggleSwitch = () => {
     if (imageUrl) {
       if (isAutoOn == false) {
@@ -368,32 +378,28 @@ export const ItemForm = ({
               </View>
 
               <View className="w-1/3 flex flex-row justify-center items-center">
-                <View className="flex flex-col items-center mr-5">
-                  <ThemeText classNameStyle="text-xs">
-                    {localization.Washable[storedSettings.language]}
-                  </ThemeText>
-                  <View className="flex flex-row items-center">
-                    <Checkbox
-                      status={checked ? "checked" : "unchecked"}
-                      onPress={() => {
-                        setChecked((prev) => !prev);
-                        dispatch(
-                          enableLaundry4Object({
-                            selectedId: storedItems.id,
-                            laundryValue: !checked,
-                          }),
-                        );
-                        dispatch(laundryRefresher());
-                      }}
-                      color={appColors.mainGreen}
-                    />
-                    <MaterialCommunityIcons
-                      name="bell-ring"
-                      size={25}
-                      color={appColors.mainGreen}
-                    />
+                {editingIndex && (
+                  <View className="flex flex-col items-center mr-5">
+                    <ThemeText classNameStyle="text-xs">
+                      {localization.Washable[storedSettings.language]}
+                    </ThemeText>
+
+                    <View className="flex flex-row items-center">
+                      <Checkbox
+                        status={checked ? "checked" : "unchecked"}
+                        onPress={() => {
+                          setChecked((prev) => !prev);
+                        }}
+                        color={appColors.mainGreen}
+                      />
+                      <MaterialCommunityIcons
+                        name="bell-ring"
+                        size={25}
+                        color={appColors.mainGreen}
+                      />
+                    </View>
                   </View>
-                </View>
+                )}
               </View>
             </View>
             <CustomInput
@@ -659,7 +665,6 @@ export const ItemForm = ({
               {editingIndex &&
                 storedItems.laundryCounter >= storedSettings.laundryNumber && (
                   <Button
-                    // className="mb-5"
                     mode="contained"
                     buttonColor={"orange"}
                     textColor={appColors.white}
