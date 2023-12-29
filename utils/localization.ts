@@ -202,9 +202,9 @@ export const clothingReminderTitles = [
   ],
   ["Outfit Logging Time", "وقت تسجيل الإطلالات", "Hora de registrar atuendos"],
   [
-    "Dress Record Notification",
-    "إشعار بتسجيل الفساتين",
-    "Notificación de registro de vestidos",
+    "Clothing Record Notification",
+    "إشعار بتسجيل الملابس",
+    "Notificación de registro de ropa",
   ],
   [
     "Stay Fashionably Organized",
@@ -213,7 +213,7 @@ export const clothingReminderTitles = [
   ],
   [
     "Keep Your Wardrobe Updated",
-    "احتفظ بخزانتك مُحدثة",
+    "حافظ على تحديث خزانتك",
     "Mantén tu guardarropa actualizado",
   ],
   [
@@ -426,3 +426,33 @@ export const clothesList = [
   [tops_ar, bottoms_ar, shoeTypes_ar, accessories_ar],
   [tops_es, bottoms_es, shoeTypes_es, accessories_es],
 ];
+
+const closetInfo_en = [
+  "Total number of clothes you have: ",
+  "Total number of events: ",
+  "Total number of collections: ",
+  "Top 5 clothes you wore this month:",
+  "Top 5 clothes you wore:",
+];
+const closetInfo_ar = [
+  "إجمالي عدد الملابس التي لديك: ",
+  "إجمالي عدد الفعاليات: ",
+  "إجمالي عدد التشكيلات: ",
+  "أفضل 5 ملابس قمت بارتدائها هذا الشهر:",
+  "أفضل 5 ملابس قمت بارتدائها:",
+];
+const closetInfo_es = [
+  "Número total de prendas que tienes: ",
+  "Número total de eventos: ",
+  "Número total de colecciones: ",
+  "Top 5 prendas que usaste este mes:",
+  "Top 5 prendas que usaste:",
+];
+export const categoryInfo = [
+  "category has:",
+  "هذا الفئة تحتوي على:",
+  "categoría tiene:",
+];
+
+export const closetInfo = [closetInfo_en, closetInfo_ar, closetInfo_es];
+// "category has  ",

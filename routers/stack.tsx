@@ -8,6 +8,7 @@ import { ItemSelector } from "../screens/stackNav/ItemSelector";
 import { EventLogForm } from "../screens/stackNav/EventLogForm";
 import { CollectionForm } from "../screens/stackNav/CollectionForm";
 import { Settings } from "../screens/stackNav/Settings";
+import { ClosetInfo } from "../screens/stackNav/ClosetInfo";
 export default function Navigator() {
   const Stack = createNativeStackNavigator();
   return (
@@ -26,6 +27,11 @@ export default function Navigator() {
         <Stack.Screen
           name="Settings"
           component={Settings}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ClosetInfo"
+          component={ClosetInfo}
           options={{ headerShown: false }}
         />
         <Stack.Screen

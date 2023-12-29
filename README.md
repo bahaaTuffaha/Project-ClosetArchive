@@ -70,7 +70,7 @@
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-Closet-Archive is an open-source app designed to assist people in organizing, categorizing, and, most importantly, logging their recent outfit choices. This functionality prevents the inadvertent repetition of clothing items, aids in laundry management, and offers various other features.
+Closet-Archive is an open-source app designed to assist people in organizing, categorizing, and, most importantly, logging their recent outfit choices. This functionality prevents wearing the same clothes again for that specific event, aids in laundry management, and offers various other features.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -98,9 +98,11 @@ Closet-Archive is an open-source app designed to assist people in organizing, ca
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Donations -->
+
 ### Donations
 
 <a href="https://paypal.me/BahaaTuffaha?country.x=SA&locale.x=en_US" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 <!-- GETTING STARTED -->
 
 ## Getting Started

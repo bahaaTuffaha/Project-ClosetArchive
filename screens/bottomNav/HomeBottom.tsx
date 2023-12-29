@@ -397,6 +397,7 @@ export function HomeBottom() {
           <View className="w-full flex flex-col mt-5">
             <View className="w-full flex flex-row justify-between">
               <TouchableOpacity
+                onPress={() => navigation.navigate("ClosetInfo")}
                 className={`flex ${
                   storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
                 } items-center h-14 w-[58%] bg-mainPink rounded-tl-2xl shadow-2xl`}
