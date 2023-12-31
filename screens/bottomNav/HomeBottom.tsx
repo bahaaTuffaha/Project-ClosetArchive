@@ -267,7 +267,7 @@ export function HomeBottom() {
             </RadioButton.Group>
             <View
               style={{
-                zIndex: 3,
+                zIndex: Math.floor(Math.random() * 2) + 4,
                 width: "90%",
                 marginTop: 5,
                 marginBottom: 20,
@@ -294,7 +294,12 @@ export function HomeBottom() {
                 dropDownContainerStyle={{ borderColor: colors.mainGreen }}
               />
             </View>
-            <View style={{ zIndex: 2, width: "90%" }}>
+            <View
+              style={{
+                zIndex: Math.floor(Math.random() * 2) + 2,
+                width: "90%",
+              }}
+            >
               <DropDownPicker
                 open={OpenCategoriesFilter}
                 value={categoriesFilter}
@@ -319,11 +324,7 @@ export function HomeBottom() {
                   open={OpenTypeFilter}
                   value={TypeFilter}
                   items={
-                    clothesList[storedSettings.language][
-                      storedCategories.find(
-                        (x) => x.index == categoriesFilter[0],
-                      )?.index ?? 0
-                    ]
+                    clothesList[storedSettings.language][categoriesFilter[0]]
                   }
                   setOpen={setOpenTypeFilter}
                   setValue={setTypeFilter}

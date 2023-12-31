@@ -1,7 +1,7 @@
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
 import { ThemeView } from "../../components/ThemeView";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   categoryInfo,
   closetInfo,
@@ -16,7 +16,7 @@ import { defaultCategories } from "./Category";
 import { ItemBox } from "../../components/ItemBox";
 import { item } from "../../redux/itemsSlice";
 import { Category } from "../../redux/categoriesSlice";
-
+import { colors } from "../../utils/colors";
 const InfoCardWrapper = ({
   title,
   index,
@@ -28,7 +28,7 @@ const InfoCardWrapper = ({
 }) => {
   return (
     <Animated.View
-      className="flex flex-col items-center bg-mainPink"
+      className="flex flex-col items-center bg-mainGreen border-white border-solid border-[1px]"
       entering={SlideInLeft.delay(index * 200)}
     >
       {Children.count(children) > 0 && (
@@ -52,7 +52,7 @@ const InfoCardNumber = ({
 }) => {
   return (
     <Animated.View
-      className="flex flex-col bg-mainCyan text-white items-center"
+      className="flex flex-col bg-mainCyan text-white items-center border-white border-solid border-[1px]"
       entering={SlideInLeft.delay(index * 200)}
     >
       <ThemeText classNameStyle="text-bold">{title}</ThemeText>
@@ -87,7 +87,7 @@ const InfoCardCategories = ({
           <Animated.View
             entering={SlideInLeft.delay(index * 300)}
             key={"Card" + index}
-            className="flex flex-col bg-mainCyan text-white items-center"
+            className="flex flex-col bg-mainCyan text-white items-center border-white border-solid border-[1px]"
           >
             <ThemeText>
               {category.name[language] + " " + categoryInfo[language]}
@@ -121,14 +121,14 @@ export const ClosetInfo = ({}) => {
 
   const data = useMemo(() => {
     const sortedItems = [...storedItems].sort(
-      (a, b) => a.logIds.length - b.logIds.length,
+      (a, b) => b.logIds.length - a.logIds.length,
     );
     const currentDate = new Date();
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(currentDate.getMonth() - 1);
 
     const filteredEventsLastMonth = storedEvents.filter((x) => {
-      const eventDate = new Date(x.eventDate);
+      const eventDate = new Date(JSON.parse(x.eventDate));
       return eventDate >= oneMonthAgo && eventDate <= currentDate;
     });
 
