@@ -59,7 +59,7 @@ export const SideModal = ({
             width: width / 2,
             position: "absolute",
             backgroundColor: isDarkMode ? colors.gray : colors.white,
-            zIndex: 50,
+            zIndex: Math.floor(Math.random() * 100) + 50,
             right: "-50%",
             display: "flex",
             flexDirection: "column",

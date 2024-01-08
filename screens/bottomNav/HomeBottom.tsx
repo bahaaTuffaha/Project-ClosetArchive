@@ -181,7 +181,9 @@ export function HomeBottom() {
   useEffect(() => {
     setLaundryItems(
       itemsState.items.filter(
-        (x) => (x.laundryCounter ?? 0) >= storedSettings.laundryNumber,
+        (x) =>
+          (x.laundryCounter ?? 0) >= storedSettings.laundryNumber &&
+          x.laundryable,
       ),
     );
   }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);
@@ -265,7 +267,7 @@ export function HomeBottom() {
             </RadioButton.Group>
             <View
               style={{
-                zIndex: 3,
+                zIndex: Math.floor(Math.random() * 2) + 4,
                 width: "90%",
                 marginTop: 5,
                 marginBottom: 20,
@@ -292,7 +294,12 @@ export function HomeBottom() {
                 dropDownContainerStyle={{ borderColor: colors.mainGreen }}
               />
             </View>
-            <View style={{ zIndex: 2, width: "90%" }}>
+            <View
+              style={{
+                zIndex: Math.floor(Math.random() * 2) + 2,
+                width: "90%",
+              }}
+            >
               <DropDownPicker
                 open={OpenCategoriesFilter}
                 value={categoriesFilter}
@@ -317,11 +324,7 @@ export function HomeBottom() {
                   open={OpenTypeFilter}
                   value={TypeFilter}
                   items={
-                    clothesList[storedSettings.language][
-                      storedCategories.find(
-                        (x) => x.index == categoriesFilter[0],
-                      )?.index ?? 0
-                    ]
+                    clothesList[storedSettings.language][categoriesFilter[0]]
                   }
                   setOpen={setOpenTypeFilter}
                   setValue={setTypeFilter}
@@ -395,6 +398,7 @@ export function HomeBottom() {
           <View className="w-full flex flex-col mt-5">
             <View className="w-full flex flex-row justify-between">
               <TouchableOpacity
+                onPress={() => navigation.navigate("ClosetInfo")}
                 className={`flex ${
                   storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
                 } items-center h-14 w-[58%] bg-mainPink rounded-tl-2xl shadow-2xl`}
