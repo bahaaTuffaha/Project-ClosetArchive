@@ -103,6 +103,16 @@ Closet-Archive is an open-source app designed to assist people in organizing, ca
 
 <a href="https://paypal.me/BahaaTuffaha?country.x=SA&locale.x=en_US" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
+<!-- Download -->
+
+### Download
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.myclosetx/)
+
+Or download the latest APK from the [Releases Section](https://github.com/bahaaTuffaha/Project-ClosetArchive/releases/latest).
+
 <!-- GETTING STARTED -->
 
 ## Getting Started
