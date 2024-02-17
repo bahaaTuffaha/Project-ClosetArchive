@@ -21,6 +21,7 @@ import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { addOpacityToHex } from "../stackNav/CollectionForm";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
 import { colors } from "../../utils/colors";
@@ -32,6 +33,7 @@ import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { seasonList } from "../../utils/data";
 import { clothesList, localization } from "../../utils/localization";
 import { defaultCategories } from "../stackNav/Category";
+import ColorFilter from "../../components/ColorFilter";
 
 export function filterCollectionsBySearch(array: item[][], search: string) {
   let newAllCollections = [];
@@ -72,10 +74,12 @@ export function HomeBottom() {
   const [categoriesFilter, setCategoriesFilter] = useState([]);
   const [TypeFilter, setTypeFilter] = useState<string[]>([]);
   const [seasonFilter, setSeasonFilter] = useState("");
+  const [colorFilter, setColorFilter] = useState<string[]>([]);
 
   const [OpenCategoriesFilter, setOpenCategoriesFilter] = useState(false);
   const [OpenTypeFilter, setOpenTypeFilter] = useState(false);
   const [OpenSeasonFilter, setOpenSeasonFilter] = useState(false);
+  const [OpenColorFilter, setOpenColorFilter] = useState(false);
 
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
@@ -229,132 +233,142 @@ export function HomeBottom() {
     <ThemeView classNameStyle="px-5">
       <>
         <SideModal space={space} isOpen={isOpen} setIsOpen={setIsOpen}>
-          <>
-            <RadioButton.Group
-              onValueChange={(value) => setSortValue(value)}
-              value={sortValue}
-            >
-              <RadioButton.Item
-                label={localization.Last_Added[storedSettings.language]}
-                value="LA"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.Name_Asc[storedSettings.language]}
-                value="NA"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.Name_Desc[storedSettings.language]}
-                value="ND"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.PurchaseDateAsc[storedSettings.language]}
-                value="PDA"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.PurchaseDateDesc[storedSettings.language]}
-                value="PDD"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-            </RadioButton.Group>
-            <View
-              style={{
-                zIndex: Math.floor(Math.random() * 2) + 4,
-                width: "90%",
-                marginTop: 5,
-                marginBottom: 20,
-              }}
-            >
-              <DropDownPicker
-                open={OpenSeasonFilter}
-                value={seasonFilter}
-                items={[
-                  {
-                    label:
-                      localization.SeasonNotSpecified[storedSettings.language],
-                    value: "",
-                  },
-                  ...seasonList[storedSettings.language],
-                ]}
-                setOpen={setOpenSeasonFilter}
-                setValue={setSeasonFilter}
-                theme={colorScheme}
-                showBadgeDot={false}
-                badgeTextStyle={{ color: colors.black }}
-                placeholder="Season filter"
-                style={{ borderColor: colors.mainGreen }}
-                dropDownContainerStyle={{ borderColor: colors.mainGreen }}
-              />
-            </View>
-            <View
-              style={{
-                zIndex: Math.floor(Math.random() * 2) + 2,
-                width: "90%",
-              }}
-            >
-              <DropDownPicker
-                open={OpenCategoriesFilter}
-                value={categoriesFilter}
-                items={CategoriesList}
-                setOpen={setOpenCategoriesFilter}
-                setValue={setCategoriesFilter}
-                multiple={true}
-                theme={colorScheme}
-                showBadgeDot={false}
-                badgeTextStyle={{ color: colors.black }}
-                mode="BADGE"
-                placeholder={
-                  localization.CategoryFilter[storedSettings.language]
-                }
-                style={{ borderColor: colors.mainGreen, marginBottom: 20 }}
-                dropDownContainerStyle={{ borderColor: colors.mainGreen }}
-              />
-            </View>
-            {categoriesFilter.length == 1 && categoriesFilter[0] <= 3 && (
-              <View style={{ zIndex: 1, width: "90%" }}>
+          {OpenColorFilter ? (
+            <>
+              <ColorFilter colors={colorFilter} setColors={setColorFilter} />
+            </>
+          ) : (
+            <>
+              <RadioButton.Group
+                onValueChange={(value) => setSortValue(value)}
+                value={sortValue}
+              >
+                <RadioButton.Item
+                  label={localization.Last_Added[storedSettings.language]}
+                  value="LA"
+                  color={colors.mainCyan}
+                  labelStyle={{ fontSize: 14 }}
+                />
+                <RadioButton.Item
+                  label={localization.Name_Asc[storedSettings.language]}
+                  value="NA"
+                  color={colors.mainCyan}
+                  labelStyle={{ fontSize: 14 }}
+                />
+                <RadioButton.Item
+                  label={localization.Name_Desc[storedSettings.language]}
+                  value="ND"
+                  color={colors.mainCyan}
+                  labelStyle={{ fontSize: 14 }}
+                />
+                <RadioButton.Item
+                  label={localization.PurchaseDateAsc[storedSettings.language]}
+                  value="PDA"
+                  color={colors.mainCyan}
+                  labelStyle={{ fontSize: 14 }}
+                />
+                <RadioButton.Item
+                  label={localization.PurchaseDateDesc[storedSettings.language]}
+                  value="PDD"
+                  color={colors.mainCyan}
+                  labelStyle={{ fontSize: 14 }}
+                />
+              </RadioButton.Group>
+              <View
+                style={{
+                  zIndex: Math.floor(Math.random() * 2) + 4,
+                  width: "90%",
+                  marginTop: 5,
+                  marginBottom: 20,
+                }}
+              >
                 <DropDownPicker
-                  open={OpenTypeFilter}
-                  value={TypeFilter}
-                  items={
-                    clothesList[storedSettings.language][categoriesFilter[0]]
-                  }
-                  setOpen={setOpenTypeFilter}
-                  setValue={setTypeFilter}
+                  open={OpenSeasonFilter}
+                  value={seasonFilter}
+                  items={[
+                    {
+                      label:
+                        localization.SeasonNotSpecified[
+                          storedSettings.language
+                        ],
+                      value: "",
+                    },
+                    ...seasonList[storedSettings.language],
+                  ]}
+                  setOpen={setOpenSeasonFilter}
+                  setValue={setSeasonFilter}
+                  theme={colorScheme}
+                  showBadgeDot={false}
+                  badgeTextStyle={{ color: colors.black }}
+                  placeholder="Season filter"
+                  style={{ borderColor: colors.mainGreen }}
+                  dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+                />
+              </View>
+              <View
+                style={{
+                  zIndex: Math.floor(Math.random() * 2) + 2,
+                  width: "90%",
+                }}
+              >
+                <DropDownPicker
+                  open={OpenCategoriesFilter}
+                  value={categoriesFilter}
+                  items={CategoriesList}
+                  setOpen={setOpenCategoriesFilter}
+                  setValue={setCategoriesFilter}
                   multiple={true}
                   theme={colorScheme}
                   showBadgeDot={false}
                   badgeTextStyle={{ color: colors.black }}
                   mode="BADGE"
-                  listMode="MODAL"
-                  placeholder={localization.TypeFilter[storedSettings.language]}
-                  style={{ borderColor: colors.mainGreen }}
+                  placeholder={
+                    localization.CategoryFilter[storedSettings.language]
+                  }
+                  style={{ borderColor: colors.mainGreen, marginBottom: 20 }}
                   dropDownContainerStyle={{ borderColor: colors.mainGreen }}
                 />
               </View>
-            )}
-            <Button
-              mode="contained-tonal"
-              buttonColor={colors.mainCyan}
-              className="self-center mt-5 w-[80%]"
-              textColor="white"
-              onPress={() => {
-                setSeasonFilter("");
-                setCategoriesFilter([]);
-                setTypeFilter([]);
-                setSortValue("LA");
-              }}
-            >
-              {localization.Reset[storedSettings.language]}
-            </Button>
-          </>
+              {categoriesFilter.length == 1 && categoriesFilter[0] <= 3 && (
+                <View style={{ zIndex: 1, width: "90%" }}>
+                  <DropDownPicker
+                    open={OpenTypeFilter}
+                    value={TypeFilter}
+                    items={
+                      clothesList[storedSettings.language][categoriesFilter[0]]
+                    }
+                    setOpen={setOpenTypeFilter}
+                    setValue={setTypeFilter}
+                    multiple={true}
+                    theme={colorScheme}
+                    showBadgeDot={false}
+                    badgeTextStyle={{ color: colors.black }}
+                    mode="BADGE"
+                    listMode="MODAL"
+                    placeholder={
+                      localization.TypeFilter[storedSettings.language]
+                    }
+                    style={{ borderColor: colors.mainGreen }}
+                    dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+                  />
+                </View>
+              )}
+              <Button
+                mode="contained-tonal"
+                buttonColor={colors.mainCyan}
+                className="self-center mt-5 w-[80%]"
+                textColor="white"
+                onPress={() => {
+                  setSeasonFilter("");
+                  setCategoriesFilter([]);
+                  setTypeFilter([]);
+                  setSortValue("LA");
+                }}
+              >
+                {localization.Reset[storedSettings.language]}
+              </Button>
+            </>
+          )}
         </SideModal>
 
         <View className="flex flex-col">
@@ -401,27 +415,44 @@ export function HomeBottom() {
                 onPress={() => navigation.navigate("ClosetInfo")}
                 className={`flex ${
                   storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-                } items-center h-14 w-[58%] bg-mainPink rounded-tl-2xl shadow-2xl`}
+                } items-center h-14 w-[37%] bg-goldenrod rounded-tl-2xl shadow-2xl`}
               >
-                <View className="mx-3">
+                <View className="flex flex-row space-x-1 justify-center items-center w-full">
                   <FontAwesome5
                     name="question-circle"
                     size={30}
                     color={colors.white}
                   />
+
+                  <Text className="text-white font-bold capitalize">
+                    {localization.ClosetInfo[storedSettings.language]}
+                  </Text>
                 </View>
-                <Text className="text-white font-bold w-3/4 capitalize">
-                  {localization.ClosetInfo[storedSettings.language]}
-                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
                   handleOpenDrawer();
+                  setOpenColorFilter(true);
+                }}
+                className="h-14 w-[20%] bg-mainPink justify-center items-center shadow-xl"
+              >
+                <Ionicons
+                  name="color-palette-outline"
+                  size={28}
+                  color={colors.white}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  handleOpenDrawer();
+                  setOpenColorFilter(false);
                 }}
                 className="h-14 w-[20%] bg-mainGreen justify-center items-center shadow-xl"
               >
                 <Icon name="filter" size={26} color={colors.white} />
               </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={async () => {
                   await setIsSearchVisible(!isSearchVisible);
