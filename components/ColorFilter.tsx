@@ -25,37 +25,45 @@ const ColorFilter = ({
 
   const basicColors = {
     yellow: "#FEFD00",
-    yellowOrange: "#F8A900",
-    yellowGreen: "#48FE00",
+    yellow_Orange: "#F8A900",
+    yellow_Green: "#48FE00",
     orange: "#F67300",
     green: "#206F00",
-    redOrange: "#F53C00",
-    blueGreen: "#31A6A6",
+    red_Orange: "#F53C00",
+    blue_Green: "#31A6A6",
     red: "#F40000",
     blue: "#1420FF",
-    redViolet: "#BE0FAA",
-    blueViolet: "#66169F",
+    red_Violet: "#BE0FAA",
+    blue_Violet: "#66169F",
     violet: "#AC1DFF",
+    black: "#000",
+    white: "#fff",
   };
 
   return (
-    <View style={styles.centeredView}>
-      <ThemeText classNameStyle="self-center text-2xl font-bold mt-1">
+    <View>
+      <ThemeText classNameStyle="self-center text-xl font-bold mt-1 my-2">
         Filter By Color
       </ThemeText>
-      <View className="flex flex-row flex-wrap">
+      <View className="flex flex-row flex-wrap w-full">
         {Object.keys(basicColors).map((name) => (
           <View
             key={name}
             className="flex flex-col justify-center items-center bg-white rounded-md
-            w-14 h-14 p-2 m-2"
+            w-16 h-16  m-2"
           >
-            <ThemeText customStyle={{ color: appColors.black, fontSize: 10 }}>
+            <Text
+              style={{
+                fontSize: 9,
+                textTransform: "capitalize",
+                color: appColors.black,
+              }}
+            >
               {name}
-            </ThemeText>
+            </Text>
             <View
               style={{ backgroundColor: basicColors[name] }}
-              className="w-5 h-5"
+              className="w-10 h-10"
             />
           </View>
         ))}
@@ -65,12 +73,10 @@ const ColorFilter = ({
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#49494968",
-  },
+  // centeredView: {
+  //   backgroundColor: "#49494968",
+  //   // width: "100%",
+  // },
   modalView: {
     backgroundColor: appColors.white,
     borderRadius: 20,
