@@ -38,19 +38,30 @@ const ColorFilter = ({
     violet: "#AC1DFF",
     black: "#000",
     white: "#fff",
+    gray: "#808080",
+    unknown: "",
   };
 
   return (
     <View>
-      <ThemeText classNameStyle="self-center text-xl font-bold mt-1 my-2">
+      <ThemeText classNameStyle="self-center text-xl font-bold mt-1 my-1">
         Filter By Color
       </ThemeText>
       <View className="flex flex-row flex-wrap w-full">
         {Object.keys(basicColors).map((name) => (
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              if (!colors.includes(name)) {
+                setColors((prev) => [...prev, name]);
+              } else {
+                setColors((prev) => prev.filter((color) => color !== name));
+              }
+            }}
             key={name}
-            className="flex flex-col justify-center items-center bg-white rounded-md
-            w-16 h-16  m-2"
+            className={`flex flex-col justify-center items-center bg-white rounded-md
+            w-16 h-16  m-1 border-solid border-mainCyan ${
+              colors.includes(name) ? "border-[3px]" : ""
+            }`}
           >
             <Text
               style={{
@@ -65,7 +76,7 @@ const ColorFilter = ({
               style={{ backgroundColor: basicColors[name] }}
               className="w-10 h-10"
             />
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </View>

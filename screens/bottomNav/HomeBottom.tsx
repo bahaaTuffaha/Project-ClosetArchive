@@ -151,6 +151,7 @@ export function HomeBottom() {
           sortValue: sortValue,
           types: TypeFilter,
           season: seasonFilter,
+          colors: colorFilter,
         },
         final,
         true,
@@ -163,6 +164,7 @@ export function HomeBottom() {
           sortValue: sortValue,
           types: TypeFilter,
           season: seasonFilter,
+          colors: colorFilter,
         },
         nonCol,
         false,
@@ -180,6 +182,7 @@ export function HomeBottom() {
     sortValue,
     TypeFilter,
     seasonFilter,
+    colorFilter,
   ]);
 
   useEffect(() => {
@@ -201,6 +204,7 @@ export function HomeBottom() {
             sortValue: sortValue,
             types: TypeFilter,
             season: seasonFilter,
+            colors: colorFilter,
           },
           allCollections,
           true,
@@ -216,6 +220,7 @@ export function HomeBottom() {
             sortValue: sortValue,
             types: TypeFilter,
             season: seasonFilter,
+            colors: colorFilter,
           },
           nonCollectnized,
           false,
@@ -223,7 +228,14 @@ export function HomeBottom() {
         search,
       ),
     );
-  }, [search, categoriesFilter, sortValue, TypeFilter, seasonFilter]);
+  }, [
+    search,
+    categoriesFilter,
+    sortValue,
+    TypeFilter,
+    seasonFilter,
+    colorFilter,
+  ]);
 
   useEffect(() => {
     if (categoriesFilter.length != 1) setTypeFilter([]);

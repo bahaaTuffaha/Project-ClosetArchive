@@ -10,98 +10,71 @@ export const colors = {
 };
 
 export function categorizeColor(hexColor: string) {
-  // Remove leading # if present
-  hexColor = hexColor.replace(/^#/, "");
+  // Remove the '#' symbol if present
+  hexColor = hexColor.replace("#", "");
 
-  // Ensure string length is 6 and convert to lowercase
-  if (hexColor.length !== 6) {
-    throw new Error("Invalid hex color format");
-  }
-  hexColor = hexColor.toLowerCase();
+  // Convert hex to RGB
+  var r = parseInt(hexColor.substring(0, 2), 16);
+  var g = parseInt(hexColor.substring(2, 4), 16);
+  var b = parseInt(hexColor.substring(4, 6), 16);
 
-  // Convert hex to RGB values
-  const rgb = {
-    r: parseInt(hexColor.substring(0, 2), 16),
-    g: parseInt(hexColor.substring(2, 4), 16),
-    b: parseInt(hexColor.substring(4, 6), 16),
-  };
-
-  // Define color ranges (using RGB space for simplicity)
-  const colorRanges = {
-    yellow: [
-      [255, 230, 0],
-      [255, 255, 0],
-    ],
-    yellowOrange: [
-      [255, 215, 35],
-      [255, 255, 102],
-    ],
-    yellowGreen: [
-      [173, 255, 47],
-      [255, 255, 179],
-    ],
-    orange: [
-      [255, 165, 0],
-      [255, 200, 0],
-    ],
-    green: [
-      [0, 128, 0],
-      [0, 255, 127],
-    ],
-    redOrange: [
-      [255, 127, 39],
-      [255, 160, 84],
-    ],
-    blueGreen: [
-      [0, 139, 139],
-      [0, 255, 255],
-    ],
-    red: [
-      [255, 0, 0],
-      [255, 96, 76],
-    ],
-    blue: [
-      [0, 0, 255],
-      [0, 127, 255],
-    ],
-    redViolet: [
-      [224, 32, 112],
-      [255, 127, 189],
-    ],
-    blueViolet: [
-      [95, 0, 255],
-      [153, 0, 255],
-    ],
-    violet: [
-      [128, 0, 128],
-      [255, 0, 255],
-    ],
-  };
-
-  // Check if color is white or black first
-  if (rgb.r === rgb.g && rgb.g === rgb.b) {
-    if (rgb.r === 255) {
-      return "white";
-    } else if (rgb.r === 0) {
-      return "black";
+  // Check if it's a grayscale color
+  if (r === g && g === b) {
+    if (r === 0) {
+      return "black"; // If all values are 0, it's black
+    } else if (r === 255) {
+      return "white"; // If all values are 255, it's white
+    } else {
+      return "gray"; // For all other grayscale colors, classify as gray
     }
   }
 
-  // Check if color falls within specific ranges
-  for (const [color, range] of Object.entries(colorRanges)) {
-    if (
-      rgb.r >= range[0][0] &&
-      rgb.r <= range[1][0] &&
-      rgb.g >= range[0][1] &&
-      rgb.g <= range[1][1] &&
-      rgb.b >= range[0][2] &&
-      rgb.b <= range[1][2]
-    ) {
-      return color;
+  // Calculate the hue using the RGB values
+  let max = Math.max(r, g, b);
+  let min = Math.min(r, g, b);
+  let hue;
+  if (max === min) {
+    hue = 0;
+  } else {
+    switch (max) {
+      case r:
+        hue = (60 * ((g - b) / (max - min)) + 360) % 360;
+        break;
+      case g:
+        hue = 60 * ((b - r) / (max - min)) + 120;
+        break;
+      case b:
+        hue = 60 * ((r - g) / (max - min)) + 240;
+        break;
     }
   }
 
-  // Default to closest gray if no specific match
-  const isCloserToDarkGray = (rgb.r + rgb.g + rgb.b) / 3 < 128;
-  return isCloserToDarkGray ? "dark gray" : "light gray";
+  // Classify the color based on its hue
+  if (hue >= 30 && hue < 45) {
+    return "yellow";
+  } else if (hue >= 45 && hue < 60) {
+    return "yellow_Orange";
+  } else if (hue >= 60 && hue < 90) {
+    return "orange";
+  } else if (hue >= 90 && hue < 135) {
+    return "red_Orange";
+  } else if (hue >= 135 && hue < 165) {
+    return "yellow_Green";
+  } else if (hue >= 165 && hue < 195) {
+    return "green";
+  } else if (hue >= 195 && hue < 255) {
+    return "blue_Green";
+  } else if (hue >= 255 && hue < 285) {
+    return "blue";
+  } else if (hue >= 285 && hue < 315) {
+    return "blue_Violet";
+  } else if (hue >= 315 && hue < 345) {
+    return "red_Violet";
+  } else if ((hue >= 345 && hue <= 360) || (hue >= 0 && hue < 15)) {
+    return "red";
+  } else if (hue >= 15 && hue < 30) {
+    return "violet";
+  } else {
+    return "unknown"; // Return unknown for colors that don't fall within any of the specified ranges
+  }
 }
