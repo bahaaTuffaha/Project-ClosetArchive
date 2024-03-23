@@ -76,7 +76,8 @@ export function Home() {
   const storedItems = useSelector((state: RootState) => state.itemsList.items);
   const numberOfLaundry = storedItems.filter(
     (item) =>
-      item.laundryCounter >= storedSettings.laundryNumber && item.laundryable,
+      (item.laundryCounter ?? 0) >= storedSettings.laundryNumber &&
+      (item.laundryable ?? true),
   ).length;
   const selectedLang = useSelector(
     (state: RootState) => state.settings.language,

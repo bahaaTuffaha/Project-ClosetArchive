@@ -190,7 +190,7 @@ export function HomeBottom() {
       itemsState.items.filter(
         (x) =>
           (x.laundryCounter ?? 0) >= storedSettings.laundryNumber &&
-          x.laundryable,
+          (x.laundryable ?? true),
       ),
     );
   }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);
