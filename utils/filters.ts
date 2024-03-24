@@ -1,4 +1,5 @@
 import { item, logsType } from "../redux/itemsSlice";
+import { categorizeColor } from "./colors";
 
 function desc(array: any[], sub: string) {
   array.sort((a, b) => {
@@ -86,6 +87,7 @@ export type SortValuesType = {
   categories: number[];
   types: string[];
   season: string;
+  colors: string[];
 };
 export function HomeFilter(
   filters: SortValuesType,
@@ -129,6 +131,14 @@ export function HomeFilter(
           (item) => filters.season == item.season,
         );
       }
+      if (filters.colors.length > 0) {
+        newArray[i] = newArray[i].filter(
+          (item) =>
+            filters.colors.includes(categorizeColor(item.primaryColor)) ||
+            filters.colors.includes(categorizeColor(item.secondaryColor)) ||
+            filters.colors.includes(categorizeColor(item.tertiaryColor)),
+        );
+      }
     }
     return newArray;
   } else {
@@ -161,6 +171,14 @@ export function HomeFilter(
     }
     if (filters.season != "") {
       newArray = newArray.filter((item) => filters.season == item.season);
+    }
+    if (filters.colors.length > 0) {
+      newArray = newArray.filter(
+        (item) =>
+          filters.colors.includes(categorizeColor(item.primaryColor)) ||
+          filters.colors.includes(categorizeColor(item.secondaryColor)) ||
+          filters.colors.includes(categorizeColor(item.tertiaryColor)),
+      );
     }
     return newArray;
   }

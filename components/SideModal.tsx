@@ -52,7 +52,9 @@ export const SideModal = ({
           className="z-40 h-full w-full absolute bg-black opacity-30 rounded-xl"
         />
       )}
-      <Animated.View
+      <Animated.ScrollView
+        contentContainerStyle={{ alignItems: "center", flexGrow: 1 }}
+        nestedScrollEnabled={true}
         style={[
           {
             height: height,
@@ -63,9 +65,9 @@ export const SideModal = ({
             right: "-50%",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
+            flex: 1,
           },
           closeDrawerAnimation,
         ]}
@@ -74,7 +76,7 @@ export const SideModal = ({
         <Button
           mode="contained-tonal"
           buttonColor={colors.mainCyan}
-          className="self-center mt-5 w-[80%]"
+          className="self-center w-[80%] mt-5"
           textColor="white"
           onPress={() => {
             handleCloseDrawer();
@@ -82,7 +84,7 @@ export const SideModal = ({
         >
           {localization.Close[storedSettings.language]}
         </Button>
-      </Animated.View>
+      </Animated.ScrollView>
     </>
   );
 };
