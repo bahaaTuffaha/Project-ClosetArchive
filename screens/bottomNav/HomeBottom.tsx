@@ -321,6 +321,7 @@ export function HomeBottom() {
                 style={{
                   zIndex: Math.floor(Math.random() * 2) + 2,
                   width: "90%",
+                  marginBottom: 20,
                 }}
               >
                 <DropDownPicker
@@ -337,7 +338,9 @@ export function HomeBottom() {
                   placeholder={
                     localization.CategoryFilter[storedSettings.language]
                   }
-                  style={{ borderColor: colors.mainGreen, marginBottom: 20 }}
+                  style={{
+                    borderColor: colors.mainGreen,
+                  }}
                   dropDownContainerStyle={{ borderColor: colors.mainGreen }}
                 />
               </View>

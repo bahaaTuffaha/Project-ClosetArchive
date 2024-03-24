@@ -21,9 +21,9 @@ const ColorFilter = ({
   colors: string[];
   setColors: Dispatch<SetStateAction<string[]>>;
 }) => {
-  const isDarkMode = useColorScheme() === "dark";
+  // const isDarkMode = useColorScheme() === "dark";
 
-  const basicColors = {
+  const basicColors: { [key: string]: string } = {
     yellow: "#FEFD00",
     yellow_Orange: "#F8A900",
     yellow_Green: "#48FE00",
@@ -83,37 +83,4 @@ const ColorFilter = ({
   );
 };
 
-const styles = StyleSheet.create({
-  // centeredView: {
-  //   backgroundColor: "#49494968",
-  //   // width: "100%",
-  // },
-  modalView: {
-    backgroundColor: appColors.white,
-    borderRadius: 20,
-    width: "80%",
-    height: "50%",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
-});
 export default ColorFilter;
