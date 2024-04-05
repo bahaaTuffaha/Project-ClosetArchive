@@ -99,9 +99,8 @@ export const ItemSelector = () => {
             onClearIconPress={() => setSearch("")}
           />
         </View>
-        <ScrollView
-          nestedScrollEnabled={true}
-          contentContainerStyle={{
+        <View
+          style={{
             backgroundColor: "#C9C9C9",
             marginTop: "1%",
             borderBottomLeftRadius: 20,
@@ -110,122 +109,124 @@ export const ItemSelector = () => {
             paddingBottom: 10,
           }}
         >
-          {itemsState.collectionTags.map((collection, index) => {
-            if (!search) {
-              if (allCollections[index]?.length ?? 0 != 0) {
-                return (
-                  <CollectionContainer
-                    key={index}
-                    color={addOpacityToHex(collection.color ?? "#fff", 0.2)}
-                    label={collection.label}
-                  >
-                    <>
-                      {allCollections[index].map((item) => {
-                        return (
-                          <SelectionItemBox
-                            primary={item.primaryColor || "#fff"}
-                            secondary={item.secondaryColor || "#fff"}
-                            tertiary={item.tertiaryColor || "#fff"}
-                            key={item.id}
-                            image={item.image}
-                            name={item.name}
-                            type={item.type}
-                            id={item.id}
-                            setSelectedIdCollector={setSelectedIdCollector}
-                            selectedIdCollector={selectedIdCollector}
-                          />
-                        );
-                      })}
-                    </>
-                  </CollectionContainer>
-                );
+          <ScrollView>
+            {itemsState.collectionTags.map((collection, index) => {
+              if (!search) {
+                if (allCollections[index]?.length ?? 0 != 0) {
+                  return (
+                    <CollectionContainer
+                      key={index}
+                      color={addOpacityToHex(collection.color ?? "#fff", 0.2)}
+                      label={collection.label}
+                    >
+                      <>
+                        {allCollections[index].map((item) => {
+                          return (
+                            <SelectionItemBox
+                              primary={item.primaryColor || "#fff"}
+                              secondary={item.secondaryColor || "#fff"}
+                              tertiary={item.tertiaryColor || "#fff"}
+                              key={item.id}
+                              image={item.image}
+                              name={item.name}
+                              type={item.type}
+                              id={item.id}
+                              setSelectedIdCollector={setSelectedIdCollector}
+                              selectedIdCollector={selectedIdCollector}
+                            />
+                          );
+                        })}
+                      </>
+                    </CollectionContainer>
+                  );
+                }
+              } else {
+                if (allCollectionsFilter[index]?.length ?? 0 != 0) {
+                  return (
+                    //searching & filtering
+                    <CollectionContainer
+                      key={index}
+                      color={addOpacityToHex(collection.color, 0.2)}
+                      label={collection.label}
+                    >
+                      <>
+                        {filterCollectionsBySearch(allCollections, search)[
+                          index
+                        ].map((item) => {
+                          return (
+                            <SelectionItemBox
+                              primary={item.primaryColor || "#fff"}
+                              secondary={item.secondaryColor || "#fff"}
+                              tertiary={item.tertiaryColor || "#fff"}
+                              key={item.id}
+                              image={item.image}
+                              name={item.name}
+                              type={item.type}
+                              id={item.id}
+                              setSelectedIdCollector={setSelectedIdCollector}
+                              selectedIdCollector={selectedIdCollector}
+                            />
+                          );
+                        })}
+                      </>
+                    </CollectionContainer>
+                  );
+                }
               }
-            } else {
-              if (allCollectionsFilter[index]?.length ?? 0 != 0) {
-                return (
-                  //searching & filtering
-                  <CollectionContainer
-                    key={index}
-                    color={addOpacityToHex(collection.color, 0.2)}
-                    label={collection.label}
-                  >
-                    <>
-                      {filterCollectionsBySearch(allCollections, search)[
-                        index
-                      ].map((item) => {
-                        return (
-                          <SelectionItemBox
-                            primary={item.primaryColor || "#fff"}
-                            secondary={item.secondaryColor || "#fff"}
-                            tertiary={item.tertiaryColor || "#fff"}
-                            key={item.id}
-                            image={item.image}
-                            name={item.name}
-                            type={item.type}
-                            id={item.id}
-                            setSelectedIdCollector={setSelectedIdCollector}
-                            selectedIdCollector={selectedIdCollector}
-                          />
-                        );
-                      })}
-                    </>
-                  </CollectionContainer>
-                );
-              }
-            }
-          })}
-          {search == "" ? (
-            <FlashList
-              data={nonCollectnized}
-              contentContainerStyle={{
-                paddingLeft: 5,
-                paddingRight: 5,
-              }}
-              numColumns={4}
-              estimatedItemSize={100}
-              extraData={selectedIdCollector}
-              renderItem={({ item, index }) => (
-                <SelectionItemBox
-                  primary={item.primaryColor || "#fff"}
-                  secondary={item.secondaryColor || "#fff"}
-                  tertiary={item.tertiaryColor || "#fff"}
-                  key={index + item.id}
-                  image={item.image}
-                  name={item.name}
-                  type={item.type}
-                  id={item.id}
-                  setSelectedIdCollector={setSelectedIdCollector}
-                  selectedIdCollector={selectedIdCollector}
-                />
-              )}
-            />
-          ) : (
-            <FlashList
-              contentContainerStyle={{
-                paddingLeft: 5,
-                paddingRight: 5,
-              }}
-              extraData={selectedIdCollector}
-              numColumns={4}
-              data={nonCategorizedFilter}
-              estimatedItemSize={100}
-              renderItem={({ item, index }) => (
-                <SelectionItemBox
-                  primary={item.primaryColor || "#fff"}
-                  secondary={item.secondaryColor || "#fff"}
-                  tertiary={item.tertiaryColor || "#fff"}
-                  key={index + item.id}
-                  image={item.image}
-                  name={item.name}
-                  type={item.type}
-                  id={item.id}
-                  setSelectedIdCollector={setSelectedIdCollector}
-                  selectedIdCollector={selectedIdCollector}
-                />
-              )}
-            />
-          )}
-        </ScrollView>
+            })}
+            {search == "" ? (
+              <FlashList
+                data={nonCollectnized}
+                contentContainerStyle={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                }}
+                numColumns={4}
+                estimatedItemSize={100}
+                extraData={selectedIdCollector}
+                renderItem={({ item, index }) => (
+                  <SelectionItemBox
+                    primary={item.primaryColor || "#fff"}
+                    secondary={item.secondaryColor || "#fff"}
+                    tertiary={item.tertiaryColor || "#fff"}
+                    key={index + item.id}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                    setSelectedIdCollector={setSelectedIdCollector}
+                    selectedIdCollector={selectedIdCollector}
+                  />
+                )}
+              />
+            ) : (
+              <FlashList
+                contentContainerStyle={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                }}
+                extraData={selectedIdCollector}
+                numColumns={4}
+                data={nonCategorizedFilter}
+                estimatedItemSize={100}
+                renderItem={({ item, index }) => (
+                  <SelectionItemBox
+                    primary={item.primaryColor || "#fff"}
+                    secondary={item.secondaryColor || "#fff"}
+                    tertiary={item.tertiaryColor || "#fff"}
+                    key={index + item.id}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                    setSelectedIdCollector={setSelectedIdCollector}
+                    selectedIdCollector={selectedIdCollector}
+                  />
+                )}
+              />
+            )}
+          </ScrollView>
+        </View>
         <View className="absolute bottom-[2%] w-full">
           <Button
             className="mx-auto w-28 my-1"

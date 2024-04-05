@@ -511,9 +511,8 @@ export function HomeBottom() {
                 onClearIconPress={() => setSearch("")}
               />
             )}
-            <ScrollView
-              nestedScrollEnabled={true}
-              contentContainerStyle={{
+            <View
+              style={{
                 backgroundColor: "#C9C9C9",
                 marginTop: "1%",
                 borderBottomLeftRadius: 20,
@@ -522,138 +521,141 @@ export function HomeBottom() {
                 paddingBottom: 10,
               }}
             >
-              {search.length == 0 &&
-                laundryItems.length > 0 &&
-                storedSettings.enableLaundry && (
-                  <CollectionContainer
-                    color={colors.gray}
-                    label={"Laundry"}
-                    LaundryReminder={true}
-                  >
-                    <>
-                      {laundryItems.map((item, index) => {
-                        return (
-                          <ItemBox
-                            primary={item.primaryColor || "#fff"}
-                            secondary={item.secondaryColor || "#fff"}
-                            tertiary={item.tertiaryColor || "#fff"}
-                            key={"laundry" + index}
-                            image={item.image}
-                            name={item.name}
-                            type={item.type}
-                            id={item.id}
-                          />
-                        );
-                      })}
-                    </>
-                  </CollectionContainer>
+              <ScrollView>
+                {search.length == 0 &&
+                  laundryItems.length > 0 &&
+                  storedSettings.enableLaundry && (
+                    <CollectionContainer
+                      color={colors.gray}
+                      label={"Laundry"}
+                      LaundryReminder={true}
+                    >
+                      <>
+                        {laundryItems.map((item, index) => {
+                          return (
+                            <ItemBox
+                              primary={item.primaryColor || "#fff"}
+                              secondary={item.secondaryColor || "#fff"}
+                              tertiary={item.tertiaryColor || "#fff"}
+                              key={"laundry" + index}
+                              image={item.image}
+                              name={item.name}
+                              type={item.type}
+                              id={item.id}
+                            />
+                          );
+                        })}
+                      </>
+                    </CollectionContainer>
+                  )}
+
+                {itemsState.collectionTags.map((collection, index) => {
+                  if (!search) {
+                    if (allCollections[index]?.length ?? 0 != 0) {
+                      return (
+                        <CollectionContainer
+                          key={index}
+                          color={addOpacityToHex(collection.color, 0.2)}
+                          label={collection.label}
+                        >
+                          <>
+                            {allCollections[index].map((item) => {
+                              return (
+                                <ItemBox
+                                  primary={item.primaryColor || "#fff"}
+                                  secondary={item.secondaryColor || "#fff"}
+                                  tertiary={item.tertiaryColor || "#fff"}
+                                  key={item.id}
+                                  image={item.image}
+                                  name={item.name}
+                                  type={item.type}
+                                  id={item.id}
+                                />
+                              );
+                            })}
+                          </>
+                        </CollectionContainer>
+                      );
+                    }
+                  } else {
+                    if (allCollectnizedFilter[index]?.length ?? 0 != 0) {
+                      return (
+                        //searching & filtering
+                        <CollectionContainer
+                          key={index}
+                          color={addOpacityToHex(collection.color, 0.2)}
+                          label={collection.label}
+                        >
+                          <>
+                            {filterCollectionsBySearch(allCollections, search)[
+                              index
+                            ].map((item) => {
+                              return (
+                                <ItemBox
+                                  primary={item.primaryColor || "#fff"}
+                                  secondary={item.secondaryColor || "#fff"}
+                                  tertiary={item.tertiaryColor || "#fff"}
+                                  key={item.id}
+                                  image={item.image}
+                                  name={item.name}
+                                  type={item.type}
+                                  id={item.id}
+                                />
+                              );
+                            })}
+                          </>
+                        </CollectionContainer>
+                      );
+                    }
+                  }
+                })}
+                {search == "" ? (
+                  <FlashList
+                    data={nonCollectnized}
+                    contentContainerStyle={{
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                    }}
+                    numColumns={4}
+                    estimatedItemSize={100}
+                    renderItem={({ item, index }) => (
+                      <ItemBox
+                        primary={item.primaryColor || "#fff"}
+                        secondary={item.secondaryColor || "#fff"}
+                        tertiary={item.tertiaryColor || "#fff"}
+                        key={index + item.id}
+                        image={item.image}
+                        name={item.name}
+                        type={item.type}
+                        id={item.id}
+                      />
+                    )}
+                  />
+                ) : (
+                  <FlashList
+                    contentContainerStyle={{
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                    }}
+                    numColumns={4}
+                    data={nonCollectnizedFilter}
+                    estimatedItemSize={100}
+                    renderItem={({ item, index }) => (
+                      <ItemBox
+                        primary={item.primaryColor || "#fff"}
+                        secondary={item.secondaryColor || "#fff"}
+                        tertiary={item.tertiaryColor || "#fff"}
+                        key={index + item.id}
+                        image={item.image}
+                        name={item.name}
+                        type={item.type}
+                        id={item.id}
+                      />
+                    )}
+                  />
                 )}
-              {itemsState.collectionTags.map((collection, index) => {
-                if (!search) {
-                  if (allCollections[index]?.length ?? 0 != 0) {
-                    return (
-                      <CollectionContainer
-                        key={index}
-                        color={addOpacityToHex(collection.color, 0.2)}
-                        label={collection.label}
-                      >
-                        <>
-                          {allCollections[index].map((item) => {
-                            return (
-                              <ItemBox
-                                primary={item.primaryColor || "#fff"}
-                                secondary={item.secondaryColor || "#fff"}
-                                tertiary={item.tertiaryColor || "#fff"}
-                                key={item.id}
-                                image={item.image}
-                                name={item.name}
-                                type={item.type}
-                                id={item.id}
-                              />
-                            );
-                          })}
-                        </>
-                      </CollectionContainer>
-                    );
-                  }
-                } else {
-                  if (allCollectnizedFilter[index]?.length ?? 0 != 0) {
-                    return (
-                      //searching & filtering
-                      <CollectionContainer
-                        key={index}
-                        color={addOpacityToHex(collection.color, 0.2)}
-                        label={collection.label}
-                      >
-                        <>
-                          {filterCollectionsBySearch(allCollections, search)[
-                            index
-                          ].map((item) => {
-                            return (
-                              <ItemBox
-                                primary={item.primaryColor || "#fff"}
-                                secondary={item.secondaryColor || "#fff"}
-                                tertiary={item.tertiaryColor || "#fff"}
-                                key={item.id}
-                                image={item.image}
-                                name={item.name}
-                                type={item.type}
-                                id={item.id}
-                              />
-                            );
-                          })}
-                        </>
-                      </CollectionContainer>
-                    );
-                  }
-                }
-              })}
-              {search == "" ? (
-                <FlashList
-                  data={nonCollectnized}
-                  contentContainerStyle={{
-                    paddingLeft: 5,
-                    paddingRight: 5,
-                  }}
-                  numColumns={4}
-                  estimatedItemSize={100}
-                  renderItem={({ item, index }) => (
-                    <ItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                    />
-                  )}
-                />
-              ) : (
-                <FlashList
-                  contentContainerStyle={{
-                    paddingLeft: 5,
-                    paddingRight: 5,
-                  }}
-                  numColumns={4}
-                  data={nonCollectnizedFilter}
-                  estimatedItemSize={100}
-                  renderItem={({ item, index }) => (
-                    <ItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                    />
-                  )}
-                />
-              )}
-            </ScrollView>
+              </ScrollView>
+            </View>
           </View>
         </View>
       </>
