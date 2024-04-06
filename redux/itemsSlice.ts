@@ -109,6 +109,12 @@ const itemsSlice = createSlice({
         isOpen: true,
       });
     },
+    updateCollection: (state, action) => {
+      const collectionIndex = state.collectionTags.findIndex(
+        (x) => x.label === action.payload.name,
+      );
+      state.collectionTags[collectionIndex].label = action.payload.newName;
+    },
     toggleCollection: (state, action) => {
       const collectionIndex = state.collectionTags.findIndex(
         (x) => x.label === action.payload.name,
@@ -223,6 +229,7 @@ export const {
   addCollection,
   toggleCollection,
   deleteCollection,
+  updateCollection,
   addLog,
   deleteLog,
   addEventLog,

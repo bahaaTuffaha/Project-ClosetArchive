@@ -188,40 +188,56 @@ export const clothingReminderMessages = [
   ],
 ];
 
-export const clothingReminderTitles = [
-  [
-    "Clothing Event Reminder",
-    "تذكير بأحداث الملابس",
-    "Recordatorio de eventos de ropa",
-  ],
-  ["Fashion Log Alert", "تنبيه تسجيل الأزياء", "Alerta de registro de moda"],
-  [
-    "Wardrobe Update Reminder",
-    "تذكير بتحديث الخزانة",
-    "Recordatorio de actualización de armario",
-  ],
-  ["Outfit Logging Time", "وقت تسجيل الإطلالات", "Hora de registrar atuendos"],
-  [
-    "Clothing Record Notification",
-    "إشعار بتسجيل الملابس",
-    "Notificación de registro de ropa",
-  ],
-  [
-    "Stay Fashionably Organized",
-    "ابق منظمًا بأناقة",
-    "Mantente organizado con estilo",
-  ],
-  [
-    "Keep Your Wardrobe Updated",
-    "حافظ على تحديث خزانتك",
-    "Mantén tu guardarropa actualizado",
-  ],
-  [
-    "Remember to Log Your Outfit",
-    "تذكر تسجيل إطلالتك",
-    "Recuerda registrar tu atuendo",
-  ],
-];
+export const clothingReminderTitles = (userName: string) => {
+  return [
+    [
+      "Clothing Event Reminder",
+      "تذكير بأحداث الملابس",
+      "Recordatorio de eventos de ropa",
+    ],
+    ["Fashion Log Alert", "تنبيه تسجيل الأزياء", "Alerta de registro de moda"],
+    [
+      "Wardrobe Update Reminder",
+      "تذكير بتحديث الخزانة",
+      "Recordatorio de actualización de armario",
+    ],
+    [
+      "Outfit Logging Time",
+      "وقت تسجيل الإطلالات",
+      "Hora de registrar atuendos",
+    ],
+    [
+      "Clothing Record Notification",
+      "إشعار بتسجيل الملابس",
+      "Notificación de registro de ropa",
+    ],
+    [
+      "Stay Fashionably Organized",
+      "ابق منظمًا بأناقة",
+      "Mantente organizado con estilo",
+    ],
+    [
+      "Keep Your Wardrobe Updated",
+      "حافظ على تحديث خزانتك",
+      "Mantén tu guardarropa actualizado",
+    ],
+    [
+      "Remember to Log Your Outfit",
+      "تذكر تسجيل إطلالتك",
+      "Recuerda registrar tu atuendo",
+    ],
+    [
+      `Hi ${userName}, Time to Log Your Stylish Outfit!`,
+      `مرحبًا ${userName}، حان وقت تسجيل إطلالتك الأنيقة!`,
+      `Hola ${userName}, ¡Es hora de registrar tu atuendo con estilo!`,
+    ],
+    [
+      `Hello ${userName}, Remember to Record Your Style!`,
+      `مرحبًا ${userName}، تذكّر تسجيل مظهرك!`,
+      `Hola ${userName}, ¡Recuerda registrar tu estilo!`,
+    ],
+  ];
+};
 
 const tops_en = [
   { value: "T-Shirt", label: "T-Shirt" },
