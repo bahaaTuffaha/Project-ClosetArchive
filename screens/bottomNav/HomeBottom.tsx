@@ -654,6 +654,7 @@ export function HomeBottom() {
                     )}
                   />
                 )}
+                <View className={isSearchVisible ? "h-36" : "h-6"} />
               </ScrollView>
             </View>
           </View>

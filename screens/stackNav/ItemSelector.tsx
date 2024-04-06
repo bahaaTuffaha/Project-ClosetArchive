@@ -225,6 +225,7 @@ export const ItemSelector = () => {
                 )}
               />
             )}
+            <View className={"h-14"} />
           </ScrollView>
         </View>
         <View className="absolute bottom-[2%] w-full">
