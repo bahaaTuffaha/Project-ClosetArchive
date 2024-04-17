@@ -100,7 +100,8 @@ export function Category() {
             >
               <Pressable
                 onPress={() =>
-                  navigation.navigate(item.screen, {
+                  navigation.navigate("ModeScreen", {
+                    screenName: item.screen,
                     selectedCategory: item.index,
                   })
                 }

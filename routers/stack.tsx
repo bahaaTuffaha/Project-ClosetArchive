@@ -9,6 +9,7 @@ import { EventLogForm } from "../screens/stackNav/EventLogForm";
 import { CollectionForm } from "../screens/stackNav/CollectionForm";
 import { Settings } from "../screens/stackNav/Settings";
 import { ClosetInfo } from "../screens/stackNav/ClosetInfo";
+import { ModeScreen } from "../screens/stackNav/ModeScreen";
 export default function Navigator() {
   const Stack = createNativeStackNavigator();
   return (
@@ -37,6 +38,11 @@ export default function Navigator() {
         <Stack.Screen
           name="Category"
           component={Category}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ModeScreen"
+          component={ModeScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

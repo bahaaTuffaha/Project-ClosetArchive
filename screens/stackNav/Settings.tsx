@@ -21,19 +21,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
 import { laundryRefresher } from "../../redux/itemsSlice";
 import { localization } from "../../utils/localization";
-
-export const handleNumberChange = (
-  func: any,
-  text: string,
-  min: number,
-  max: number,
-) => {
-  // Use regular expressions to allow only numbers and optionally a single decimal point
-  const regex = /^[0-9]*\.?[0-9]*$/;
-  if (regex.test(text) && Number(text) >= min && Number(text) <= max) {
-    func();
-  }
-};
+import { handleNumberChange } from "../../utils/validators";
 
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
