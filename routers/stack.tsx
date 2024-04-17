@@ -10,6 +10,7 @@ import { CollectionForm } from "../screens/stackNav/CollectionForm";
 import { Settings } from "../screens/stackNav/Settings";
 import { ClosetInfo } from "../screens/stackNav/ClosetInfo";
 import { ModeScreen } from "../screens/stackNav/ModeScreen";
+import { BulkModeForm } from "../screens/stackNav/BulkModeForm";
 export default function Navigator() {
   const Stack = createNativeStackNavigator();
   return (
@@ -43,6 +44,11 @@ export default function Navigator() {
         <Stack.Screen
           name="ModeScreen"
           component={ModeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BulkModeForm"
+          component={BulkModeForm}
           options={{ headerShown: false }}
         />
         <Stack.Screen
