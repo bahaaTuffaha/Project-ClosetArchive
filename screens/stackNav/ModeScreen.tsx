@@ -4,6 +4,9 @@ import { ThemeText } from "../../components/ThemeText";
 import { BackButton } from "../../components/BackButton";
 import bulkBoxes from "../../assets/images/bulk.png";
 import singleBox from "../../assets/images/single.png";
+import { localization } from "../../utils/localization";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export const ModeScreen = ({
   navigation,
@@ -13,6 +16,7 @@ export const ModeScreen = ({
   route: any;
 }) => {
   const { selectedCategory, screenName } = route.params;
+  const storedSettings = useSelector((state: RootState) => state.settings);
   return (
     <ThemeView>
       <>
@@ -29,7 +33,7 @@ export const ModeScreen = ({
             customStyle={{ fontFamily: "TSMorabaat-Regular" }}
             classNameStyle="text-[50px] z-10 text-bold"
           >
-            Add Single Item
+            {localization.addSingleItem[storedSettings.language]}
           </ThemeText>
           <Image
             source={singleBox}
@@ -48,7 +52,7 @@ export const ModeScreen = ({
             customStyle={{ fontFamily: "TSMorabaat-Regular" }}
             classNameStyle="text-[50px] z-10"
           >
-            Add a Bulk
+            {localization.addMultiItems[storedSettings.language]}
           </ThemeText>
           <Image
             source={bulkBoxes}

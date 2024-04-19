@@ -3,10 +3,10 @@ import { BackButton } from "../../components/BackButton";
 import { ThemeView } from "../../components/ThemeView";
 import { colors } from "../../utils/colors";
 import { CustomInput } from "../../components/CustomInput";
-import { StyleSheet, Text, View, useColorScheme } from "react-native";
+import { Text, View, useColorScheme } from "react-native";
 import { RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 import { ThemeText } from "../../components/ThemeText";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { handleNumberChange } from "../../utils/validators";
@@ -17,7 +17,6 @@ import { clothesList, localization } from "../../utils/localization";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
-import { Asset } from "react-native-image-picker";
 
 export const BulkModeForm = ({
   navigation,
@@ -60,8 +59,8 @@ export const BulkModeForm = ({
         }
 
         const newImages = [];
-        for (let i = 0; i < imageNum; i++) {
-          newImages.push(response.assets[i].uri);
+        for (let i = 0; i < response.assets?.length; i++) {
+          newImages.push(response.assets[i]?.uri);
         }
         createItem(newImages); // Update the state with the new array
       } catch (error) {
@@ -81,9 +80,9 @@ export const BulkModeForm = ({
               } else if (response.errorCode) {
                 console.log("Image picker error: ", response.errorMessage);
                 return;
+              } else {
+                newImages.push(response.assets[0]?.uri);
               }
-              newImages.push(response.assets[0].uri);
-              // Update the state with the new array
             },
           );
         } catch (error) {
@@ -111,11 +110,6 @@ export const BulkModeForm = ({
 
     handleImagePicker(mode, createItem);
 
-    // if (images.length == 0) {
-    //   console.log(images);
-    //   return;
-    // }
-
     function createItem(images: any[]) {
       for (let i = 0; i < images.length; i++) {
         ImageResizer.createResizedImage(images[i], 500, 500, "JPEG", 40, 0)
@@ -136,7 +130,7 @@ export const BulkModeForm = ({
                 sizeUnit: "",
                 quantity: 1,
                 purchaseDate: JSON.stringify(new Date()),
-                image: imgBase64, // Use the local imgBase64 variable here
+                image: imgBase64,
                 automaticColor: false,
                 primaryColor: "",
                 secondaryColor: "",
@@ -150,16 +144,18 @@ export const BulkModeForm = ({
       }
     }
 
-    // navigation.popToTop("Category");
+    navigation.popToTop("Category");
 
-    // navigation.dispatch(CommonActions.goBack());
+    navigation.dispatch(CommonActions.goBack());
   }
   return (
     <ThemeView>
       <>
         <View className="w-full flex flex-row h-14 justify-center items-center">
           <BackButton />
-          <ThemeText classNameStyle="text-xl italic">{"Bulk Mode"}</ThemeText>
+          <ThemeText classNameStyle="text-xl italic">
+            {localization.BulkMode[storedSettings.language]}
+          </ThemeText>
         </View>
         <View className="space-y-5">
           <CustomInput
@@ -174,8 +170,7 @@ export const BulkModeForm = ({
                 textAlign: storedSettings.language == 1 ? "right" : "left",
               },
             ]}
-            // label={localization.Additional_notes[storedSettings.language]}
-            label="Prefix"
+            label={localization.Prefix[storedSettings.language]}
             value={prefix}
             onChange={(text) => setPrefix(text.nativeEvent.text)}
           />
@@ -221,7 +216,7 @@ export const BulkModeForm = ({
             activeOutlineColor={colors.mainGreen}
             textContentType="name"
             className="mx-20"
-            label={"Number of items"}
+            label={localization.NumberOfItems[storedSettings.language]}
             value={imageNum.toString()}
             onChange={(text) =>
               handleNumberChange(
@@ -236,22 +231,20 @@ export const BulkModeForm = ({
             keyboardType="numeric"
           />
           <View
-            className={`flex ${
+            className={`flex  mx-16 ${
               storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
             }`}
           >
             <Icon name="info-circle" size={15} color={colors.mainCyan} />
             <ThemeText classNameStyle="text-xs mx-2">
-              {
-                "This will let you take images rapidly according to number of images"
-              }
+              {localization.bulkInfo[storedSettings.language]}
             </ThemeText>
           </View>
           {errorsList.length > 0 && (
             <View>
               {errorsList.map((error, index) => {
                 return (
-                  <Text key={index} className="text-[#C70039]">
+                  <Text key={index} className="text-[#C70039] self-center">
                     {error}
                   </Text>
                 );
@@ -267,7 +260,7 @@ export const BulkModeForm = ({
               addItemHandler(0);
             }}
           >
-            Start with Local images
+            {localization.startLocalImages[storedSettings.language]}
           </Button>
           <Button
             className="mx-5"
@@ -278,7 +271,7 @@ export const BulkModeForm = ({
               addItemHandler(1);
             }}
           >
-            Start with camera
+            {localization.startWCamera[storedSettings.language]}
           </Button>
         </View>
       </>

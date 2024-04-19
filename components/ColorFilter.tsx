@@ -1,18 +1,11 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
-import Icon from "react-native-vector-icons/Fontisto";
+import { Dispatch, SetStateAction } from "react";
+import { TouchableOpacity, View } from "react-native";
 import { ThemeText } from "./ThemeText";
 import { colors as appColors } from "../utils/colors";
 import { Text } from "react-native-paper";
-
-// const handleSlicePress = (color) => {
-//   Alert.alert("Color Selected", `You selected color: ${color}`);
-// };
+import { localization } from "../utils/localization";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const ColorFilter = ({
   colors,
@@ -21,8 +14,6 @@ const ColorFilter = ({
   colors: string[];
   setColors: Dispatch<SetStateAction<string[]>>;
 }) => {
-  // const isDarkMode = useColorScheme() === "dark";
-
   const basicColors: { [key: string]: string } = {
     yellow: "#FEFD00",
     yellow_Orange: "#F8A900",
@@ -41,11 +32,12 @@ const ColorFilter = ({
     gray: "#808080",
     unknown: "",
   };
+  const storedSettings = useSelector((state: RootState) => state.settings);
 
   return (
     <View>
       <ThemeText classNameStyle="self-center text-xl font-bold mt-1 my-1">
-        Filter By Color
+        {localization.FilterByColor[storedSettings.language]}
       </ThemeText>
       <View className="flex flex-row flex-wrap w-full">
         {Object.keys(basicColors).map((name) => (
