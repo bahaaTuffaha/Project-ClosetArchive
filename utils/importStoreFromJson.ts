@@ -6,7 +6,9 @@ import { importItems } from "../redux/itemsSlice";
 import { importSettings } from "../redux/settingsSlice";
 
 // Function to import the Redux store from a JSON file in the Documents folder
-export const importStoreFromJson = async () => {
+export const importStoreFromJson = async (
+  setCheckboxes: (enableReminder: boolean, enableLaundry: boolean) => void,
+) => {
   try {
     const permissions =
       await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
@@ -41,9 +43,15 @@ export const importStoreFromJson = async () => {
                   : state.settings.language,
               laundryNumber: state.settings.laundryNumber,
               name: state.settings.name,
+              enableLaundry: state.settings.enableLaundry,
+              enableReminder: state.settings.enableReminder,
             }),
           );
           await persistor.persist();
+          setCheckboxes(
+            state.settings.enableLaundry,
+            state.settings.enableReminder,
+          );
           console.log("Store imported successfully.");
           return true;
         } else {

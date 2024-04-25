@@ -143,6 +143,35 @@ export const localization = {
     "تذكير بالغسيل؟",
     "¿Recordatorio de lavandería?",
   ],
+  addSingleItem: [
+    "Add Single Item",
+    "إضافة عنصر واحد",
+    "Agregar Ítem Individual",
+  ],
+  addMultiItems: [
+    "Add multiple Items",
+    "إضافة عناصر متعددة",
+    "Agregar Varios Ítems",
+  ],
+  startLocalImages: [
+    "Start with Local images",
+    "ابدأ بالصور المحلية",
+    "Comenzar con Imágenes Locales",
+  ],
+  startWCamera: [
+    "Start with camera",
+    "ابدأ بالكاميرا",
+    "Comenzar con la Cámara",
+  ],
+  bulkInfo: [
+    "This will let you create items rapidly according to the number of images",
+    "سيمكنك هذا من إنشاء العناصر بسرعة حسب عدد الصور",
+    "Esto te permitirá crear ítems rápidamente según la cantidad de imágenes",
+  ],
+  BulkMode: ["Bulk Mode", "وضع الجملة", "Modo Masivo"],
+  Prefix: ["Prefix", "بادئة", "Prefijo"],
+  NumberOfItems: ["Number of items", "عدد العناصر", "Número de ítems"],
+  FilterByColor: ["Filter by color", "تصفية حسب اللون", "Filtrar por color"],
 };
 
 export const clothingReminderMessages = [

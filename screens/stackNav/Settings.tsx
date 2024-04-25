@@ -12,6 +12,7 @@ import {
   changeLanguage,
   laundryNumberSetter,
   setEnableLaundry,
+  setReminder,
   userNameSetter,
 } from "../../redux/settingsSlice";
 import { Button, Checkbox, Snackbar } from "react-native-paper";
@@ -21,19 +22,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
 import { laundryRefresher } from "../../redux/itemsSlice";
 import { localization } from "../../utils/localization";
-
-export const handleNumberChange = (
-  func: any,
-  text: string,
-  min: number,
-  max: number,
-) => {
-  // Use regular expressions to allow only numbers and optionally a single decimal point
-  const regex = /^[0-9]*\.?[0-9]*$/;
-  if (regex.test(text) && Number(text) >= min && Number(text) <= max) {
-    func();
-  }
-};
+import { handleNumberChange } from "../../utils/validators";
 
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
@@ -49,8 +38,12 @@ export const Settings = () => {
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
   const [exportOrImport, setExportOrImport] = useState(0);
-  const [checked, setChecked] = useState(storedSettings.enableLaundry);
-
+  const [checkedLau, setCheckedLau] = useState(storedSettings.enableLaundry);
+  const [checkedRem, setCheckedRem] = useState(storedSettings.enableReminder);
+  const setCheckboxes = (enableLaundry: boolean, enableReminder: boolean) => {
+    setCheckedLau(enableLaundry);
+    setCheckedRem(enableReminder);
+  };
   return (
     <ThemeView>
       <>
@@ -149,7 +142,7 @@ export const Settings = () => {
             </ThemeText>
             <Button
               onPress={async () => {
-                if (await importStoreFromJson()) {
+                if (await importStoreFromJson(setCheckboxes)) {
                   setExportOrImport(1);
                   onToggleSnackBar();
                 }
@@ -199,10 +192,10 @@ export const Settings = () => {
               {localization.Times[storedSettings.language]}
             </ThemeText>
             <Checkbox
-              status={checked ? "checked" : "unchecked"}
+              status={checkedLau ? "checked" : "unchecked"}
               onPress={() => {
-                setChecked((prev) => !prev);
-                dispatch(setEnableLaundry({ enableLaundry: !checked }));
+                setCheckedLau((prev) => !prev);
+                dispatch(setEnableLaundry({ enableLaundry: !checkedLau }));
               }}
             />
           </View>
@@ -215,6 +208,22 @@ export const Settings = () => {
             <ThemeText classNameStyle="text-xs mx-5">
               {localization.ThisWillRemind[storedSettings.language]}
             </ThemeText>
+          </View>
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } justify-between items-center`}
+          >
+            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
+              Daily logging reminder
+            </ThemeText>
+            <Checkbox
+              status={checkedRem ? "checked" : "unchecked"}
+              onPress={() => {
+                setCheckedRem((prev) => !prev);
+                dispatch(setReminder({ enableReminder: !checkedRem }));
+              }}
+            />
           </View>
         </View>
         {/* <View className="w-full h-1 bg-gray" /> */}
