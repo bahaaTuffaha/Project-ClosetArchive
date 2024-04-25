@@ -5,6 +5,7 @@ export type SettingsType = {
   name: string;
   laundryNumber: number;
   enableLaundry: boolean;
+  enableReminder: boolean;
   appVer: string;
 };
 const initialState: SettingsType = {
@@ -12,6 +13,7 @@ const initialState: SettingsType = {
   name: "User",
   laundryNumber: 5,
   enableLaundry: true,
+  enableReminder: true,
   appVer: "1.0.1",
 };
 const settingsSlice = createSlice({
@@ -30,10 +32,15 @@ const settingsSlice = createSlice({
     setEnableLaundry: (state, action) => {
       state.enableLaundry = action.payload.enableLaundry;
     },
+    setReminder: (state, action) => {
+      state.enableReminder = action.payload.enableReminder;
+    },
     importSettings: (state, action) => {
       state.language = action.payload.language;
       state.laundryNumber = action.payload.laundryNumber;
       state.name = action.payload.name;
+      state.enableLaundry = action.payload.enableLaundry;
+      state.enableReminder = action.payload.enableReminder;
     },
     setAppVer: (state, action) => {
       state.appVer = action.payload.appVer;
@@ -45,6 +52,7 @@ export const {
   userNameSetter,
   laundryNumberSetter,
   setEnableLaundry,
+  setReminder,
   importSettings,
   setAppVer,
 } = settingsSlice.actions;

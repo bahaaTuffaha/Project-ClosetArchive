@@ -85,10 +85,7 @@ export function Home() {
     (state: RootState) => state.settings.language,
   );
   useEffect(() => {
-    // PushNotification.deleteChannel("channel-id-1");
-
     GetAllPermissions();
-    createChannels(selectedLang, storedSettings.name);
   }, []);
 
   useEffect(() => {
@@ -96,7 +93,13 @@ export function Home() {
     if (storedSettings.enableLaundry != true || numberOfLaundry == 0) {
       PushNotification.cancelLocalNotification("2");
     }
-  }, [storedSettings.enableLaundry, numberOfLaundry]);
+  }, [storedSettings.enableLaundry, , numberOfLaundry]);
+  useEffect(() => {
+    createChannels(selectedLang, storedSettings.name);
+    if (storedSettings.enableReminder != true) {
+      PushNotification.cancelLocalNotification("1");
+    }
+  }, [storedSettings.enableReminder]);
 
   return (
     <ThemeView>

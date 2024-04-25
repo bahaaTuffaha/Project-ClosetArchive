@@ -18,7 +18,7 @@ export default function Navigator() {
       <Stack.Navigator>
         <Stack.Screen
           name="StackNavHome"
-          component={Home}
+          component={Home} //it has the bottomNav & notifications
           options={{ headerShown: false, orientation: "portrait" }}
         />
         <Stack.Screen

@@ -1,6 +1,6 @@
 {
   "name": "closet-archive",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -55,7 +55,12 @@
         "expo-application",
         "expo-constants",
         "expo-font",
-        "expo-keep-awake"
+        "expo-splash-screen",
+        "expo-notifications",
+        "expo-updates",
+        "expo-location",
+        "expo-web-browser",
+        "expo-av"
       ]
     }
   },
