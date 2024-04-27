@@ -34,6 +34,7 @@ import { seasonList } from "../../utils/data";
 import { clothesList, localization } from "../../utils/localization";
 import { defaultCategories } from "../stackNav/Category";
 import ColorFilter from "../../components/ColorFilter";
+import { calculateViewPadding } from "../../utils/stylingHelpers";
 
 export function filterCollectionsBySearch(array: item[][], search: string) {
   let newAllCollections = [];
@@ -80,6 +81,9 @@ export function HomeBottom() {
   const [OpenTypeFilter, setOpenTypeFilter] = useState(false);
   const [OpenSeasonFilter, setOpenSeasonFilter] = useState(false);
   const [OpenColorFilter, setOpenColorFilter] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(
+    Dimensions.get("window").width,
+  );
 
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
@@ -240,6 +244,17 @@ export function HomeBottom() {
   useEffect(() => {
     if (categoriesFilter.length != 1) setTypeFilter([]);
   }, [categoriesFilter]);
+
+  useEffect(() => {
+    const dimensionListener = Dimensions.addEventListener(
+      "change",
+      (dimensions) => {
+        setScreenWidth(dimensions.window.width);
+      },
+    );
+
+    return () => dimensionListener.remove();
+  }, []);
 
   return (
     <ThemeView classNameStyle="px-5">
@@ -613,8 +628,7 @@ export function HomeBottom() {
                   <FlashList
                     data={nonCollectnized}
                     contentContainerStyle={{
-                      paddingLeft: 5,
-                      paddingRight: 5,
+                      paddingHorizontal: calculateViewPadding(screenWidth),
                     }}
                     numColumns={4}
                     estimatedItemSize={100}
@@ -634,8 +648,7 @@ export function HomeBottom() {
                 ) : (
                   <FlashList
                     contentContainerStyle={{
-                      paddingLeft: 5,
-                      paddingRight: 5,
+                      paddingHorizontal: calculateViewPadding(screenWidth),
                     }}
                     numColumns={4}
                     data={nonCollectnizedFilter}

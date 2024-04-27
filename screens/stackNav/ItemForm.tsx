@@ -1,7 +1,6 @@
 // import { useNavigation } from "@react-navigation/native";
 import {
   Image,
-  PermissionsAndroid,
   Pressable,
   StyleSheet,
   Text,
@@ -42,6 +41,9 @@ import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 import { clothesList, localization } from "../../utils/localization";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import LaundryOptions from "../../assets/images/laundryOptions.png";
+import LaundryOptions2 from "../../assets/images/LaundryOptions2.png";
+import { LaundryOptionsModal } from "../../components/LaundryOptionsModal";
 
 export function get_random(list: string[] | string[][]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -100,13 +102,16 @@ export const ItemForm = ({
   const [isAutoOn, setIsAutoOn] = useState(
     storedItems ? storedItems.automaticColor : false,
   );
-  const [checked, setChecked] = useState(storedItems?.laundryable ?? true);
+  const [LaundryCheck, setLaundryCheck] = useState(
+    storedItems?.laundryable ?? true,
+  );
   const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
 
   const dispatch = useDispatch();
 
   const [visible, setVisible] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [openLaundryOpt, setOpenLaundryOpt] = useState(false);
 
   function deleteItemHandler() {
     dispatch(deleteItem({ selectedId: storedItems.id }));
@@ -161,7 +166,7 @@ export const ItemForm = ({
       dispatch(
         enableLaundry4Object({
           selectedId: storedItems.id,
-          laundryValue: checked,
+          laundryValue: LaundryCheck,
         }),
       );
       dispatch(laundryRefresher());
@@ -317,6 +322,12 @@ export const ItemForm = ({
         setVisible={setVisible}
         colorSelection={colorSelection}
       />
+      <LaundryOptionsModal
+        openLaundryOpt={openLaundryOpt}
+        setOpenLaundryOpt={setOpenLaundryOpt}
+        LaundryCheck={LaundryCheck}
+        setLandryCheck={setLaundryCheck}
+      />
       <CustomModal
         setVisible={setImageModalVisible}
         visible={imageModalVisible}
@@ -379,26 +390,26 @@ export const ItemForm = ({
 
               <View className="w-1/3 flex flex-row justify-center items-center">
                 {editingIndex && (
-                  <View className="flex flex-col items-center mr-5">
-                    <ThemeText classNameStyle="text-xs">
-                      {localization.Washable[storedSettings.language]}
-                    </ThemeText>
-
-                    <View className="flex flex-row items-center">
-                      <Checkbox
-                        status={checked ? "checked" : "unchecked"}
-                        onPress={() => {
-                          setChecked((prev) => !prev);
-                        }}
-                        color={appColors.mainGreen}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setOpenLaundryOpt(true);
+                    }}
+                    className="flex flex-col items-center mr-5"
+                  >
+                    {colorScheme == "DARK" ? (
+                      <Image
+                        source={LaundryOptions2}
+                        alt="Laundry Options Icon"
+                        style={{ width: 34, height: 42 }}
                       />
-                      <MaterialCommunityIcons
-                        name="bell-ring"
-                        size={25}
-                        color={appColors.mainGreen}
+                    ) : (
+                      <Image
+                        source={LaundryOptions}
+                        alt="Laundry Options Icon2"
+                        style={{ width: 34, height: 42 }}
                       />
-                    </View>
-                  </View>
+                    )}
+                  </TouchableOpacity>
                 )}
               </View>
             </View>

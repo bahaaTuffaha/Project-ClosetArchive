@@ -58,7 +58,7 @@ export const ItemBox = ({
     <TouchableWithoutFeedback onPress={handleTap}>
       <Animated.View style={animatedStyle}>
         <GestureDetector gesture={scaleHandler}>
-          <View className={`m-1 relative ${boxStyle}`}>
+          <View className={`my-1 mx-2 relative ${boxStyle}`}>
             <Image
               className="absolute z-20 rounded-lg"
               source={layoutFinder(type)}

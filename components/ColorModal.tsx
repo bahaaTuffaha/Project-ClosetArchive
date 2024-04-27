@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import {
   Modal,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   Keyboard,
@@ -40,10 +39,10 @@ const ColorModal = ({
         setVisible(!visible);
       }}
     >
-      <View style={styles.centeredView}>
+      <View style={ModalStyles.centeredView}>
         <View
           style={[
-            styles.modalView,
+            ModalStyles.modalView,
             { backgroundColor: isDarkMode ? appColors.gray : appColors.white },
           ]}
         >
@@ -106,7 +105,9 @@ const ColorModal = ({
             className="m-2"
             theme={{
               roundness: 10,
-              colors: { background: isDarkMode ? appColors.darkblue : appColors.white },
+              colors: {
+                background: isDarkMode ? appColors.darkblue : appColors.white,
+              },
             }}
             label="HEX"
             value={currentColor}
@@ -124,7 +125,7 @@ const ColorModal = ({
   );
 };
 
-const styles = StyleSheet.create({
+export const ModalStyles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "center",

@@ -1,5 +1,5 @@
-import { ReactElement, useState } from "react";
-import { Pressable, View, useColorScheme } from "react-native";
+import { ReactElement, useEffect, useState } from "react";
+import { Dimensions, Pressable, View, useColorScheme } from "react-native";
 import { ThemeText } from "./ThemeText";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,8 +9,8 @@ import { colors } from "../utils/colors";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from "react-native-reanimated";
+import { calculateViewPadding } from "../utils/stylingHelpers";
 
 export const CollectionContainer = ({
   label,
@@ -44,10 +44,23 @@ export const CollectionContainer = ({
     paddingLeft: 8,
     paddingRight: 8,
   }));
+  const [screenWidth, setScreenWidth] = useState(
+    Dimensions.get("window").width,
+  );
+  useEffect(() => {
+    const dimensionListener = Dimensions.addEventListener(
+      "change",
+      (dimensions) => {
+        setScreenWidth(dimensions.window.width);
+      },
+    );
+
+    return () => dimensionListener.remove();
+  }, []);
   return (
     <View
       style={{ backgroundColor: color }}
-      className="flex flex-row flex-wrap w-full h-auto self-center border-[0.4px]"
+      className="w-full h-auto border-[0.4px]"
     >
       <Pressable
         onPress={() => {
@@ -93,7 +106,14 @@ export const CollectionContainer = ({
           size={20}
         />
       </Pressable>
-      {isFolded && children}
+      <View
+        style={{
+          paddingHorizontal: calculateViewPadding(screenWidth),
+        }}
+        className="flex flex-row flex-wrap"
+      >
+        {isFolded && children}
+      </View>
     </View>
   );
 };

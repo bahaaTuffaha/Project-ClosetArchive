@@ -100,10 +100,14 @@ export function Category() {
             >
               <Pressable
                 onPress={() =>
-                  navigation.navigate("ModeScreen", {
-                    screenName: item.screen,
-                    selectedCategory: item.index,
-                  })
+                  item.index == -1
+                    ? navigation.navigate(item.screen, {
+                        selectedCategory: item.index,
+                      })
+                    : navigation.navigate("ModeScreen", {
+                        screenName: item.screen,
+                        selectedCategory: item.index,
+                      })
                 }
               >
                 <ThemeText classNameStyle="text-3xl mt-20 uppercase mx-auto font-bold">
