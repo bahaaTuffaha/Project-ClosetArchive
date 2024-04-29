@@ -35,6 +35,7 @@ import { clothesList, localization } from "../../utils/localization";
 import { defaultCategories } from "../stackNav/Category";
 import ColorFilter from "../../components/ColorFilter";
 import { calculateViewPadding } from "../../utils/stylingHelpers";
+import useWidthScreen from "../../hooks/useWidthScreen";
 
 export function filterCollectionsBySearch(array: item[][], search: string) {
   let newAllCollections = [];
@@ -81,9 +82,6 @@ export function HomeBottom() {
   const [OpenTypeFilter, setOpenTypeFilter] = useState(false);
   const [OpenSeasonFilter, setOpenSeasonFilter] = useState(false);
   const [OpenColorFilter, setOpenColorFilter] = useState(false);
-  const [screenWidth, setScreenWidth] = useState(
-    Dimensions.get("window").width,
-  );
 
   const refreshItems = useSelector(
     (state: RootState) => state.itemsList.refreshItems,
@@ -105,15 +103,15 @@ export function HomeBottom() {
 
   const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
   const space = useSharedValue(-20);
-  const { width } = Dimensions.get("window");
   const [isOpen, setIsOpen] = useState(false);
+  const screenWidth = useWidthScreen();
 
   const handleOpenDrawer = () => {
     // Update the space value to trigger the animation
     Keyboard.dismiss();
     setIsOpen((prev) => !prev);
     if (!isOpen) {
-      space.value = width / 2 - 20;
+      space.value = screenWidth / 2 - 20;
     }
   };
   useEffect(() => {
@@ -190,14 +188,24 @@ export function HomeBottom() {
   ]);
 
   useEffect(() => {
-    setLaundryItems(
-      itemsState.items.filter(
-        (x) =>
-          (x.laundryCounter ?? 0) >= storedSettings.laundryNumber &&
-          (x.laundryable ?? true),
-      ),
-    );
-  }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);
+    if (storedSettings.enableLaundry) {
+      setLaundryItems(
+        itemsState.items.filter(
+          (x) =>
+            (x.laundryCounter ?? 0) >=
+              (x.overrideMaxLaundry ?? false
+                ? x.maxLaundryNumber
+                : storedSettings.laundryNumber) &&
+            (x.laundryable ?? true),
+        ),
+      );
+    }
+  }, [
+    storedSettings.laundryNumber,
+    itemsState.logs,
+    refreshLaundry,
+    storedSettings.enableLaundry,
+  ]);
 
   useEffect(() => {
     setAllCollectnizedFilter(
@@ -244,17 +252,6 @@ export function HomeBottom() {
   useEffect(() => {
     if (categoriesFilter.length != 1) setTypeFilter([]);
   }, [categoriesFilter]);
-
-  useEffect(() => {
-    const dimensionListener = Dimensions.addEventListener(
-      "change",
-      (dimensions) => {
-        setScreenWidth(dimensions.window.width);
-      },
-    );
-
-    return () => dimensionListener.remove();
-  }, []);
 
   return (
     <ThemeView classNameStyle="px-5">

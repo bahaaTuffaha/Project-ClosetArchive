@@ -40,7 +40,7 @@ import { colors as appColors } from "./../../utils/colors";
 import * as FileSystem from "expo-file-system";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 import { clothesList, localization } from "../../utils/localization";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import LaundryOptions from "../../assets/images/laundryOptions.png";
 import LaundryOptions2 from "../../assets/images/LaundryOptions2.png";
 import { LaundryOptionsModal } from "../../components/LaundryOptionsModal";
@@ -113,6 +113,13 @@ export const ItemForm = ({
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [openLaundryOpt, setOpenLaundryOpt] = useState(false);
 
+  const [maxLaundryNumber, setMaxLaundryNumber] = useState(
+    storedItems ? storedItems.maxLaundryNumber : 0,
+  );
+  const [overrideMaxLaundry, setOverrideMaxLaundry] = useState(
+    storedItems ? storedItems.overrideMaxLaundry : false,
+  );
+
   function deleteItemHandler() {
     dispatch(deleteItem({ selectedId: storedItems.id }));
     dispatch(itemRefresher());
@@ -161,6 +168,8 @@ export const ItemForm = ({
           primaryColor: colors[0],
           secondaryColor: colors[1],
           tertiaryColor: colors[2],
+          overrideMaxLaundry: overrideMaxLaundry,
+          maxLaundryNumber: maxLaundryNumber,
         }),
       );
       dispatch(
@@ -327,6 +336,10 @@ export const ItemForm = ({
         setOpenLaundryOpt={setOpenLaundryOpt}
         LaundryCheck={LaundryCheck}
         setLandryCheck={setLaundryCheck}
+        maxLaundryNumber={maxLaundryNumber}
+        setMaxLaundryNumber={setMaxLaundryNumber}
+        overrideMaxLaundry={overrideMaxLaundry}
+        setOverrideMaxLaundry={setOverrideMaxLaundry}
       />
       <CustomModal
         setVisible={setImageModalVisible}
@@ -409,6 +422,7 @@ export const ItemForm = ({
                         style={{ width: 34, height: 42 }}
                       />
                     )}
+                    <ThemeText>{storedItems.laundryCounter}</ThemeText>
                   </TouchableOpacity>
                 )}
               </View>

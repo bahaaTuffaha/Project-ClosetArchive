@@ -15,6 +15,8 @@ import { ThemeText } from "../../components/ThemeText";
 import { colors } from "../../utils/colors";
 import { FlashList } from "@shopify/flash-list";
 import { localization } from "../../utils/localization";
+import { calculateViewPadding } from "../../utils/stylingHelpers";
+import useWidthScreen from "../../hooks/useWidthScreen";
 
 export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
@@ -32,6 +34,7 @@ export const ItemSelector = () => {
   const [visible, setVisible] = useState(false);
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
+  const screenWidth = useWidthScreen();
 
   useEffect(() => {
     let col = [];
@@ -66,6 +69,7 @@ export const ItemSelector = () => {
     setAllCollectionsFilter(filterCollectionsBySearch(allCollections, search));
     setNonCategorizedFilter(filter(nonCollectnized, search));
   }, [search]);
+
   return (
     <ThemeView>
       <>
@@ -178,8 +182,7 @@ export const ItemSelector = () => {
               <FlashList
                 data={nonCollectnized}
                 contentContainerStyle={{
-                  paddingLeft: 5,
-                  paddingRight: 5,
+                  paddingHorizontal: calculateViewPadding(screenWidth),
                 }}
                 numColumns={4}
                 estimatedItemSize={100}
@@ -202,8 +205,7 @@ export const ItemSelector = () => {
             ) : (
               <FlashList
                 contentContainerStyle={{
-                  paddingLeft: 5,
-                  paddingRight: 5,
+                  paddingHorizontal: calculateViewPadding(screenWidth),
                 }}
                 extraData={selectedIdCollector}
                 numColumns={4}
@@ -246,16 +248,7 @@ export const ItemSelector = () => {
           >
             {localization.Next[storedSettings.language]}
           </Button>
-          <Snackbar
-            visible={visible}
-            onDismiss={onDismissSnackBar}
-            // action={{
-            //   label: 'Undo',
-            //   onPress: () => {
-            //     // Do something
-            //   },
-            // }}
-          >
+          <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
             {localization.SelectAtLeastOneItem[storedSettings.language]}
           </Snackbar>
         </View>
