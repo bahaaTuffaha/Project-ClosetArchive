@@ -102,7 +102,12 @@ export const LaundryOptionsModal = ({
           </View>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={() => setOpenLaundryOpt(false)}>Close</Button>
+          <Button
+            textColor={colors.white}
+            onPress={() => setOpenLaundryOpt(false)}
+          >
+            Close
+          </Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

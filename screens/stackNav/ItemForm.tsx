@@ -7,9 +7,8 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import { Button, Checkbox, Switch } from "react-native-paper";
+import { Button, Switch } from "react-native-paper";
 import { useState } from "react";
-import addImage from "../../assets/images/addImage.png";
 import { BackButton } from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -44,6 +43,7 @@ import { clothesList, localization } from "../../utils/localization";
 import LaundryOptions from "../../assets/images/laundryOptions.png";
 import LaundryOptions2 from "../../assets/images/LaundryOptions2.png";
 import { LaundryOptionsModal } from "../../components/LaundryOptionsModal";
+import { ImageViewer } from "../../components/ImageViewer";
 
 export function get_random(list: string[] | string[][]) {
   return list[Math.floor(Math.random() * list.length)];
@@ -385,22 +385,11 @@ export const ItemForm = ({
             <View className="flex flex-row">
               <View className="w-1/3"></View>
               <View className="w-1/3 flex flex-row justify-center">
-                <TouchableOpacity
-                  onPress={() => {
-                    setImageModalVisible(true);
-                  }}
-                >
-                  <Image
-                    source={
-                      imageUrl == ""
-                        ? addImage
-                        : { uri: `data:image/*;base64,${imageUrl}` }
-                    }
-                    className="w-20 h-20 rounded-md object-contain"
-                  />
-                </TouchableOpacity>
+                <ImageViewer
+                  imageUrl={imageUrl}
+                  setImageModalVisible={setImageModalVisible}
+                />
               </View>
-
               <View className="w-1/3 flex flex-row justify-center items-center">
                 {editingIndex && (
                   <TouchableOpacity

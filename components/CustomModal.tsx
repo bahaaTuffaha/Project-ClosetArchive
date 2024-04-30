@@ -1,14 +1,7 @@
 import { Dispatch, ReactElement, SetStateAction } from "react";
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
-import { ThemeText } from "./ThemeText";
+import { useColorScheme } from "react-native";
 import { colors } from "../utils/colors";
+import { Button, Dialog, Portal } from "react-native-paper";
 const CustomModal = ({
   setVisible,
   visible,
@@ -22,59 +15,26 @@ const CustomModal = ({
 }) => {
   const isDarkMode = useColorScheme() === "dark";
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => {
-        setVisible(!visible);
-      }}
-    >
-      <View style={styles.centeredView}>
-        <View
-          style={[
-            styles.modalView,
-            { backgroundColor: isDarkMode ? colors.gray : colors.white },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() => setVisible(!visible)}
-            className="h-7 w-10 bg-red flex flex-row justify-center items-center z-20 rounded-tr-2xl absolute top-0 right-0"
-          >
-            <Text className="font-bold text-white">X</Text>
-          </TouchableOpacity>
-          <ThemeText classNameStyle="self-center text-2xl font-bold mt-[0.5px] capitalize italic">
-            {label}
-          </ThemeText>
-          {children}
-        </View>
-      </View>
-    </Modal>
+    <Portal>
+      <Dialog
+        visible={visible}
+        onDismiss={() => setVisible(false)}
+        style={{
+          minHeight: 200,
+          backgroundColor: isDarkMode ? colors.gray : colors.white,
+        }}
+      >
+        <Dialog.Title className="self-center text-2xl font-bold capitalize italic">
+          {label}
+        </Dialog.Title>
+        <Dialog.Content>{children}</Dialog.Content>
+        <Dialog.Actions>
+          <Button textColor={colors.white} onPress={() => setVisible(false)}>
+            Close
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#49494968",
-    borderStyle: "dashed",
-    borderColor: "green",
-    borderWidth: 1,
-  },
-  modalView: {
-    borderRadius: 20,
-    width: "80%",
-    height: "50%",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-});
 export default CustomModal;

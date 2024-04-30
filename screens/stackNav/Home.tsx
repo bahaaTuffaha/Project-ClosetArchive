@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import MyTabs from "../../routers/BottomTabNav";
 import { ThemeView } from "../../components/ThemeView";
 import PushNotification from "react-native-push-notification";
@@ -76,11 +76,20 @@ const createChannels = (selectedLang: number, userName: string) => {
 export function Home() {
   const storedSettings = useSelector((state: RootState) => state.settings);
   const storedItems = useSelector((state: RootState) => state.itemsList.items);
-  const numberOfLaundry = storedItems.filter(
-    (item) =>
-      (item.laundryCounter ?? 0) >= storedSettings.laundryNumber &&
-      (item.laundryable ?? true),
-  ).length;
+  const refreshLaundry = useSelector(
+    (state: RootState) => state.itemsList.refreshLaundry,
+  );
+  const numberOfLaundry = useMemo(() => {
+    return storedItems.filter(
+      (item) =>
+        (item.laundryCounter ?? 0) >=
+          (item.overrideMaxLaundry ?? false
+            ? item.maxLaundryNumber
+            : storedSettings.laundryNumber) &&
+        (item.laundryable ?? true),
+    ).length;
+  }, [storedSettings.laundryNumber, refreshLaundry]);
+
   const selectedLang = useSelector(
     (state: RootState) => state.settings.language,
   );
