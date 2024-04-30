@@ -59,7 +59,6 @@ const createChannels = (selectedLang: number, userName: string) => {
     selectedLang || 0
   ];
   PushNotification.cancelLocalNotification("1");
-  PushNotification.cancelLocalNotification("2");
   PushNotification.localNotificationSchedule({
     channelId: "channel-id-1",
     message: randomMessage,

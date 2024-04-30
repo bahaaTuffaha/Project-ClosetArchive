@@ -533,7 +533,7 @@ export function HomeBottom() {
                 paddingBottom: 10,
               }}
             >
-              <ScrollView>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {search.length == 0 &&
                   laundryItems.length > 0 &&
                   storedSettings.enableLaundry && (
