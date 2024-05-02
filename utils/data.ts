@@ -125,7 +125,31 @@ const seasonList_es = [
     label: "Invierno",
   },
 ];
-export const seasonList = [seasonList_en, seasonList_ar, seasonList_es];
+const seasonList_it = [
+  {
+    value: "Spring",
+    label: "Primavera",
+  },
+  {
+    value: "Summer",
+    label: "Estate",
+  },
+  {
+    value: "Fall",
+    label: "Autunno",
+  },
+  {
+    value: "Winter",
+    label: "Inverno",
+  },
+];
+
+export const seasonList = [
+  seasonList_en,
+  seasonList_ar,
+  seasonList_es,
+  seasonList_it,
+];
 export const fitList = [
   {
     value: "Regular Fit",
@@ -169,5 +193,9 @@ export const languagesList = [
   {
     value: 2,
     label: "Es",
+  },
+  {
+    value: 3,
+    label: "It",
   },
 ];

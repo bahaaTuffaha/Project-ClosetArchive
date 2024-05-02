@@ -2,6 +2,9 @@ import { Dispatch, ReactElement, SetStateAction } from "react";
 import { useColorScheme } from "react-native";
 import { colors } from "../utils/colors";
 import { Button, Dialog, Portal } from "react-native-paper";
+import { localization } from "../utils/localization";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 const CustomModal = ({
   setVisible,
   visible,
@@ -20,6 +23,7 @@ const CustomModal = ({
   children: ReactElement;
 }) => {
   const isDarkMode = useColorScheme() === "dark";
+  const storedSettings = useSelector((state: RootState) => state.settings);
   return (
     <Portal>
       <Dialog
@@ -32,7 +36,10 @@ const CustomModal = ({
         }}
       >
         {label && (
-          <Dialog.Title className="self-center text-2xl font-bold capitalize italic">
+          <Dialog.Title
+            style={{ color: isDarkMode ? colors.white : colors.gray }}
+            className="self-center text-2xl font-bold capitalize italic"
+          >
             {label}
           </Dialog.Title>
         )}
@@ -40,7 +47,7 @@ const CustomModal = ({
         {showClose && (
           <Dialog.Actions>
             <Button textColor={colors.white} onPress={() => setVisible(false)}>
-              Close
+              {localization.Close[storedSettings.language]}
             </Button>
           </Dialog.Actions>
         )}

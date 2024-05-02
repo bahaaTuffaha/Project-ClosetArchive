@@ -75,7 +75,7 @@ export function Category() {
           windowSize={3} //number of elements that rendered
           width={width}
           height={height}
-          autoPlay={false} // do redux + array for
+          autoPlay={false}
           data={[
             ...defaultCategories,
             ...categoriesState.Categories,
@@ -85,7 +85,7 @@ export function Category() {
               screen: "CategoryForm",
               index: -1,
             },
-          ]} // spread to add custom cate.. that are stored in redux ,at the last you should add "Add new category", add on press
+          ]}
           scrollAnimationDuration={1000}
           customAnimation={animationStyle}
           // onSnapToItem={(index: any) => console.log("current index:", index)}
@@ -111,7 +111,9 @@ export function Category() {
                 }
               >
                 <ThemeText classNameStyle="text-3xl mt-20 uppercase mx-auto font-bold">
-                  {item.name[storedSettings.language]}
+                  {item.index > 3
+                    ? item.name[0]
+                    : item.name[storedSettings.language]}
                 </ThemeText>
                 <ImageSequence
                   framesPerSecond={24}

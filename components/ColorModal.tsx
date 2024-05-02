@@ -4,6 +4,9 @@ import ColorPicker from "react-native-wheel-color-picker";
 import { Button, TextInput } from "react-native-paper";
 import { colors as appColors } from "../utils/colors";
 import CustomModal from "./CustomModal";
+import { localization } from "../utils/localization";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 let Reg_Exp = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
 const ColorModal = ({
   setVisible,
@@ -21,12 +24,13 @@ const ColorModal = ({
   let newColors = colors;
   const [currentColor, setCurrentColor] = useState(colors[colorSelection]);
   const isDarkMode = useColorScheme() === "dark";
+  const storedSettings = useSelector((state: RootState) => state.settings);
 
   return (
     <CustomModal
       visible={visible}
       setVisible={setVisible}
-      label="Pick a color"
+      label={localization.Pick_A_Color[storedSettings.language]}
       minHeight={250}
     >
       <>
@@ -57,7 +61,7 @@ const ColorModal = ({
               setCurrentColor("#ffffff");
             }}
           >
-            Reset
+            {localization.Reset[storedSettings.language]}
           </Button>
           <Button
             mode="text"
@@ -68,7 +72,7 @@ const ColorModal = ({
               setCurrentColor("#000");
             }}
           >
-            Set Black
+            {localization.SetBlack[storedSettings.language]}
           </Button>
         </View>
         <TextInput

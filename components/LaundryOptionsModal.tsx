@@ -31,6 +31,7 @@ export const LaundryOptionsModal = ({
 }) => {
   const isDarkMode = useColorScheme() === "dark";
   const storedSettings = useSelector((state: RootState) => state.settings);
+  const rtl = storedSettings.language == 1 ? "flex-row-reverse" : "flex-row";
 
   return (
     <Portal>
@@ -42,33 +43,29 @@ export const LaundryOptionsModal = ({
           backgroundColor: isDarkMode ? colors.gray : colors.white,
         }}
       >
-        <Dialog.Title>Laundry Options</Dialog.Title>
+        <Dialog.Title className="self-center">
+          {localization.Laundry_Options[storedSettings.language]}
+        </Dialog.Title>
         <Dialog.Content>
           <View className="space-y-2">
-            <View className="flex flex-row items-center justify-start">
-              <View className="flex flex-row items-center">
-                <Checkbox
-                  status={LaundryCheck ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setLandryCheck((prev) => !prev);
-                  }}
-                  color={colors.mainGreen}
-                />
-                <MaterialCommunityIcons
-                  name="bell-ring"
-                  size={25}
-                  color={colors.mainGreen}
-                />
-              </View>
-              <ThemeText classNameStyle="ml-1">
+            <View className={`flex ${rtl} items-center justify-start`}>
+              <Checkbox
+                status={LaundryCheck ? "checked" : "unchecked"}
+                onPress={() => {
+                  setLandryCheck((prev) => !prev);
+                }}
+                color={colors.mainGreen}
+              />
+              <MaterialCommunityIcons
+                name="bell-ring"
+                size={25}
+                color={colors.mainGreen}
+              />
+              <ThemeText classNameStyle="mx-1">
                 {localization.Washable[storedSettings.language]}
               </ThemeText>
             </View>
-            <View
-              className={`flex ${
-                storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-              } justify-start items-center`}
-            >
+            <View className={`flex ${rtl} justify-start items-center`}>
               <Checkbox
                 disabled={!LaundryCheck}
                 status={overrideMaxLaundry ? "checked" : "unchecked"}
@@ -76,7 +73,9 @@ export const LaundryOptionsModal = ({
                   setOverrideMaxLaundry((prev) => !prev);
                 }}
               />
-              <ThemeText>{"Override Laundry reminder"}</ThemeText>
+              <ThemeText>
+                {localization.Override_Laundry[storedSettings.language]}
+              </ThemeText>
               <CustomInput
                 mode="outlined"
                 outlineColor={colors.mainGreen}
@@ -106,7 +105,7 @@ export const LaundryOptionsModal = ({
             textColor={colors.white}
             onPress={() => setOpenLaundryOpt(false)}
           >
-            Close
+            {localization.Close[storedSettings.language]}
           </Button>
         </Dialog.Actions>
       </Dialog>

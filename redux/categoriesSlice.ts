@@ -20,7 +20,7 @@ const categoriesSlice = createSlice({
   reducers: {
     addCategory: (state, action) => {
       state.Categories.push({
-        name: [action.payload.name, action.payload.name, action.payload.name],
+        name: [action.payload.name],
         screen: "ItemForm",
         sprites: customCategory,
         index:
