@@ -554,6 +554,7 @@ export function HomeBottom() {
                               name={item.name}
                               type={item.type}
                               id={item.id}
+                              logs={item.logIds || []}
                             />
                           );
                         })}
@@ -582,6 +583,7 @@ export function HomeBottom() {
                                   name={item.name}
                                   type={item.type}
                                   id={item.id}
+                                  logs={item.logIds || []}
                                 />
                               );
                             })}
@@ -612,6 +614,7 @@ export function HomeBottom() {
                                   name={item.name}
                                   type={item.type}
                                   id={item.id}
+                                  logs={item.logIds || []}
                                 />
                               );
                             })}
@@ -639,6 +642,7 @@ export function HomeBottom() {
                         name={item.name}
                         type={item.type}
                         id={item.id}
+                        logs={item.logIds || []}
                       />
                     )}
                   />
@@ -660,6 +664,7 @@ export function HomeBottom() {
                         name={item.name}
                         type={item.type}
                         id={item.id}
+                        logs={item.logIds || []}
                       />
                     )}
                   />

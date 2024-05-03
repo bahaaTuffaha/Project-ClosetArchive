@@ -6,6 +6,7 @@ export type SettingsType = {
   laundryNumber: number;
   enableLaundry: boolean;
   enableReminder: boolean;
+  enableHeatMap: boolean;
   appVer: string;
 };
 const initialState: SettingsType = {
@@ -14,6 +15,7 @@ const initialState: SettingsType = {
   laundryNumber: 5,
   enableLaundry: true,
   enableReminder: true,
+  enableHeatMap: false,
   appVer: "1.0.1",
 };
 const settingsSlice = createSlice({
@@ -35,6 +37,9 @@ const settingsSlice = createSlice({
     setReminder: (state, action) => {
       state.enableReminder = action.payload.enableReminder;
     },
+    setHeatMap: (state, action) => {
+      state.enableHeatMap = action.payload.enableHeatMap;
+    },
     importSettings: (state, action) => {
       state.language = action.payload.language;
       state.laundryNumber = action.payload.laundryNumber;
@@ -53,6 +58,7 @@ export const {
   laundryNumberSetter,
   setEnableLaundry,
   setReminder,
+  setHeatMap,
   importSettings,
   setAppVer,
 } = settingsSlice.actions;

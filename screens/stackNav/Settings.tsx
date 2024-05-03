@@ -12,6 +12,7 @@ import {
   changeLanguage,
   laundryNumberSetter,
   setEnableLaundry,
+  setHeatMap,
   setReminder,
   userNameSetter,
 } from "../../redux/settingsSlice";
@@ -40,9 +41,18 @@ export const Settings = () => {
   const [exportOrImport, setExportOrImport] = useState(0);
   const [checkedLau, setCheckedLau] = useState(storedSettings.enableLaundry);
   const [checkedRem, setCheckedRem] = useState(storedSettings.enableReminder);
-  const setCheckboxes = (enableLaundry: boolean, enableReminder: boolean) => {
+  const [checkedHeatMap, setCheckedHeatMap] = useState(
+    storedSettings.enableHeatMap,
+  );
+  const setCheckboxes = (
+    // a callback
+    enableLaundry: boolean,
+    enableReminder: boolean,
+    enableHeatMap: boolean,
+  ) => {
     setCheckedLau(enableLaundry);
     setCheckedRem(enableReminder);
+    setCheckedHeatMap(enableHeatMap);
   };
   return (
     <ThemeView>
@@ -215,7 +225,7 @@ export const Settings = () => {
             } justify-between items-center`}
           >
             <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-              Daily logging reminder
+              {localization.Daily_reminder[storedSettings.language]}
             </ThemeText>
             <Checkbox
               status={checkedRem ? "checked" : "unchecked"}
@@ -224,6 +234,33 @@ export const Settings = () => {
                 dispatch(setReminder({ enableReminder: !checkedRem }));
               }}
             />
+          </View>
+
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            } justify-between items-center`}
+          >
+            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
+              {localization.Enable_heatMap[storedSettings.language]}
+            </ThemeText>
+            <Checkbox
+              status={checkedHeatMap ? "checked" : "unchecked"}
+              onPress={() => {
+                setCheckedHeatMap((prev) => !prev);
+                dispatch(setHeatMap({ enableHeatMap: !checkedHeatMap }));
+              }}
+            />
+          </View>
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            }`}
+          >
+            <Icon name="info-circle" size={15} color={colors.mainCyan} />
+            <ThemeText classNameStyle="text-xs mx-5">
+              {localization.HeatMap_description[storedSettings.language]}
+            </ThemeText>
           </View>
         </View>
         {/* <View className="w-full h-1 bg-gray" /> */}

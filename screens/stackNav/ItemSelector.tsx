@@ -40,21 +40,33 @@ export const ItemSelector = () => {
     let col = [];
     let nonCol = [];
     let final = [];
-    for (let i = 0; i < itemsState.collectionTags.length; i++) {
-      col = [];
+    if (itemsState.collectionTags.length > 0) {
+      // if there is a collection and items
+      for (let i = 0; i < itemsState.collectionTags.length; i++) {
+        col = [];
+        nonCol = [];
+        for (let j = 0; j < itemsState.items.length; j++) {
+          if (
+            itemsState.items[j].collection?.includes(
+              itemsState.collectionTags[i].value,
+            )
+          ) {
+            col.push(itemsState.items[j]);
+          } else if (itemsState.items[j].collection?.length == 0) {
+            nonCol.push(itemsState.items[j]);
+          }
+        }
+        final.push(col);
+      }
+    } else {
+      // if there is no collections
       nonCol = [];
-      for (let j = 0; j < itemsState.items.length; j++) {
-        if (
-          itemsState.items[j].collection?.includes(
-            itemsState.collectionTags[i].value,
-          )
-        ) {
-          col.push(itemsState.items[j]);
-        } else if (itemsState.items[j].collection?.length == 0) {
-          nonCol.push(itemsState.items[j]);
+      for (let i = 0; i < itemsState.items.length; i++) {
+        if (itemsState.items[i].collection?.length == 0) {
+          nonCol.push(itemsState.items[i]);
         }
       }
-      final.push(col);
+      final.push([]);
     }
     setAllCollections(final);
     setNonCollectnized(nonCol);
@@ -113,7 +125,7 @@ export const ItemSelector = () => {
             paddingBottom: 10,
           }}
         >
-          <ScrollView>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             {itemsState.collectionTags.map((collection, index) => {
               if (!search) {
                 if (allCollections[index]?.length ?? 0 != 0) {

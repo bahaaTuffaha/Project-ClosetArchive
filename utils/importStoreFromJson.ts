@@ -7,7 +7,11 @@ import { importSettings } from "../redux/settingsSlice";
 
 // Function to import the Redux store from a JSON file in the Documents folder
 export const importStoreFromJson = async (
-  setCheckboxes: (enableReminder: boolean, enableLaundry: boolean) => void,
+  setCheckboxes: (
+    enableReminder: boolean,
+    enableLaundry: boolean,
+    enableHeatMap: boolean,
+  ) => void,
 ) => {
   try {
     const permissions =
@@ -51,6 +55,7 @@ export const importStoreFromJson = async (
           setCheckboxes(
             state.settings.enableLaundry,
             state.settings.enableReminder,
+            state.settings.enableHeatMap,
           );
           console.log("Store imported successfully.");
           return true;

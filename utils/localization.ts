@@ -204,6 +204,12 @@ export const localization = {
     "Esto te recordará poner una prenda en la lavandería después de n usos.",
     "Questo ti ricorderà di mettere il capo in lavatrice dopo N volte di utilizzi.",
   ],
+  HeatMap_description: [
+    "This heatMap will show the border of the items in three colors Cyan: used within week, Yellow: used within month, Red: not used for longer than a month.",
+    "ستظهر هذه الخريطة الحرارية حدود العناصر بثلاثة ألوان: الأزرق السماوي: تم استخدامها خلال الأسبوع، الأصفر: تم استخدامها خلال الشهر، الأحمر: لم يتم استخدامها لأكثر من شهر.",
+    "Esta mapa de calor mostrará el borde de los elementos en tres colores: Cian: usado dentro de la semana, Amarillo: usado dentro del mes, Rojo: no usado por más de un mes.",
+    "Questa mappa di calore mostrerà il bordo degli elementi in tre colori: Ciano: usato entro la settimana, Giallo: usato entro il mese, Rosso: non usato da più di un mese.",
+  ],
   Reset_Image: [
     "Reset Image",
     "إعادة تعيين الصورة",
@@ -227,6 +233,18 @@ export const localization = {
   ],
   Times: ["Times", "مرات", "Veces", "Volte"],
   N: ["n", "ن", "n", "n"],
+  Daily_reminder: [
+    "Daily logging reminder",
+    "منبه التسجيل اليومي",
+    "Recordatorio diario de registro",
+    "Promemoria di registrazione giornaliera",
+  ],
+  Enable_heatMap: [
+    "Enable heatMap",
+    "تفعيل الخريطة البيانية",
+    "Activar mapa de calor",
+    "Abilita mappa di calore",
+  ],
   Laundry_reminder: [
     "Laundry reminder",
     "تذكير الغسيل",
