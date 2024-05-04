@@ -677,7 +677,11 @@ export const ItemForm = ({
                 </Button>
               )}
               {editingIndex &&
-                storedItems.laundryCounter >= storedSettings.laundryNumber && (
+                (storedItems.laundryCounter ?? 0) >=
+                  (storedItems.overrideMaxLaundry ?? false
+                    ? storedItems.maxLaundryNumber
+                    : storedSettings.laundryNumber) &&
+                (storedItems.laundryable ?? true) && (
                   <Button
                     mode="contained"
                     buttonColor={"orange"}

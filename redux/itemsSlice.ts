@@ -170,12 +170,11 @@ const itemsSlice = createSlice({
       );
       const logIdsSet = new Set(state.items[itemIndex].logIds || []);
       if (!logIdsSet.has(action.payload.logId)) {
+        // if this new log doesn't exist add it to the list
         logIdsSet.add(action.payload.logId);
         state.items[itemIndex].logIds = Array.from(logIdsSet);
-        state.items[itemIndex].laundryCounter = logIdsSet.size;
+        state.items[itemIndex].laundryCounter += 1;
       }
-      // state.items[itemIndex].logIds?.push(action.payload.logId);
-      // state.items[itemIndex].laundryCounter += 1;
     },
     deleteLog: (state, action) => {
       const itemIndices = state.items.reduce(
