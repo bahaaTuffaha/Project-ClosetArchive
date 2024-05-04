@@ -15,8 +15,6 @@ import { ThemeText } from "../../components/ThemeText";
 import { colors } from "../../utils/colors";
 import { FlashList } from "@shopify/flash-list";
 import { localization } from "../../utils/localization";
-import { calculateViewPadding } from "../../utils/stylingHelpers";
-import useWidthScreen from "../../hooks/useWidthScreen";
 
 export const ItemSelector = () => {
   const itemsState = useSelector((state: RootState) => state.itemsList);
@@ -34,7 +32,6 @@ export const ItemSelector = () => {
   const [visible, setVisible] = useState(false);
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
-  const screenWidth = useWidthScreen();
 
   useEffect(() => {
     let col = [];
@@ -136,22 +133,34 @@ export const ItemSelector = () => {
                       label={collection.label}
                     >
                       <>
-                        {allCollections[index].map((item) => {
-                          return (
-                            <SelectionItemBox
-                              primary={item.primaryColor || "#fff"}
-                              secondary={item.secondaryColor || "#fff"}
-                              tertiary={item.tertiaryColor || "#fff"}
-                              key={item.id}
-                              image={item.image}
-                              name={item.name}
-                              type={item.type}
-                              id={item.id}
-                              setSelectedIdCollector={setSelectedIdCollector}
-                              selectedIdCollector={selectedIdCollector}
-                            />
-                          );
-                        })}
+                        <FlashList
+                          extraData={selectedIdCollector}
+                          numColumns={4}
+                          data={allCollections[index]}
+                          estimatedItemSize={64}
+                          renderItem={({ item }) => (
+                            <View
+                              style={{
+                                display: "flex",
+                                flex: 1,
+                                alignItems: "center",
+                              }}
+                            >
+                              <SelectionItemBox
+                                primary={item.primaryColor || "#fff"}
+                                secondary={item.secondaryColor || "#fff"}
+                                tertiary={item.tertiaryColor || "#fff"}
+                                key={"cols" + item.id}
+                                image={item.image}
+                                name={item.name}
+                                type={item.type}
+                                id={item.id}
+                                setSelectedIdCollector={setSelectedIdCollector}
+                                selectedIdCollector={selectedIdCollector}
+                              />
+                            </View>
+                          )}
+                        />
                       </>
                     </CollectionContainer>
                   );
@@ -166,24 +175,38 @@ export const ItemSelector = () => {
                       label={collection.label}
                     >
                       <>
-                        {filterCollectionsBySearch(allCollections, search)[
-                          index
-                        ].map((item) => {
-                          return (
-                            <SelectionItemBox
-                              primary={item.primaryColor || "#fff"}
-                              secondary={item.secondaryColor || "#fff"}
-                              tertiary={item.tertiaryColor || "#fff"}
-                              key={item.id}
-                              image={item.image}
-                              name={item.name}
-                              type={item.type}
-                              id={item.id}
-                              setSelectedIdCollector={setSelectedIdCollector}
-                              selectedIdCollector={selectedIdCollector}
-                            />
-                          );
-                        })}
+                        <FlashList
+                          extraData={selectedIdCollector}
+                          numColumns={4}
+                          data={
+                            filterCollectionsBySearch(allCollections, search)[
+                              index
+                            ]
+                          }
+                          estimatedItemSize={64}
+                          renderItem={({ item }) => (
+                            <View
+                              style={{
+                                display: "flex",
+                                flex: 1,
+                                alignItems: "center",
+                              }}
+                            >
+                              <SelectionItemBox
+                                primary={item.primaryColor || "#fff"}
+                                secondary={item.secondaryColor || "#fff"}
+                                tertiary={item.tertiaryColor || "#fff"}
+                                key={"ser" + item.id}
+                                image={item.image}
+                                name={item.name}
+                                type={item.type}
+                                id={item.id}
+                                setSelectedIdCollector={setSelectedIdCollector}
+                                selectedIdCollector={selectedIdCollector}
+                              />
+                            </View>
+                          )}
+                        />
                       </>
                     </CollectionContainer>
                   );
@@ -193,49 +216,59 @@ export const ItemSelector = () => {
             {search == "" ? (
               <FlashList
                 data={nonCollectnized}
-                contentContainerStyle={{
-                  paddingHorizontal: calculateViewPadding(screenWidth),
-                }}
                 numColumns={4}
-                estimatedItemSize={100}
+                estimatedItemSize={64}
                 extraData={selectedIdCollector}
                 renderItem={({ item, index }) => (
-                  <SelectionItemBox
-                    primary={item.primaryColor || "#fff"}
-                    secondary={item.secondaryColor || "#fff"}
-                    tertiary={item.tertiaryColor || "#fff"}
-                    key={index + item.id}
-                    image={item.image}
-                    name={item.name}
-                    type={item.type}
-                    id={item.id}
-                    setSelectedIdCollector={setSelectedIdCollector}
-                    selectedIdCollector={selectedIdCollector}
-                  />
+                  <View
+                    style={{
+                      display: "flex",
+                      flex: 1,
+                      alignItems: "center",
+                    }}
+                  >
+                    <SelectionItemBox
+                      primary={item.primaryColor || "#fff"}
+                      secondary={item.secondaryColor || "#fff"}
+                      tertiary={item.tertiaryColor || "#fff"}
+                      key={index + item.id}
+                      image={item.image}
+                      name={item.name}
+                      type={item.type}
+                      id={item.id}
+                      setSelectedIdCollector={setSelectedIdCollector}
+                      selectedIdCollector={selectedIdCollector}
+                    />
+                  </View>
                 )}
               />
             ) : (
               <FlashList
-                contentContainerStyle={{
-                  paddingHorizontal: calculateViewPadding(screenWidth),
-                }}
                 extraData={selectedIdCollector}
                 numColumns={4}
                 data={nonCategorizedFilter}
-                estimatedItemSize={100}
+                estimatedItemSize={64}
                 renderItem={({ item, index }) => (
-                  <SelectionItemBox
-                    primary={item.primaryColor || "#fff"}
-                    secondary={item.secondaryColor || "#fff"}
-                    tertiary={item.tertiaryColor || "#fff"}
-                    key={index + item.id}
-                    image={item.image}
-                    name={item.name}
-                    type={item.type}
-                    id={item.id}
-                    setSelectedIdCollector={setSelectedIdCollector}
-                    selectedIdCollector={selectedIdCollector}
-                  />
+                  <View
+                    style={{
+                      display: "flex",
+                      flex: 1,
+                      alignItems: "center",
+                    }}
+                  >
+                    <SelectionItemBox
+                      primary={item.primaryColor || "#fff"}
+                      secondary={item.secondaryColor || "#fff"}
+                      tertiary={item.tertiaryColor || "#fff"}
+                      key={index + item.id}
+                      image={item.image}
+                      name={item.name}
+                      type={item.type}
+                      id={item.id}
+                      setSelectedIdCollector={setSelectedIdCollector}
+                      selectedIdCollector={selectedIdCollector}
+                    />
+                  </View>
                 )}
               />
             )}

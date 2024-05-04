@@ -1,7 +1,7 @@
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
 import { ThemeView } from "../../components/ThemeView";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import {
   categoryInfo,
   closetInfo,
@@ -16,7 +16,6 @@ import { defaultCategories } from "./Category";
 import { ItemBox } from "../../components/ItemBox";
 import { item } from "../../redux/itemsSlice";
 import { Category } from "../../redux/categoriesSlice";
-import { colors } from "../../utils/colors";
 const InfoCardWrapper = ({
   title,
   index,
@@ -189,6 +188,7 @@ export const ClosetInfo = ({}) => {
                       type={item.type}
                       id={item.id}
                       logs={item.logIds || []}
+                      addSpace={true}
                     />
                   );
                 })}
@@ -202,7 +202,7 @@ export const ClosetInfo = ({}) => {
               />
             )
           }
-          estimatedItemSize={10}
+          estimatedItemSize={64}
         />
       </>
     </ThemeView>

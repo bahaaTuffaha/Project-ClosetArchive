@@ -21,6 +21,7 @@ export const ItemBox = ({
   type,
   id,
   logs,
+  addSpace,
 }: {
   image: string;
   name: string;
@@ -30,6 +31,7 @@ export const ItemBox = ({
   type: string;
   id: string;
   logs: string[];
+  addSpace?: boolean;
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
   const scaleDownAnimation = useSharedValue(1);
@@ -65,7 +67,9 @@ export const ItemBox = ({
     <TouchableWithoutFeedback onPress={handleTap}>
       <Animated.View style={animatedStyle}>
         <GestureDetector gesture={scaleHandler}>
-          <View className={`my-1 mx-2 relative ${boxStyle}`}>
+          <View
+            className={`my-1 relative ${boxStyle} ${addSpace ? "mx-1" : ""}`}
+          >
             <Image
               style={{
                 borderColor: storedSettings.enableHeatMap
