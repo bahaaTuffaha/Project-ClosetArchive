@@ -74,6 +74,7 @@ export const LogComponent = ({
               type={item.type}
               id={item.id}
               logs={item.logIds || []}
+              addSpace={true}
             />
           );
         })}
