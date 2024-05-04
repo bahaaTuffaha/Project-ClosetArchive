@@ -28,6 +28,7 @@ export const SelectionItemBox = ({
   const [isSelected, setIsSelected] = useState(
     selectedIdCollector.includes(id),
   );
+
   useEffect(() => {
     if (isSelected) {
       setSelectedIdCollector((prevArray) => [...prevArray, id]);
@@ -43,7 +44,7 @@ export const SelectionItemBox = ({
       onPress={() => {
         setIsSelected(!isSelected);
       }}
-      className={`m-1 relative ${boxStyle}`}
+      className={`my-1 relative ${boxStyle}`}
     >
       <Image
         className="flex-1 absolute z-20 rounded-lg"

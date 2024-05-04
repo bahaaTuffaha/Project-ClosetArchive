@@ -9,7 +9,6 @@ import { colors } from "../utils/colors";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from "react-native-reanimated";
 
 export const CollectionContainer = ({
@@ -47,7 +46,7 @@ export const CollectionContainer = ({
   return (
     <View
       style={{ backgroundColor: color }}
-      className="flex flex-row flex-wrap w-full h-auto self-center border-[0.4px]"
+      className="w-full h-auto border-[0.4px]"
     >
       <Pressable
         onPress={() => {
@@ -93,7 +92,9 @@ export const CollectionContainer = ({
           size={20}
         />
       </Pressable>
-      {isFolded && children}
+      <View className={`${isFolded && "min-h-[72px]"}`}>
+        {isFolded && children}
+      </View>
     </View>
   );
 };

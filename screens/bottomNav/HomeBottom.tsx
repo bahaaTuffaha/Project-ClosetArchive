@@ -34,6 +34,7 @@ import { seasonList } from "../../utils/data";
 import { clothesList, localization } from "../../utils/localization";
 import { defaultCategories } from "../stackNav/Category";
 import ColorFilter from "../../components/ColorFilter";
+import useWidthScreen from "../../hooks/useWidthScreen";
 
 export function filterCollectionsBySearch(array: item[][], search: string) {
   let newAllCollections = [];
@@ -101,15 +102,15 @@ export function HomeBottom() {
 
   const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
   const space = useSharedValue(-20);
-  const { width } = Dimensions.get("window");
   const [isOpen, setIsOpen] = useState(false);
+  const screenWidth = useWidthScreen();
 
   const handleOpenDrawer = () => {
     // Update the space value to trigger the animation
     Keyboard.dismiss();
     setIsOpen((prev) => !prev);
     if (!isOpen) {
-      space.value = width / 2 - 20;
+      space.value = screenWidth / 2 - 20;
     }
   };
   useEffect(() => {
@@ -186,14 +187,24 @@ export function HomeBottom() {
   ]);
 
   useEffect(() => {
-    setLaundryItems(
-      itemsState.items.filter(
-        (x) =>
-          (x.laundryCounter ?? 0) >= storedSettings.laundryNumber &&
-          (x.laundryable ?? true),
-      ),
-    );
-  }, [storedSettings.laundryNumber, itemsState.logs, refreshLaundry]);
+    if (storedSettings.enableLaundry) {
+      setLaundryItems(
+        itemsState.items.filter(
+          (x) =>
+            (x.laundryCounter ?? 0) >=
+              (x.overrideMaxLaundry ?? false
+                ? x.maxLaundryNumber
+                : storedSettings.laundryNumber) &&
+            (x.laundryable ?? true),
+        ),
+      );
+    }
+  }, [
+    storedSettings.laundryNumber,
+    itemsState.logs,
+    refreshLaundry,
+    storedSettings.enableLaundry,
+  ]);
 
   useEffect(() => {
     setAllCollectnizedFilter(
@@ -521,7 +532,7 @@ export function HomeBottom() {
                 paddingBottom: 10,
               }}
             >
-              <ScrollView>
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {search.length == 0 &&
                   laundryItems.length > 0 &&
                   storedSettings.enableLaundry && (
@@ -531,20 +542,33 @@ export function HomeBottom() {
                       LaundryReminder={true}
                     >
                       <>
-                        {laundryItems.map((item, index) => {
-                          return (
-                            <ItemBox
-                              primary={item.primaryColor || "#fff"}
-                              secondary={item.secondaryColor || "#fff"}
-                              tertiary={item.tertiaryColor || "#fff"}
-                              key={"laundry" + index}
-                              image={item.image}
-                              name={item.name}
-                              type={item.type}
-                              id={item.id}
-                            />
-                          );
-                        })}
+                        <FlashList
+                          numColumns={4}
+                          extraData={refreshLaundry}
+                          data={laundryItems}
+                          estimatedItemSize={64}
+                          renderItem={({ item, index }) => (
+                            <View
+                              style={{
+                                display: "flex",
+                                flex: 1,
+                                alignItems: "center",
+                              }}
+                            >
+                              <ItemBox
+                                primary={item.primaryColor || "#fff"}
+                                secondary={item.secondaryColor || "#fff"}
+                                tertiary={item.tertiaryColor || "#fff"}
+                                key={"laundry" + index}
+                                image={item.image}
+                                name={item.name}
+                                type={item.type}
+                                id={item.id}
+                                logs={item.logIds || []}
+                              />
+                            </View>
+                          )}
+                        />
                       </>
                     </CollectionContainer>
                   )}
@@ -559,20 +583,33 @@ export function HomeBottom() {
                           label={collection.label}
                         >
                           <>
-                            {allCollections[index].map((item) => {
-                              return (
-                                <ItemBox
-                                  primary={item.primaryColor || "#fff"}
-                                  secondary={item.secondaryColor || "#fff"}
-                                  tertiary={item.tertiaryColor || "#fff"}
-                                  key={item.id}
-                                  image={item.image}
-                                  name={item.name}
-                                  type={item.type}
-                                  id={item.id}
-                                />
-                              );
-                            })}
+                            <FlashList
+                              numColumns={4}
+                              extraData={refreshItems}
+                              data={allCollections[index]}
+                              estimatedItemSize={64}
+                              renderItem={({ item }) => (
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    flex: 1,
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <ItemBox
+                                    primary={item.primaryColor || "#fff"}
+                                    secondary={item.secondaryColor || "#fff"}
+                                    tertiary={item.tertiaryColor || "#fff"}
+                                    key={item.id}
+                                    image={item.image}
+                                    name={item.name}
+                                    type={item.type}
+                                    id={item.id}
+                                    logs={item.logIds || []}
+                                  />
+                                </View>
+                              )}
+                            />
                           </>
                         </CollectionContainer>
                       );
@@ -587,22 +624,38 @@ export function HomeBottom() {
                           label={collection.label}
                         >
                           <>
-                            {filterCollectionsBySearch(allCollections, search)[
-                              index
-                            ].map((item) => {
-                              return (
-                                <ItemBox
-                                  primary={item.primaryColor || "#fff"}
-                                  secondary={item.secondaryColor || "#fff"}
-                                  tertiary={item.tertiaryColor || "#fff"}
-                                  key={item.id}
-                                  image={item.image}
-                                  name={item.name}
-                                  type={item.type}
-                                  id={item.id}
-                                />
-                              );
-                            })}
+                            <FlashList
+                              numColumns={4}
+                              extraData={refreshItems}
+                              data={
+                                filterCollectionsBySearch(
+                                  allCollections,
+                                  search,
+                                )[index]
+                              }
+                              estimatedItemSize={64}
+                              renderItem={({ item, index }) => (
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    flex: 1,
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <ItemBox
+                                    primary={item.primaryColor || "#fff"}
+                                    secondary={item.secondaryColor || "#fff"}
+                                    tertiary={item.tertiaryColor || "#fff"}
+                                    key={"serAll" + item.id}
+                                    image={item.image}
+                                    name={item.name}
+                                    type={item.type}
+                                    id={item.id}
+                                    logs={item.logIds || []}
+                                  />
+                                </View>
+                              )}
+                            />
                           </>
                         </CollectionContainer>
                       );
@@ -612,45 +665,59 @@ export function HomeBottom() {
                 {search == "" ? (
                   <FlashList
                     data={nonCollectnized}
-                    contentContainerStyle={{
-                      paddingLeft: 5,
-                      paddingRight: 5,
+                    columnWrapperStyle={{
+                      flex: 1,
+                      justifyContent: "space-around",
                     }}
                     numColumns={4}
-                    estimatedItemSize={100}
+                    estimatedItemSize={64}
                     renderItem={({ item, index }) => (
-                      <ItemBox
-                        primary={item.primaryColor || "#fff"}
-                        secondary={item.secondaryColor || "#fff"}
-                        tertiary={item.tertiaryColor || "#fff"}
-                        key={index + item.id}
-                        image={item.image}
-                        name={item.name}
-                        type={item.type}
-                        id={item.id}
-                      />
+                      <View
+                        style={{
+                          display: "flex",
+                          flex: 1,
+                          alignItems: "center",
+                        }}
+                      >
+                        <ItemBox
+                          primary={item.primaryColor || "#fff"}
+                          secondary={item.secondaryColor || "#fff"}
+                          tertiary={item.tertiaryColor || "#fff"}
+                          key={index + item.id}
+                          image={item.image}
+                          name={item.name}
+                          type={item.type}
+                          id={item.id}
+                          logs={item.logIds || []}
+                        />
+                      </View>
                     )}
                   />
                 ) : (
                   <FlashList
-                    contentContainerStyle={{
-                      paddingLeft: 5,
-                      paddingRight: 5,
-                    }}
                     numColumns={4}
                     data={nonCollectnizedFilter}
-                    estimatedItemSize={100}
+                    estimatedItemSize={64}
                     renderItem={({ item, index }) => (
-                      <ItemBox
-                        primary={item.primaryColor || "#fff"}
-                        secondary={item.secondaryColor || "#fff"}
-                        tertiary={item.tertiaryColor || "#fff"}
-                        key={index + item.id}
-                        image={item.image}
-                        name={item.name}
-                        type={item.type}
-                        id={item.id}
-                      />
+                      <View
+                        style={{
+                          display: "flex",
+                          flex: 1,
+                          alignItems: "center",
+                        }}
+                      >
+                        <ItemBox
+                          primary={item.primaryColor || "#fff"}
+                          secondary={item.secondaryColor || "#fff"}
+                          tertiary={item.tertiaryColor || "#fff"}
+                          key={index + item.id}
+                          image={item.image}
+                          name={item.name}
+                          type={item.type}
+                          id={item.id}
+                          logs={item.logIds || []}
+                        />
+                      </View>
                     )}
                   />
                 )}

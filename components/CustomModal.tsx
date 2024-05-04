@@ -1,80 +1,58 @@
 import { Dispatch, ReactElement, SetStateAction } from "react";
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
-import { ThemeText } from "./ThemeText";
+import { useColorScheme } from "react-native";
 import { colors } from "../utils/colors";
+import { Button, Dialog, Portal } from "react-native-paper";
+import { localization } from "../utils/localization";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 const CustomModal = ({
   setVisible,
   visible,
   label,
+  minHeight = 200,
+  maxHeight,
+  showClose = true,
   children,
 }: {
   setVisible: Dispatch<SetStateAction<boolean>>;
   visible: boolean;
-  label: string;
+  label?: string;
+  minHeight?: number;
+  maxHeight?: number;
+  showClose?: boolean;
   children: ReactElement;
 }) => {
   const isDarkMode = useColorScheme() === "dark";
+  const storedSettings = useSelector((state: RootState) => state.settings);
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => {
-        setVisible(!visible);
-      }}
-    >
-      <View style={styles.centeredView}>
-        <View
-          style={[
-            styles.modalView,
-            { backgroundColor: isDarkMode ? colors.gray : colors.white },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() => setVisible(!visible)}
-            className="h-7 w-10 bg-red flex flex-row justify-center items-center z-20 rounded-tr-2xl absolute top-0 right-0"
+    <Portal>
+      <Dialog
+        visible={visible}
+        onDismiss={() => setVisible(false)}
+        style={{
+          minHeight: minHeight,
+          maxHeight: maxHeight,
+          backgroundColor: isDarkMode ? colors.gray : colors.white,
+        }}
+      >
+        {label && (
+          <Dialog.Title
+            style={{ color: isDarkMode ? colors.white : colors.gray }}
+            className="self-center text-2xl font-bold capitalize italic"
           >
-            <Text className="font-bold text-white">X</Text>
-          </TouchableOpacity>
-          <ThemeText classNameStyle="self-center text-2xl font-bold mt-[0.5px] capitalize italic">
             {label}
-          </ThemeText>
-          {children}
-        </View>
-      </View>
-    </Modal>
+          </Dialog.Title>
+        )}
+        <Dialog.Content>{children}</Dialog.Content>
+        {showClose && (
+          <Dialog.Actions>
+            <Button textColor={colors.white} onPress={() => setVisible(false)}>
+              {localization.Close[storedSettings.language]}
+            </Button>
+          </Dialog.Actions>
+        )}
+      </Dialog>
+    </Portal>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#49494968",
-    borderStyle: "dashed",
-    borderColor: "green",
-    borderWidth: 1,
-  },
-  modalView: {
-    borderRadius: 20,
-    width: "80%",
-    height: "50%",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-});
 export default CustomModal;

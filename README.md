@@ -164,6 +164,10 @@ Create a new collection by clicking collection at main screen.
 
 Use the "Import" and "Export" features in the app's settings to manage your data.
 
+- Laundry reminder:
+
+Establishing the usage threshold for each item to determine when it qualifies for laundry based on exceeding that count.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
@@ -173,9 +177,10 @@ Use the "Import" and "Export" features in the app's settings to manage your data
 - [ ] Fixing issues.
 - [ ] Improving filters.
 - [ ] Selecting a whole collection when logging an event.
-- [ ] Adding a bulk by snapping images for a quick way.
-  - [ ] color filter
-  - [ ] Adding Ai to recongnize and recommend what to wear maybe later?
+- [x] Adding a bulk by snapping images for a quick way.
+- [x] Color filter (but needs to be a bit accurate 😅)
+- [ ] The ability to add custom types for existing categories.
+- [ ] Adding Ai to recongnize and recommend what to wear maybe later?
 
 See the [open issues](https://github.com/bahaaTuffaha/Project-ClosetArchive/issues) for a full list of proposed features (and known issues).
 

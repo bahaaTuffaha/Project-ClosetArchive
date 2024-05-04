@@ -7,6 +7,7 @@ export const colors = {
   white: "white",
   gray: "gray",
   yellow: "#F7C600",
+  red: "#D30047",
 };
 
 export function categorizeColor(hexColor: string) {

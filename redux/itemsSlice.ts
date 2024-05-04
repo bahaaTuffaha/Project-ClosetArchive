@@ -30,6 +30,8 @@ export type item = {
   logIds?: string[];
   laundryCounter: number;
   laundryable: boolean;
+  overrideMaxLaundry: boolean;
+  maxLaundryNumber: number;
 };
 export type itemsList = {
   items: item[];
@@ -81,6 +83,8 @@ const itemsSlice = createSlice({
         laundryCounter: 0,
         season: action.payload.season,
         laundryable: true,
+        overrideMaxLaundry: false,
+        maxLaundryNumber: 0,
       } as item);
     },
     updateItem: (state, action) => {
@@ -100,6 +104,9 @@ const itemsSlice = createSlice({
       state.items[itemIndex].secondaryColor = action.payload.secondaryColor;
       state.items[itemIndex].tertiaryColor = action.payload.tertiaryColor;
       state.items[itemIndex].season = action.payload.season;
+      state.items[itemIndex].overrideMaxLaundry =
+        action.payload.overrideMaxLaundry;
+      state.items[itemIndex].maxLaundryNumber = action.payload.maxLaundryNumber;
     },
     addCollection: (state, action) => {
       state.collectionTags.push({

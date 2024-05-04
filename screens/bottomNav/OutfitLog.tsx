@@ -107,14 +107,16 @@ export const OutfitLog = () => {
               </View>
             </View>
 
-            <View className="p-2">
-              <ThemeText customStyle={styles.notes}>
-                {localization.Additional_notes[storedSettings.language]}
-              </ThemeText>
-              <ThemeText classNameStyle="h-fit text-[14px]">
-                {modalInfo?.additionalNotes}
-              </ThemeText>
-            </View>
+            {modalInfo?.additionalNotes && (
+              <View className="p-2">
+                <ThemeText customStyle={styles.notes}>
+                  {localization.Additional_notes[storedSettings.language]}
+                </ThemeText>
+                <ThemeText classNameStyle="h-fit text-[14px]">
+                  {modalInfo?.additionalNotes}
+                </ThemeText>
+              </View>
+            )}
           </View>
         </CustomModal>
         <SideModal space={space} isOpen={isOpen} setIsOpen={setIsOpen}>

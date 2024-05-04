@@ -8,6 +8,9 @@ import Animated, {
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "../utils/colors";
 import { layoutFinder } from "../utils/data";
+import useHeatmap from "../hooks/useHeatmap";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export const ItemBox = ({
   image,
@@ -17,6 +20,8 @@ export const ItemBox = ({
   name,
   type,
   id,
+  logs,
+  addSpace,
 }: {
   image: string;
   name: string;
@@ -25,6 +30,8 @@ export const ItemBox = ({
   tertiary: string;
   type: string;
   id: string;
+  logs: string[];
+  addSpace?: boolean;
 }) => {
   const boxStyle = "w-16 h-16 rounded-lg";
   const scaleDownAnimation = useSharedValue(1);
@@ -54,13 +61,23 @@ export const ItemBox = ({
     // You can add your animation logic or navigation logic here
     navToEdit();
   };
+  const HeatBorderColor = useHeatmap(logs);
+  const storedSettings = useSelector((state: RootState) => state.settings);
   return (
     <TouchableWithoutFeedback onPress={handleTap}>
       <Animated.View style={animatedStyle}>
         <GestureDetector gesture={scaleHandler}>
-          <View className={`m-1 relative ${boxStyle}`}>
+          <View
+            className={`my-1 relative ${boxStyle} ${addSpace ? "mx-1" : ""}`}
+          >
             <Image
-              className="absolute z-20 rounded-lg"
+              style={{
+                borderColor: storedSettings.enableHeatMap
+                  ? HeatBorderColor
+                  : "transparent",
+                borderWidth: storedSettings.enableHeatMap ? 4 : 0,
+              }}
+              className="absolute z-20 rounded-lg "
               source={layoutFinder(type)}
             />
             <Text
