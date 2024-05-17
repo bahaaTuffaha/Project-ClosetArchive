@@ -126,16 +126,26 @@ export function Category() {
                   }}
                 />
               </Pressable>
-              {item.index > 3 && (
+              <View className="absolute top-0 flex flex-row space-x-5">
+                {item.index > 3 && (
+                  <TouchableOpacity
+                    className="bg-mainPink border-solid rounded-full p-2"
+                    onPress={() => {
+                      dispatch(delCategory({ index: item.index }));
+                    }}
+                  >
+                    <Icon name="delete-forever" size={30} color="white" />
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity
-                  className="absolute top-0 bg-mainPink border-solid rounded-full p-2"
+                  className="bg-mainPink border-solid rounded-full p-2"
                   onPress={() => {
-                    dispatch(delCategory({ index: item.index }));
+                    // dispatch(delCategory({ index: item.index }));
                   }}
                 >
-                  <Icon name="delete-forever" size={30} color="white" />
+                  <Icon name="edit" size={30} color="white" />
                 </TouchableOpacity>
-              )}
+              </View>
             </View>
           )}
         />
