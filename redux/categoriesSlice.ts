@@ -7,11 +7,16 @@ export type Category = {
   screen: string;
   index: number;
 };
+export type CategoryCustomType = {
+  customTypes: { label: string; value: string }[];
+};
 export type CategoryList = {
   Categories: Category[];
+  CategoryCustomTypes: CategoryCustomType[];
 };
 const initialState: CategoryList = {
   Categories: [],
+  CategoryCustomTypes: [],
 };
 export { initialState as CurrentCategories };
 const categoriesSlice = createSlice({
@@ -37,9 +42,38 @@ const categoriesSlice = createSlice({
     },
     importCategory: (state, action) => {
       state.Categories = action.payload.Categories;
+      state.CategoryCustomTypes = action.payload.CategoryCustomTypes;
+    },
+    addTypeToCategory: (state, action) => {
+      state.CategoryCustomTypes[action.payload.index] = <any>[]; // make sure index available before Pushing
+      const customT = state.CategoryCustomTypes[action.payload.index];
+      if (!customT.customTypes) {
+        customT.customTypes = [];
+      }
+      customT.customTypes.push({
+        label: action.payload.typeName,
+        value: action.payload.typeName,
+      });
+    },
+    changeCategoryTypeByIndex: (state, action) => {
+      const customT = state.CategoryCustomTypes[action.payload.index];
+      customT.customTypes[action.payload.typeIndex] = {
+        label: action.payload.typeName,
+        value: action.payload.typeName,
+      };
+    },
+    changeCategoryName: (state, action) => {
+      const category = state.Categories[action.payload.index];
+      category.name = action.payload.newName;
     },
   },
 });
-export const { addCategory, delCategory, importCategory } =
-  categoriesSlice.actions;
+export const {
+  addCategory,
+  delCategory,
+  importCategory,
+  addTypeToCategory,
+  changeCategoryTypeByIndex,
+  changeCategoryName,
+} = categoriesSlice.actions;
 export default categoriesSlice.reducer;

@@ -141,6 +141,9 @@ export function Category() {
                   className="bg-mainPink border-solid rounded-full p-2"
                   onPress={() => {
                     // dispatch(delCategory({ index: item.index }));
+                    navigation.navigate("EditCategory", {
+                      categoryIndex: item.index,
+                    });
                   }}
                 >
                   <Icon name="edit" size={30} color="white" />

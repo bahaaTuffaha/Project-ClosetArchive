@@ -27,6 +27,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon2 from "react-native-vector-icons/MaterialIcons";
 import { colors as appColors, colors } from "./../../utils/colors";
 import { localization } from "../../utils/localization";
+import { changeCategoryTypeByIndex } from "../../redux/categoriesSlice";
 
 export function addOpacityToHex(hexColor: string, opacity: any) {
   // Remove the "#" character if it's present
@@ -49,14 +50,27 @@ export function addOpacityToHex(hexColor: string, opacity: any) {
   return rgbaColor;
 }
 
-const CollectionItem = ({
+export const CollectionItem = ({
   item,
   setRefresh,
   CollectionsState,
+  isCatType = false, //for catTypes
+  ignoreNum, //for catTypes
+  currentIndex, //for catTypes
+  catIndex, //for catTypes
 }: {
   item: CollectionTag;
   setRefresh: Dispatch<SetStateAction<boolean>>;
-  CollectionsState: CollectionTag[];
+  CollectionsState:
+    | CollectionTag[]
+    | {
+        label: string;
+        value: string;
+      }[];
+  isCatType?: boolean;
+  ignoreNum?: number;
+  currentIndex?: number;
+  catIndex?: number;
 }) => {
   const [enableEditing, setEnableEditing] = useState(false);
   const dispatch = useDispatch();
@@ -64,7 +78,7 @@ const CollectionItem = ({
   const [newNameInput, setNewNameInput] = useState(item.label || "");
   return (
     <View
-      style={{ backgroundColor: addOpacityToHex(item.color, 0.2) }}
+      style={{ backgroundColor: addOpacityToHex(item.color ?? "#fff", 0.2) }}
       className="w-[80%] h-[59px] pt-0 rounded-lg self-center mb-5 relative border-mainGreen border-[1px] flex flex-row items-center justify-between"
     >
       {enableEditing ? (
@@ -94,12 +108,20 @@ const CollectionItem = ({
             ) {
               setEnableEditing((prev) => !prev);
               if (enableEditing) {
-                dispatch(
-                  updateCollection({
-                    name: item.label,
-                    newName: newNameInput || item.label,
-                  }),
-                );
+                !isCatType
+                  ? dispatch(
+                      updateCollection({
+                        name: item.label,
+                        newName: newNameInput || item.label,
+                      }),
+                    )
+                  : dispatch(
+                      changeCategoryTypeByIndex({
+                        index: catIndex ?? 0,
+                        typeIndex: (currentIndex ?? 0) - (ignoreNum ?? 0),
+                        typeName: newNameInput || item.label,
+                      }),
+                    );
               }
             }
           }}
