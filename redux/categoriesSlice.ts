@@ -45,14 +45,18 @@ const categoriesSlice = createSlice({
       state.CategoryCustomTypes = action.payload.CategoryCustomTypes;
     },
     addTypeToCategory: (state, action) => {
-      state.CategoryCustomTypes[action.payload.index] = <any>[]; // make sure index available before Pushing
-      const customT = state.CategoryCustomTypes[action.payload.index];
-      if (!customT.customTypes) {
-        customT.customTypes = [];
+      const { index, typeName } = action.payload;
+      if (!state.CategoryCustomTypes) {
+        state.CategoryCustomTypes = [];
       }
+      if (!state.CategoryCustomTypes[index]) {
+        state.CategoryCustomTypes[index] = { customTypes: [] };
+      }
+
+      const customT = state.CategoryCustomTypes[index];
       customT.customTypes.push({
-        label: action.payload.typeName,
-        value: action.payload.typeName,
+        label: typeName,
+        value: typeName,
       });
     },
     changeCategoryTypeByIndex: (state, action) => {
@@ -61,6 +65,14 @@ const categoriesSlice = createSlice({
         label: action.payload.typeName,
         value: action.payload.typeName,
       };
+    },
+    delCategoryTypeByIndex: (state, action) => {
+      const customT = state.CategoryCustomTypes[action.payload.index];
+      try {
+        customT.customTypes.splice(action.payload.typeIndex, 1);
+      } catch (e) {
+        console.log("issue at removing catType " + e);
+      }
     },
     changeCategoryName: (state, action) => {
       const category = state.Categories[action.payload.index];
@@ -74,6 +86,7 @@ export const {
   importCategory,
   addTypeToCategory,
   changeCategoryTypeByIndex,
+  delCategoryTypeByIndex,
   changeCategoryName,
 } = categoriesSlice.actions;
 export default categoriesSlice.reducer;

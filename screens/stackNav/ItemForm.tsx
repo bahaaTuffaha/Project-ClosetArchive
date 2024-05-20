@@ -56,7 +56,7 @@ export const ItemForm = ({
   route: any;
 }) => {
   const { selectedCategory, editingIndex } = route.params;
-  // const navigation = useNavigation<any>();
+
   const collectionState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
   );
@@ -67,6 +67,10 @@ export const ItemForm = ({
     (state: RootState) => state.itemsList.items[currentIndex],
   );
   const storedSettings = useSelector((state: RootState) => state.settings);
+
+  const storedCatTypes = useSelector(
+    (state: RootState) => state.CategoryList.CategoryCustomTypes,
+  );
   const [name, setName] = useState(storedItems ? storedItems.name : "");
   const [collection, setCollection] = useState(
     storedItems ? storedItems.collection : [],
@@ -119,7 +123,16 @@ export const ItemForm = ({
   const [overrideMaxLaundry, setOverrideMaxLaundry] = useState(
     storedItems ? storedItems.overrideMaxLaundry : false,
   );
-
+  const combiningTypesData =
+    selectedCategory ?? storedItems.category <= 3
+      ? [
+          ...(clothesList[storedSettings.language][
+            selectedCategory ?? storedItems.category
+          ] || []),
+          ...(storedCatTypes[selectedCategory ?? storedItems.category]
+            ?.customTypes || []),
+        ]
+      : storedCatTypes[selectedCategory ?? storedItems.category]?.customTypes;
   function deleteItemHandler() {
     dispatch(deleteItem({ selectedId: storedItems.id }));
     dispatch(itemRefresher());
@@ -140,7 +153,7 @@ export const ItemForm = ({
     if (name.length > 20) {
       errors.push("Please enter a name within 20 characters");
     }
-    if (!type && selectedCategory <= 3) {
+    if (!type && combiningTypesData.length > 0) {
       errors.push("Please choose a type");
     }
 
@@ -251,10 +264,6 @@ export const ItemForm = ({
               null,
             )
               .then(async (response) => {
-                // response.uri is the URI of the new image that can now be displayed, uploaded...
-                // response.path is the path of the new image
-                // response.name is the name of the new image with the extension
-                // response.size is the size of the new image
                 const base64 = await FileSystem.readAsStringAsync(
                   response.uri,
                   { encoding: "base64" },
@@ -293,10 +302,6 @@ export const ItemForm = ({
                 null,
               )
                 .then(async (response) => {
-                  // response.uri is the URI of the new image that can now be displayed, uploaded...
-                  // response.path is the path of the new image
-                  // response.name is the name of the new image with the extension
-                  // response.size is the size of the new image
                   const base64 = await FileSystem.readAsStringAsync(
                     response.uri,
                     { encoding: "base64" },
@@ -306,8 +311,6 @@ export const ItemForm = ({
                   setImageModalVisible(false);
                 })
                 .catch((err) => {
-                  // Oops, something went wrong. Check that the filename is correct and
-                  // inspect err to get more details.
                   console.log("image comparison error: ", err);
                 });
             }
@@ -320,8 +323,6 @@ export const ItemForm = ({
   };
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  // const itemsState = useSelector((state: RootState) => state.itemsList)
-  // console.log(itemsState.items)
   return (
     <>
       <ColorModal
@@ -440,16 +441,12 @@ export const ItemForm = ({
                 </Pressable>
               }
             />
-            {(selectedCategory ?? storedItems.category) <= 3 && (
+            {combiningTypesData.length > 0 && (
               <View style={[{ zIndex: 2 }, styles.customWidth]}>
                 <DropDownPicker
                   open={openType}
                   value={type}
-                  items={
-                    clothesList[storedSettings.language][
-                      selectedCategory ?? storedItems.category
-                    ]
-                  }
+                  items={combiningTypesData}
                   setOpen={setOpenType}
                   setValue={setType}
                   mode="SIMPLE"

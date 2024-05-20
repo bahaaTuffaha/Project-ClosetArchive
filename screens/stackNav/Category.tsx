@@ -137,17 +137,19 @@ export function Category() {
                     <Icon name="delete-forever" size={30} color="white" />
                   </TouchableOpacity>
                 )}
-                <TouchableOpacity
-                  className="bg-mainPink border-solid rounded-full p-2"
-                  onPress={() => {
-                    // dispatch(delCategory({ index: item.index }));
-                    navigation.navigate("EditCategory", {
-                      categoryIndex: item.index,
-                    });
-                  }}
-                >
-                  <Icon name="edit" size={30} color="white" />
-                </TouchableOpacity>
+                {item.index != -1 && (
+                  <TouchableOpacity
+                    className="bg-mainPink border-solid rounded-full p-2"
+                    onPress={() => {
+                      // dispatch(delCategory({ index: item.index }));
+                      navigation.navigate("EditCategory", {
+                        categoryIndex: item.index,
+                      });
+                    }}
+                  >
+                    <Icon name="edit" size={30} color="white" />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           )}

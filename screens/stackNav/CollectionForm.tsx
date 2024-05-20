@@ -27,7 +27,10 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon2 from "react-native-vector-icons/MaterialIcons";
 import { colors as appColors, colors } from "./../../utils/colors";
 import { localization } from "../../utils/localization";
-import { changeCategoryTypeByIndex } from "../../redux/categoriesSlice";
+import {
+  changeCategoryTypeByIndex,
+  delCategoryTypeByIndex,
+} from "../../redux/categoriesSlice";
 
 export function addOpacityToHex(hexColor: string, opacity: any) {
   // Remove the "#" character if it's present
@@ -95,60 +98,72 @@ export const CollectionItem = ({
       ) : (
         <ThemeText classNameStyle="font-bold ml-5">{item.label}</ThemeText>
       )}
-      <View className="flex flex-row">
-        <TouchableOpacity
-          className="w-16 h-[59px] rounded-r-lg flex flex-row justify-center items-center"
-          onPress={() => {
-            if (
-              (CollectionsState.filter(
-                (x) => x.label.toLowerCase() == newNameInput.toLowerCase(),
-              ).length < 1 &&
-                newNameInput.length < 20) ||
-              newNameInput == item.label
-            ) {
-              setEnableEditing((prev) => !prev);
-              if (enableEditing) {
-                !isCatType
-                  ? dispatch(
-                      updateCollection({
-                        name: item.label,
-                        newName: newNameInput || item.label,
-                      }),
-                    )
-                  : dispatch(
-                      changeCategoryTypeByIndex({
-                        index: catIndex ?? 0,
-                        typeIndex: (currentIndex ?? 0) - (ignoreNum ?? 0),
-                        typeName: newNameInput || item.label,
-                      }),
-                    );
-              }
-            }
-          }}
-        >
-          <Icon
-            name={enableEditing ? "check-bold" : "note-edit"}
-            size={25}
-            color={isDarkMode ? colors.mainCyan : "gray"}
-          />
-        </TouchableOpacity>
-        {!enableEditing && (
+      {(currentIndex ?? 0) >= (ignoreNum ?? 0) && (
+        <View className="flex flex-row">
           <TouchableOpacity
             className="w-16 h-[59px] rounded-r-lg flex flex-row justify-center items-center"
             onPress={() => {
-              dispatch(deleteCollection({ name: item.label }));
-              setRefresh((prev) => !prev);
-              dispatch(itemRefresher());
+              if (
+                (CollectionsState.filter(
+                  (x) => x.label.toLowerCase() == newNameInput.toLowerCase(),
+                ).length < 1 &&
+                  newNameInput.length < 20) ||
+                newNameInput == item.label
+              ) {
+                setEnableEditing((prev) => !prev);
+                if (enableEditing) {
+                  !isCatType
+                    ? dispatch(
+                        updateCollection({
+                          name: item.label,
+                          newName: newNameInput || item.label,
+                        }),
+                      )
+                    : dispatch(
+                        changeCategoryTypeByIndex({
+                          index: catIndex ?? 0,
+                          typeIndex: (currentIndex ?? 0) - (ignoreNum ?? 0),
+                          typeName: newNameInput || item.label,
+                        }),
+                      );
+                  setRefresh((prev) => !prev);
+                }
+              }
             }}
           >
             <Icon
-              name="delete"
-              size={30}
-              color={isDarkMode ? "#660000" : "red"}
+              name={enableEditing ? "check-bold" : "note-edit"}
+              size={25}
+              color={isDarkMode ? colors.mainCyan : "gray"}
             />
           </TouchableOpacity>
-        )}
-      </View>
+          {!enableEditing && (
+            <TouchableOpacity
+              className="w-16 h-[59px] rounded-r-lg flex flex-row justify-center items-center"
+              onPress={() => {
+                if (!isCatType) {
+                  dispatch(deleteCollection({ name: item.label }));
+                  dispatch(itemRefresher());
+                } else {
+                  dispatch(
+                    delCategoryTypeByIndex({
+                      index: catIndex ?? 0,
+                      typeIndex: (currentIndex ?? 0) - (ignoreNum ?? 0),
+                    }),
+                  );
+                }
+                setRefresh((prev) => !prev);
+              }}
+            >
+              <Icon
+                name="delete"
+                size={30}
+                color={isDarkMode ? "#660000" : "red"}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
     </View>
   );
 };
