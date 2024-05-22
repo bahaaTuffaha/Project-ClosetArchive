@@ -28,7 +28,10 @@ export const importStoreFromJson = async (
           const serializedState = await FileSystem.readAsStringAsync(file.uri);
           const state: RootState = JSON.parse(serializedState);
           store.dispatch(
-            importCategory({ Categories: state.CategoryList.Categories }),
+            importCategory({
+              Categories: state.CategoryList.Categories,
+              CategoryCustomTypes: state.CategoryList?.CategoryCustomTypes,
+            }),
           );
           store.dispatch(
             importItems({

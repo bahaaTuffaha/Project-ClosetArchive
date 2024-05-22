@@ -1,5 +1,13 @@
 import { accessories_en } from "./localization";
 
+export const categoryLayoutIcons = [
+  require("../assets/images/icon1.png"),
+  require("../assets/images/icon2.png"),
+  require("../assets/images/icon3.png"),
+  require("../assets/images/icon4.png"),
+  require("../assets/images/icon5.png"),
+  require("../assets/images/icon6.png"),
+];
 export const categoryLayoutImages = [
   require("../assets/images/layoutTshirt.png"),
   require("../assets/images/layoutTrousers.png"),
@@ -9,7 +17,10 @@ export const categoryLayoutImages = [
   require("../assets/images/layoutAccessories.png"),
 ];
 const layout = require("../assets/images/layout1.png");
-export function layoutFinder(type: string) {
+export function layoutFinder(
+  type: string,
+  storedTypes: { label: string; value: string; icon: number }[],
+) {
   switch (type) {
     case "T-Shirt":
     case "Blouse":
@@ -38,7 +49,13 @@ export function layoutFinder(type: string) {
       if (accessories_en.find((x) => x.label == type)) {
         return categoryLayoutImages[5];
       } else {
-        return layout;
+        const currentType = storedTypes?.find((x) => x.label == type);
+        // console.log(currentType);
+        if (currentType) {
+          return categoryLayoutImages[currentType.icon];
+        } else {
+          return layout;
+        }
       }
   }
 }

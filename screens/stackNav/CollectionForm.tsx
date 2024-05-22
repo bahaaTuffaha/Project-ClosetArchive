@@ -1,4 +1,5 @@
 import {
+  Image,
   Keyboard,
   StyleSheet,
   Text,
@@ -7,7 +8,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { Button } from "react-native-paper";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { BackButton } from "../../components/BackButton";
 import { ThemeView } from "../../components/ThemeView";
 import { CustomInput } from "../../components/CustomInput";
@@ -29,8 +30,10 @@ import { colors as appColors, colors } from "./../../utils/colors";
 import { localization } from "../../utils/localization";
 import {
   changeCategoryTypeByIndex,
+  changeCategoryTypesIcon,
   delCategoryTypeByIndex,
 } from "../../redux/categoriesSlice";
+import { categoryLayoutIcons } from "../../utils/data";
 
 export function addOpacityToHex(hexColor: string, opacity: any) {
   // Remove the "#" character if it's present
@@ -69,6 +72,7 @@ export const CollectionItem = ({
     | {
         label: string;
         value: string;
+        icon: number;
       }[];
   isCatType?: boolean;
   ignoreNum?: number;
@@ -79,6 +83,23 @@ export const CollectionItem = ({
   const dispatch = useDispatch();
   const isDarkMode = useColorScheme() === "dark";
   const [newNameInput, setNewNameInput] = useState(item.label || "");
+  const [iconIndex, setIconIndex] = useState(item?.icon ?? 0);
+  const [updateIcon, setUpdateIcon] = useState(false);
+  const [initialRender, setInitialRender] = useState(true);
+  useEffect(() => {
+    if (initialRender) {
+      setInitialRender(false);
+    } else {
+      dispatch(
+        changeCategoryTypesIcon({
+          index: catIndex ?? 0,
+          typeIndex: (currentIndex ?? 0) - (ignoreNum ?? 0),
+          iconIndex: iconIndex,
+        }),
+      );
+    }
+  }, [updateIcon]);
+
   return (
     <View
       style={{ backgroundColor: addOpacityToHex(item.color ?? "#fff", 0.2) }}
@@ -98,6 +119,25 @@ export const CollectionItem = ({
       ) : (
         <ThemeText classNameStyle="font-bold ml-5">{item.label}</ThemeText>
       )}
+      {isCatType &&
+        (currentIndex ?? 0) >= (ignoreNum ?? 0) &&
+        !enableEditing && (
+          <TouchableOpacity
+            className="bg-white rounded-full"
+            onPress={() => {
+              setIconIndex((prev: number) =>
+                prev + 1 >= categoryLayoutIcons.length ? 0 : prev + 1,
+              );
+              // setRefresh((prev) => !prev);
+              setUpdateIcon((prev) => !prev);
+            }}
+          >
+            <Image
+              className="w-10 h-10 rounded-md"
+              source={categoryLayoutIcons[iconIndex]}
+            ></Image>
+          </TouchableOpacity>
+        )}
       {(currentIndex ?? 0) >= (ignoreNum ?? 0) && (
         <View className="flex flex-row">
           <TouchableOpacity

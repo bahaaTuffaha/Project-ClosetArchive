@@ -29,7 +29,7 @@ export const EditCategory = ({
   const dispatch = useDispatch();
 
   const storedCatTypes = useSelector(
-    (state: RootState) => state.CategoryList.CategoryCustomTypes,
+    (state: RootState) => state.CategoryList?.CategoryCustomTypes ?? [],
   );
 
   useEffect(() => {
@@ -39,7 +39,6 @@ export const EditCategory = ({
         ...(storedCatTypes[categoryIndex]?.customTypes || []),
       ]);
     } catch (e) {
-      console.log("error");
       setCatData(storedCatTypes[categoryIndex]?.customTypes);
     }
   }, [refresh, storedCatTypes[categoryIndex]?.customTypes?.length]);
@@ -48,7 +47,7 @@ export const EditCategory = ({
     const errors = [];
 
     if (newType.length <= 0) {
-      errors.push("Please enter a name for this Collection");
+      errors.push("Please enter a name for this Type");
     }
     if (newType.length > 20) {
       errors.push("Please enter a name within 20 characters max");

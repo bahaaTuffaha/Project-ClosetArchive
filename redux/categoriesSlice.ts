@@ -8,7 +8,7 @@ export type Category = {
   index: number;
 };
 export type CategoryCustomType = {
-  customTypes: { label: string; value: string }[];
+  customTypes: { label: string; value: string; icon: number }[];
 };
 export type CategoryList = {
   Categories: Category[];
@@ -38,7 +38,12 @@ const categoriesSlice = createSlice({
       const categoryIndex = state.Categories.findIndex(
         (x) => x.index === action.payload.index,
       );
-      state.Categories.splice(categoryIndex, 1);
+      try {
+        state.Categories.splice(categoryIndex, 1);
+        state.CategoryCustomTypes.splice(categoryIndex, 1);
+      } catch (e) {
+        console.log("error while deleting Category and its types" + e);
+      }
     },
     importCategory: (state, action) => {
       state.Categories = action.payload.Categories;
@@ -57,6 +62,7 @@ const categoriesSlice = createSlice({
       customT.customTypes.push({
         label: typeName,
         value: typeName,
+        icon: 0,
       });
     },
     changeCategoryTypeByIndex: (state, action) => {
@@ -64,6 +70,15 @@ const categoriesSlice = createSlice({
       customT.customTypes[action.payload.typeIndex] = {
         label: action.payload.typeName,
         value: action.payload.typeName,
+        icon: customT.customTypes[action.payload.typeIndex].icon ?? 0,
+      };
+    },
+    changeCategoryTypesIcon: (state, action) => {
+      const customT = state.CategoryCustomTypes[action.payload.index];
+      customT.customTypes[action.payload.typeIndex] = {
+        label: customT.customTypes[action.payload.typeIndex]?.label,
+        value: customT.customTypes[action.payload.typeIndex]?.value,
+        icon: action.payload.iconIndex,
       };
     },
     delCategoryTypeByIndex: (state, action) => {
@@ -86,6 +101,7 @@ export const {
   importCategory,
   addTypeToCategory,
   changeCategoryTypeByIndex,
+  changeCategoryTypesIcon,
   delCategoryTypeByIndex,
   changeCategoryName,
 } = categoriesSlice.actions;

@@ -41,6 +41,25 @@ export const BulkModeForm = ({
   const collectionState = useSelector(
     (state: RootState) => state.itemsList.collectionTags,
   );
+  const storedCatTypes = useSelector(
+    (state: RootState) => state.CategoryList.CategoryCustomTypes,
+  );
+
+  const combiningTypesData =
+    selectedCategory <= 3
+      ? [
+          ...(clothesList[storedSettings.language][selectedCategory] || []),
+          ...(storedCatTypes[selectedCategory]?.customTypes || []).map(
+            (item) => ({
+              label: item.label,
+              value: item.value,
+            }),
+          ),
+        ]
+      : storedCatTypes[selectedCategory]?.customTypes.map((item) => ({
+          label: item.label,
+          value: item.value,
+        }));
 
   const handleImagePicker = async (type: number, createItem: any) => {
     if (type === 0) {
@@ -174,12 +193,12 @@ export const BulkModeForm = ({
             value={prefix}
             onChange={(text) => setPrefix(text.nativeEvent.text)}
           />
-          {selectedCategory <= 3 && (
+          {combiningTypesData?.length > 0 && (
             <View style={{ zIndex: 2, marginHorizontal: 80 }}>
               <DropDownPicker
                 open={openType}
                 value={type}
-                items={clothesList[storedSettings.language][selectedCategory]}
+                items={combiningTypesData}
                 setOpen={setOpenType}
                 setValue={setType}
                 mode="SIMPLE"

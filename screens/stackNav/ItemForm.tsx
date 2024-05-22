@@ -124,15 +124,25 @@ export const ItemForm = ({
     storedItems ? storedItems.overrideMaxLaundry : false,
   );
   const combiningTypesData =
-    selectedCategory ?? storedItems.category <= 3
+    (selectedCategory ?? storedItems.category) <= 3
       ? [
           ...(clothesList[storedSettings.language][
             selectedCategory ?? storedItems.category
           ] || []),
-          ...(storedCatTypes[selectedCategory ?? storedItems.category]
-            ?.customTypes || []),
+          ...(
+            storedCatTypes[selectedCategory ?? storedItems.category]
+              ?.customTypes || []
+          ).map((item) => ({
+            label: item.label,
+            value: item.value,
+          })),
         ]
-      : storedCatTypes[selectedCategory ?? storedItems.category]?.customTypes;
+      : storedCatTypes[
+          selectedCategory ?? storedItems.category
+        ]?.customTypes.map((item) => ({
+          label: item.label,
+          value: item.value,
+        }));
   function deleteItemHandler() {
     dispatch(deleteItem({ selectedId: storedItems.id }));
     dispatch(itemRefresher());
@@ -441,7 +451,7 @@ export const ItemForm = ({
                 </Pressable>
               }
             />
-            {combiningTypesData.length > 0 && (
+            {combiningTypesData?.length > 0 && (
               <View style={[{ zIndex: 2 }, styles.customWidth]}>
                 <DropDownPicker
                   open={openType}

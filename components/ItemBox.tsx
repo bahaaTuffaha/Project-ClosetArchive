@@ -63,6 +63,12 @@ export const ItemBox = ({
   };
   const HeatBorderColor = useHeatmap(logs);
   const storedSettings = useSelector((state: RootState) => state.settings);
+  const storedCatTypes = useSelector(
+    (state: RootState) => state.CategoryList.CategoryCustomTypes,
+  );
+  const combinedCustomTypes = [].concat(
+    ...storedCatTypes.map((x) => x.customTypes),
+  );
   return (
     <TouchableWithoutFeedback onPress={handleTap}>
       <Animated.View style={animatedStyle}>
@@ -78,7 +84,7 @@ export const ItemBox = ({
                 borderWidth: storedSettings.enableHeatMap ? 4 : 0,
               }}
               className="absolute z-20 rounded-lg "
-              source={layoutFinder(type)}
+              source={layoutFinder(type, combinedCustomTypes)}
             />
             <Text
               style={{

@@ -93,6 +93,11 @@ export function HomeBottom() {
   const storedCategories = useSelector(
     (state: RootState) => state.CategoryList.Categories,
   );
+
+  const storedCatTypes = useSelector(
+    (state: RootState) => state.CategoryList.CategoryCustomTypes,
+  );
+
   const CategoriesList = defaultCategories
     .concat(storedCategories)
     .map((item) => ({
@@ -355,14 +360,23 @@ export function HomeBottom() {
                   dropDownContainerStyle={{ borderColor: colors.mainGreen }}
                 />
               </View>
-              {categoriesFilter.length == 1 && categoriesFilter[0] <= 3 && (
+              {categoriesFilter.length == 1 && (
                 <View style={{ zIndex: 1, width: "90%" }}>
                   <DropDownPicker
                     open={OpenTypeFilter}
                     value={TypeFilter}
-                    items={
-                      clothesList[storedSettings.language][categoriesFilter[0]]
-                    }
+                    items={(
+                      clothesList[storedSettings.language][
+                        categoriesFilter[0]
+                      ] ?? []
+                    )
+                      .concat(
+                        storedCatTypes[categoriesFilter[0]]?.customTypes || [],
+                      )
+                      .map((item) => ({
+                        label: item.label,
+                        value: item.value,
+                      }))}
                     setOpen={setOpenTypeFilter}
                     setValue={setTypeFilter}
                     multiple={true}
