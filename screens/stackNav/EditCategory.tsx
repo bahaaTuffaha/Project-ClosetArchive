@@ -6,12 +6,12 @@ import { clothesList, localization } from "../../utils/localization";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { BackButton } from "../../components/BackButton";
-import { CollectionItem } from "./CollectionForm";
 import { useEffect, useState } from "react";
 import { CustomInput } from "../../components/CustomInput";
 import { colors } from "../../utils/colors";
 import { Button } from "react-native-paper";
 import { addTypeToCategory } from "../../redux/categoriesSlice";
+import { EditItemList } from "../../components/EditItemList";
 
 export const EditCategory = ({
   navigation,
@@ -128,7 +128,7 @@ export const EditCategory = ({
               }}
             >
               {/* <CategoryItem key={index} type={item} /> */}
-              <CollectionItem
+              <EditItemList
                 item={item}
                 setRefresh={setRefresh}
                 CollectionsState={catData}

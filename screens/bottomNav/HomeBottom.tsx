@@ -19,12 +19,11 @@ import { ItemBox } from "../../components/ItemBox";
 import { CollectionContainer } from "../../components/CollectionContainer";
 import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
-import { addOpacityToHex } from "../stackNav/CollectionForm";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
-import { colors } from "../../utils/colors";
+import { addOpacityToHex, colors } from "../../utils/colors";
 import { FlashList } from "@shopify/flash-list";
 import { useSharedValue } from "react-native-reanimated";
 import { SideModal } from "../../components/SideModal";
@@ -100,7 +99,7 @@ export function HomeBottom() {
 
   const CategoriesList = defaultCategories
     .concat(storedCategories)
-    .map((item) => ({
+    ?.map((item) => ({
       label: item.name[storedSettings.language],
       value: item.index,
     }));
@@ -373,7 +372,7 @@ export function HomeBottom() {
                       .concat(
                         storedCatTypes[categoriesFilter[0]]?.customTypes || [],
                       )
-                      .map((item) => ({
+                      ?.map((item) => ({
                         label: item.label,
                         value: item.value,
                       }))}

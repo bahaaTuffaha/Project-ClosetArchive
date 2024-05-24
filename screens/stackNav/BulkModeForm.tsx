@@ -48,15 +48,15 @@ export const BulkModeForm = ({
   const combiningTypesData =
     selectedCategory <= 3
       ? [
-          ...(clothesList[storedSettings.language][selectedCategory] || []),
-          ...(storedCatTypes[selectedCategory]?.customTypes || []).map(
+          ...(clothesList[storedSettings.language]?.[selectedCategory] || []),
+          ...(storedCatTypes?.[selectedCategory]?.customTypes || []).map(
             (item) => ({
               label: item.label,
               value: item.value,
             }),
           ),
         ]
-      : storedCatTypes[selectedCategory]?.customTypes.map((item) => ({
+      : storedCatTypes?.[selectedCategory]?.customTypes.map((item) => ({
           label: item.label,
           value: item.value,
         }));

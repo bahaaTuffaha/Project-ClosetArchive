@@ -79,3 +79,24 @@ export function categorizeColor(hexColor: string) {
     return "unknown"; // Return unknown for colors that don't fall within any of the specified ranges
   }
 }
+
+export function addOpacityToHex(hexColor: string, opacity: any) {
+  // Remove the "#" character if it's present
+  hexColor = hexColor.replace(/^#/, "");
+
+  // Calculate the RGB values from the hex color
+  const r = parseInt(hexColor.slice(0, 2), 16);
+  const g = parseInt(hexColor.slice(2, 4), 16);
+  const b = parseInt(hexColor.slice(4, 6), 16);
+
+  // Check if the opacity is a valid number between 0 and 1
+  opacity = parseFloat(opacity);
+  if (isNaN(opacity) || opacity < 0 || opacity > 1) {
+    throw new Error("Opacity must be a number between 0 and 1");
+  }
+
+  // Convert to rgba format
+  const rgbaColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+
+  return rgbaColor;
+}

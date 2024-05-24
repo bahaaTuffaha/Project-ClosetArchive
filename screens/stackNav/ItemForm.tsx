@@ -126,20 +126,21 @@ export const ItemForm = ({
   const combiningTypesData =
     (selectedCategory ?? storedItems.category) <= 3
       ? [
-          ...(clothesList[storedSettings.language][
+          ...(clothesList[storedSettings.language]?.[
             selectedCategory ?? storedItems.category
           ] || []),
           ...(
-            storedCatTypes[selectedCategory ?? storedItems.category]
+            storedCatTypes?.[selectedCategory ?? storedItems.category]
               ?.customTypes || []
           ).map((item) => ({
             label: item.label,
             value: item.value,
           })),
         ]
-      : storedCatTypes[
-          selectedCategory ?? storedItems.category
-        ]?.customTypes.map((item) => ({
+      : (
+          storedCatTypes?.[selectedCategory ?? storedItems.category]
+            ?.customTypes || []
+        ).map((item) => ({
           label: item.label,
           value: item.value,
         }));

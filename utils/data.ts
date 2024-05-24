@@ -49,7 +49,7 @@ export function layoutFinder(
       if (accessories_en.find((x) => x.label == type)) {
         return categoryLayoutImages[5];
       } else {
-        const currentType = storedTypes?.find((x) => x.label == type);
+        const currentType = storedTypes?.find((x) => x?.label == type);
         // console.log(currentType);
         if (currentType) {
           return categoryLayoutImages[currentType.icon];
