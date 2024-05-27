@@ -228,8 +228,8 @@ export const localization = {
   ClosetInfo: [
     "Closet Info",
     "معلومات الخزانة",
-    "Información del armario",
-    "Informazioni su Armadio",
+    "Armario Info",
+    "Armadio Info",
   ],
   Times: ["Times", "مرات", "Veces", "Volte"],
   N: ["n", "ن", "n", "n"],
@@ -249,7 +249,7 @@ export const localization = {
     "Laundry reminder",
     "تذكير الغسيل",
     "Recordatorio de lavandería",
-    "Ricorda di lavare",
+    "Ricorda di lavare dopo",
   ],
   Laundry_Options: [
     "Laundry Options",
@@ -261,7 +261,7 @@ export const localization = {
     "Override Laundry reminder",
     "تعديل تذكير الغسيل",
     "Anular Recordatorio de Lavandería",
-    "regolare il richiamo di lavanderia",
+    "Regola il promemoria di lavaggio",
   ],
   Tops: ["Tops", "العلوي", "Tops", "Parte sopra"],
   Bottoms: ["Bottoms", "السفلي", "Parte inferior", "Parte sotto"],
@@ -285,6 +285,13 @@ export const localization = {
     "Añadir una categoría",
     "Aggiungi categoria",
   ],
+  Edit_Category: [
+    "Edit Category",
+    "تعديل الفئة",
+    "Editar categoría",
+    "Modifica categoria",
+  ],
+  Add_Type: ["Add Type", "إضافة نوع", "Añadir tipo", "Aggiungi tipo"],
   Add_a_new: [
     "Add a new piece of clothing",
     "إضافة قطعة ملابس جديدة",
@@ -708,7 +715,7 @@ export const accessories_it = [
   { value: "Socks", label: "Calze" },
   { value: "Headband", label: "Cerchietto" },
   { value: "Hairpin", label: "Forcina" },
-  { value: "Hair Accessories", label: "Accessorio per capelli" },
+  { value: "Hair Accessories", label: "Accessori per capelli" },
 ];
 const shoeTypes_it = [
   { value: "Sneakers", label: "Sneakers" },
@@ -766,7 +773,7 @@ export const categoryInfo = [
   "category has:",
   "هذا الفئة تحتوي على:",
   "categoría tiene:",
-  "la categoria ha:",
+  "categoria ha:",
 ];
 
 export const closetInfo = [

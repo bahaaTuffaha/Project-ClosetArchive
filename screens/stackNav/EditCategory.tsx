@@ -76,7 +76,7 @@ export const EditCategory = ({
           <BackButton />
           <View className="flex flex-col items-center space-y-3">
             <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
-              {"Edit Category"}
+              {localization.Edit_Category[storedSettings.language]}
             </ThemeText>
             <CustomInput
               mode="outlined"
@@ -85,7 +85,7 @@ export const EditCategory = ({
               activeOutlineColor={colors.mainGreen}
               textContentType="name"
               style={styles.customWidth}
-              label={"Add Type"}
+              label={localization.Add_Type[storedSettings.language]}
               value={newType}
               onChange={(text) => setNewType(text.nativeEvent.text)}
             />

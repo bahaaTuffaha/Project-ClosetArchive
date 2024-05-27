@@ -67,7 +67,7 @@ export const ItemBox = ({
     (state: RootState) => state.CategoryList.CategoryCustomTypes,
   );
   const combinedCustomTypes = storedCatTypes
-    ? [].concat(...storedCatTypes.map((x) => x.customTypes))
+    ? [].concat(...storedCatTypes.map((x) => x?.customTypes))
     : [];
   return (
     <TouchableWithoutFeedback onPress={handleTap}>

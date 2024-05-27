@@ -15,6 +15,7 @@ export const categoryLayoutIcons = [
   require("../assets/images/icon12.png"),
   require("../assets/images/icon13.png"),
   require("../assets/images/icon14.png"),
+  require("../assets/images/icon15.png"),
 ];
 export const categoryLayoutImages = [
   require("../assets/images/layoutTshirt.png"),
@@ -31,6 +32,7 @@ export const categoryLayoutImages = [
   require("../assets/images/layoutTriangle.png"),
   require("../assets/images/layoutCircle.png"),
   require("../assets/images/layoutStar.png"),
+  require("../assets/images/layoutHoodie.png"),
 ];
 const layout = require("../assets/images/layout1.png");
 export function layoutFinder(
@@ -66,7 +68,6 @@ export function layoutFinder(
     case "Peplum Top":
       return categoryLayoutImages[6];
     case "Sweater":
-    case "Hoodie":
       return categoryLayoutImages[7];
     case "Shorts":
     case "Bermuda":
@@ -75,6 +76,7 @@ export function layoutFinder(
       return categoryLayoutImages[9];
     case "High Heels":
       return categoryLayoutImages[10];
+    case "Hoodie":
     default:
       if (accessories_en.find((x) => x.label == type)) {
         return categoryLayoutImages[5];
