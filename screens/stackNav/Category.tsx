@@ -126,16 +126,31 @@ export function Category() {
                   }}
                 />
               </Pressable>
-              {item.index > 3 && (
-                <TouchableOpacity
-                  className="absolute top-0 bg-mainPink border-solid rounded-full p-2"
-                  onPress={() => {
-                    dispatch(delCategory({ index: item.index }));
-                  }}
-                >
-                  <Icon name="delete-forever" size={30} color="white" />
-                </TouchableOpacity>
-              )}
+              <View className="absolute top-0 flex flex-row space-x-5">
+                {item.index > 3 && (
+                  <TouchableOpacity
+                    className="bg-mainPink border-solid rounded-full p-2"
+                    onPress={() => {
+                      dispatch(delCategory({ index: item.index }));
+                    }}
+                  >
+                    <Icon name="delete-forever" size={30} color="white" />
+                  </TouchableOpacity>
+                )}
+                {item.index != -1 && (
+                  <TouchableOpacity
+                    className="bg-mainPink border-solid rounded-full p-2"
+                    onPress={() => {
+                      // dispatch(delCategory({ index: item.index }));
+                      navigation.navigate("EditCategory", {
+                        categoryIndex: item.index,
+                      });
+                    }}
+                  >
+                    <Icon name="edit" size={30} color="white" />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           )}
         />

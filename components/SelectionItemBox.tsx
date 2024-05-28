@@ -2,6 +2,8 @@ import { View, Image, Text, Pressable } from "react-native";
 import { layoutFinder } from "../utils/data";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { colors } from "../utils/colors";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export const SelectionItemBox = ({
   image,
@@ -39,6 +41,13 @@ export const SelectionItemBox = ({
     }
   }, [isSelected]);
 
+  const storedCatTypes = useSelector(
+    (state: RootState) => state.CategoryList.CategoryCustomTypes,
+  );
+  const combinedCustomTypes = storedCatTypes
+    ? [].concat(...storedCatTypes.map((x) => x?.customTypes))
+    : [];
+
   return (
     <Pressable
       onPress={() => {
@@ -51,7 +60,7 @@ export const SelectionItemBox = ({
         source={
           selectedIdCollector.includes(id)
             ? require("../assets/images/layoutSelection.png")
-            : layoutFinder(type)
+            : layoutFinder(type, combinedCustomTypes)
         }
       />
       <Text

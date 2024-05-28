@@ -11,6 +11,7 @@ import { Settings } from "../screens/stackNav/Settings";
 import { ClosetInfo } from "../screens/stackNav/ClosetInfo";
 import { ModeScreen } from "../screens/stackNav/ModeScreen";
 import { BulkModeForm } from "../screens/stackNav/BulkModeForm";
+import { EditCategory } from "../screens/stackNav/EditCategory";
 export default function Navigator() {
   const Stack = createNativeStackNavigator();
   return (
@@ -39,6 +40,11 @@ export default function Navigator() {
         <Stack.Screen
           name="Category"
           component={Category}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EditCategory"
+          component={EditCategory}
           options={{ headerShown: false }}
         />
         <Stack.Screen

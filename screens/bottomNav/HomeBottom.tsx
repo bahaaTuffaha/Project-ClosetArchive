@@ -19,12 +19,11 @@ import { ItemBox } from "../../components/ItemBox";
 import { CollectionContainer } from "../../components/CollectionContainer";
 import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
-import { addOpacityToHex } from "../stackNav/CollectionForm";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
-import { colors } from "../../utils/colors";
+import { addOpacityToHex, colors } from "../../utils/colors";
 import { FlashList } from "@shopify/flash-list";
 import { useSharedValue } from "react-native-reanimated";
 import { SideModal } from "../../components/SideModal";
@@ -93,9 +92,14 @@ export function HomeBottom() {
   const storedCategories = useSelector(
     (state: RootState) => state.CategoryList.Categories,
   );
+
+  const storedCatTypes = useSelector(
+    (state: RootState) => state.CategoryList.CategoryCustomTypes,
+  );
+
   const CategoriesList = defaultCategories
     .concat(storedCategories)
-    .map((item) => ({
+    ?.map((item) => ({
       label: item.name[storedSettings.language],
       value: item.index,
     }));
@@ -355,14 +359,23 @@ export function HomeBottom() {
                   dropDownContainerStyle={{ borderColor: colors.mainGreen }}
                 />
               </View>
-              {categoriesFilter.length == 1 && categoriesFilter[0] <= 3 && (
+              {categoriesFilter.length == 1 && (
                 <View style={{ zIndex: 1, width: "90%" }}>
                   <DropDownPicker
                     open={OpenTypeFilter}
                     value={TypeFilter}
-                    items={
-                      clothesList[storedSettings.language][categoriesFilter[0]]
-                    }
+                    items={(
+                      clothesList[storedSettings.language][
+                        categoriesFilter[0]
+                      ] ?? []
+                    )
+                      .concat(
+                        storedCatTypes[categoriesFilter[0]]?.customTypes || [],
+                      )
+                      ?.map((item) => ({
+                        label: item.label,
+                        value: item.value,
+                      }))}
                     setOpen={setOpenTypeFilter}
                     setValue={setTypeFilter}
                     multiple={true}

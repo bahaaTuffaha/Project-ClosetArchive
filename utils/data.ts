@@ -1,5 +1,22 @@
 import { accessories_en } from "./localization";
 
+export const categoryLayoutIcons = [
+  require("../assets/images/icon1.png"),
+  require("../assets/images/icon2.png"),
+  require("../assets/images/icon3.png"),
+  require("../assets/images/icon4.png"),
+  require("../assets/images/icon5.png"),
+  require("../assets/images/icon6.png"),
+  require("../assets/images/icon7.png"),
+  require("../assets/images/icon8.png"),
+  require("../assets/images/icon9.png"),
+  require("../assets/images/icon10.png"),
+  require("../assets/images/icon11.png"),
+  require("../assets/images/icon12.png"),
+  require("../assets/images/icon13.png"),
+  require("../assets/images/icon14.png"),
+  require("../assets/images/icon15.png"),
+];
 export const categoryLayoutImages = [
   require("../assets/images/layoutTshirt.png"),
   require("../assets/images/layoutTrousers.png"),
@@ -7,9 +24,21 @@ export const categoryLayoutImages = [
   require("../assets/images/layoutJacket.png"),
   require("../assets/images/layoutTie.png"),
   require("../assets/images/layoutAccessories.png"),
+  require("../assets/images/layoutPeplum.png"),
+  require("../assets/images/layoutSweater.png"),
+  require("../assets/images/layoutShort.png"),
+  require("../assets/images/layoutSkirt.png"),
+  require("../assets/images/layoutHigh.png"),
+  require("../assets/images/layoutTriangle.png"),
+  require("../assets/images/layoutCircle.png"),
+  require("../assets/images/layoutStar.png"),
+  require("../assets/images/layoutHoodie.png"),
 ];
 const layout = require("../assets/images/layout1.png");
-export function layoutFinder(type: string) {
+export function layoutFinder(
+  type: string,
+  storedTypes: { label: string; value: string; icon: number }[],
+) {
   switch (type) {
     case "T-Shirt":
     case "Blouse":
@@ -21,6 +50,8 @@ export function layoutFinder(type: string) {
     case "Trousers":
     case "Joggers":
     case "Leather Pants":
+    case "Leggings":
+    case "Culottes":
       return categoryLayoutImages[1];
 
     case "Jacket":
@@ -34,11 +65,30 @@ export function layoutFinder(type: string) {
 
     case "Tie":
       return categoryLayoutImages[4];
+    case "Peplum Top":
+      return categoryLayoutImages[6];
+    case "Sweater":
+      return categoryLayoutImages[7];
+    case "Shorts":
+    case "Bermuda":
+      return categoryLayoutImages[8];
+    case "Skirt":
+      return categoryLayoutImages[9];
+    case "High Heels":
+      return categoryLayoutImages[10];
+    case "Hoodie":
+      return categoryLayoutImages[14];
     default:
       if (accessories_en.find((x) => x.label == type)) {
         return categoryLayoutImages[5];
       } else {
-        return layout;
+        const currentType = storedTypes?.find((x) => x?.label == type);
+        // console.log(currentType);
+        if (currentType) {
+          return categoryLayoutImages[currentType.icon];
+        } else {
+          return layout;
+        }
       }
   }
 }

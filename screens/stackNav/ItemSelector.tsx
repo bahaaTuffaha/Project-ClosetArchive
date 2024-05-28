@@ -10,9 +10,8 @@ import { item } from "../../redux/itemsSlice";
 import { SelectionItemBox } from "../../components/SelectionItemBox";
 import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../components/BackButton";
-import { addOpacityToHex } from "./CollectionForm";
 import { ThemeText } from "../../components/ThemeText";
-import { colors } from "../../utils/colors";
+import { addOpacityToHex, colors } from "../../utils/colors";
 import { FlashList } from "@shopify/flash-list";
 import { localization } from "../../utils/localization";
 
