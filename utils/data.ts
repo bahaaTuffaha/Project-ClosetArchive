@@ -77,6 +77,7 @@ export function layoutFinder(
     case "High Heels":
       return categoryLayoutImages[10];
     case "Hoodie":
+      return categoryLayoutImages[14];
     default:
       if (accessories_en.find((x) => x.label == type)) {
         return categoryLayoutImages[5];
