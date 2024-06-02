@@ -21,6 +21,7 @@ import {
   delCategoryTypeByIndex,
 } from "../redux/categoriesSlice";
 import { categoryLayoutIcons } from "../utils/data";
+import { styles } from "../screens/stackNav/CategoryForm";
 
 export const EditItemList = ({
   item,

@@ -58,15 +58,6 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
           <BackButton />
 
           <View className="flex flex-col items-center space-y-3">
-            {/* <TouchableOpacity
-              style={{ backgroundColor: colors[0] }}
-              onPress={() => {
-                setVisible(true);
-              }}
-              className="flex justify-center items-center w-16 h-16 border-[3px] rounded-xl mt-2"
-            >
-              <Text className="text-black">Color</Text>
-            </TouchableOpacity> */}
             <ThemeText classNameStyle="text-xl mt-4 font-mono">
               {localization.Add_a_Category[storedSettings.language]}
             </ThemeText>
@@ -114,6 +105,6 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
     </>
   );
 };
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   customWidth: { width: "80%" },
 });
