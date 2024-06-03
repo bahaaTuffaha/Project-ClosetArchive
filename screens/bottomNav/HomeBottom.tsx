@@ -5,7 +5,6 @@ import {
   useColorScheme,
   Image,
   ScrollView,
-  Dimensions,
   Keyboard,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
