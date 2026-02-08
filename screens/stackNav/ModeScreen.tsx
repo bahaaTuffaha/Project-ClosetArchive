@@ -19,47 +19,45 @@ export const ModeScreen = ({
   const storedSettings = useSelector((state: RootState) => state.settings);
   return (
     <ThemeView>
-      <>
-        <BackButton />
-        <TouchableOpacity
-          className="w-full flex flex-row items-center justify-center bg-mainGreen h-1/2 relative"
-          onPress={() =>
-            navigation.navigate(screenName, {
-              selectedCategory: selectedCategory,
-            })
-          }
+      <BackButton />
+      <TouchableOpacity
+        className="w-full flex flex-row items-center justify-center bg-mainGreen h-1/2 relative"
+        onPress={() =>
+          navigation.navigate(screenName, {
+            selectedCategory: selectedCategory,
+          })
+        }
+      >
+        <ThemeText
+          customStyle={{ fontFamily: "TSMorabaat-Regular" }}
+          classNameStyle="text-[50px] z-10 text-bold"
         >
-          <ThemeText
-            customStyle={{ fontFamily: "TSMorabaat-Regular" }}
-            classNameStyle="text-[50px] z-10 text-bold"
-          >
-            {localization.addSingleItem[storedSettings.language]}
-          </ThemeText>
-          <Image
-            source={singleBox}
-            className="w-[80%] h-[70%] rounded-md object-cover z-0 self-center absolute"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="w-full flex flex-row items-center justify-center bg-mainCyan h-1/2 relative"
-          onPress={() =>
-            navigation.navigate("BulkModeForm", {
-              selectedCategory: selectedCategory,
-            })
-          }
+          {localization.addSingleItem[storedSettings.language]}
+        </ThemeText>
+        <Image
+          source={singleBox}
+          className="w-[80%] h-[70%] rounded-md object-cover z-0 self-center absolute"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="w-full flex flex-row items-center justify-center bg-mainCyan h-1/2 relative"
+        onPress={() =>
+          navigation.navigate("BulkModeForm", {
+            selectedCategory: selectedCategory,
+          })
+        }
+      >
+        <ThemeText
+          customStyle={{ fontFamily: "TSMorabaat-Regular" }}
+          classNameStyle="text-[50px] z-10"
         >
-          <ThemeText
-            customStyle={{ fontFamily: "TSMorabaat-Regular" }}
-            classNameStyle="text-[50px] z-10"
-          >
-            {localization.addMultiItems[storedSettings.language]}
-          </ThemeText>
-          <Image
-            source={bulkBoxes}
-            className="w-[80%] h-[90%] rounded-md object-cover z-0 self-center absolute"
-          />
-        </TouchableOpacity>
-      </>
+          {localization.addMultiItems[storedSettings.language]}
+        </ThemeText>
+        <Image
+          source={bulkBoxes}
+          className="w-[80%] h-[90%] rounded-md object-cover z-0 self-center absolute"
+        />
+      </TouchableOpacity>
     </ThemeView>
   );
 };

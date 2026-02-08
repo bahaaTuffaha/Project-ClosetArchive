@@ -1,18 +1,19 @@
 import { useSelector } from "react-redux";
 import { ThemeView } from "../../components/ThemeView";
-import { ScrollView, View, useColorScheme } from "react-native";
-import { useEffect, useState } from "react";
+import { ScrollView, View, useColorScheme, StyleSheet } from "react-native";
+import React, { useState, useMemo } from "react";
 import { CollectionContainer } from "../../components/CollectionContainer";
-import { filter, filterCollectionsBySearch } from "../bottomNav/HomeBottom";
+import {
+  filterCollectionsBySearch,
+  filterItemsBySearch,
+} from "../../utils/filters";
 import { Button, Searchbar, Snackbar } from "react-native-paper";
 import { RootState } from "../../redux/store";
 import { item } from "../../redux/itemsSlice";
 import { SelectionItemBox } from "../../components/SelectionItemBox";
 import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../components/BackButton";
-import { ThemeText } from "../../components/ThemeText";
 import { addOpacityToHex, colors } from "../../utils/colors";
-import { FlashList } from "@shopify/flash-list";
 import { localization } from "../../utils/localization";
 
 export const ItemSelector = () => {
@@ -20,283 +21,197 @@ export const ItemSelector = () => {
   const storedSettings = useSelector((state: RootState) => state.settings);
   const [search, setSearch] = useState("");
   const isDarkMode = useColorScheme() === "dark";
-  const [allCollections, setAllCollections] = useState<item[][]>([]);
-  const [nonCollectnized, setNonCollectnized] = useState<item[]>([]);
-  const [allCollectionsFilter, setAllCollectionsFilter] = useState<item[][]>(
-    [],
-  );
-  const [nonCategorizedFilter, setNonCategorizedFilter] = useState<item[]>([]);
   const [selectedIdCollector, setSelectedIdCollector] = useState<string[]>([]);
   const navigation = useNavigation<any>();
   const [visible, setVisible] = useState(false);
+
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
 
-  useEffect(() => {
-    let col = [];
-    let nonCol = [];
-    let final = [];
-    if (itemsState.collectionTags.length > 0) {
-      // if there is a collection and items
-      for (let i = 0; i < itemsState.collectionTags.length; i++) {
-        col = [];
-        nonCol = [];
-        for (let j = 0; j < itemsState.items.length; j++) {
-          if (
-            itemsState.items[j].collection?.includes(
-              itemsState.collectionTags[i].value,
-            )
-          ) {
-            col.push(itemsState.items[j]);
-          } else if (itemsState.items[j].collection?.length == 0) {
-            nonCol.push(itemsState.items[j]);
-          }
-        }
-        final.push(col);
-      }
-    } else {
-      // if there is no collections
-      nonCol = [];
-      for (let i = 0; i < itemsState.items.length; i++) {
-        if (itemsState.items[i].collection?.length == 0) {
-          nonCol.push(itemsState.items[i]);
-        }
-      }
-      final.push([]);
-    }
-    setAllCollections(final);
-    setNonCollectnized(nonCol);
-    return () => {
-      col = null;
-      nonCol = null;
-      final = null;
-    };
-  }, [itemsState.items.length]);
+  const groupedData = useMemo(() => {
+    let collections: item[][] = [];
+    let tags = itemsState.collectionTags;
+    let items = itemsState.items;
 
-  useEffect(() => {
-    setAllCollectionsFilter(filterCollectionsBySearch(allCollections, search));
-    setNonCategorizedFilter(filter(nonCollectnized, search));
-  }, [search]);
+    if (tags.length > 0) {
+      for (let i = 0; i < tags.length; i++) {
+        const col = items.filter(x => x.collection?.includes(tags[i].value));
+        collections.push(col);
+      }
+    }
+
+    const nonCollected = items.filter(
+      x => !x.collection || x.collection.length === 0,
+    );
+
+    return {
+      collections: filterCollectionsBySearch(collections, search),
+      nonCollected: filterItemsBySearch(nonCollected, search),
+    };
+  }, [itemsState.items, itemsState.collectionTags, search]);
+
+  const isRTL = storedSettings.language === 1;
 
   return (
     <ThemeView>
-      <>
-        <View className="w-full flex flex-row h-14 justify-center items-center">
-          <BackButton />
-          <ThemeText classNameStyle="text-xl italic">
-            {localization.SelectItems[storedSettings.language]}
-          </ThemeText>
-        </View>
-        <View className="flex flex-row justify-end">
-          <Searchbar
-            className="w-[100%]"
-            theme={{
-              roundness: 0,
-              colors: {
-                onSurfaceVariant: isDarkMode ? colors.white : colors.black,
-                elevation: { level3: colors.mainCyan },
+      <BackButton
+        pageTitle={localization.SelectItems[storedSettings.language]}
+      />
+
+      <View style={styles.searchContainer}>
+        <Searchbar
+          theme={{
+            roundness: 0,
+            colors: {
+              onSurfaceVariant: isDarkMode ? colors.black : colors.white,
+              elevation: {
+                level3: isDarkMode ? colors.mainCyan : colors.gray,
               },
-            }}
-            style={{
-              flexDirection:
-                storedSettings.language == 1 ? "row-reverse" : "row",
-            }}
-            inputStyle={{
-              textAlign: storedSettings.language == 1 ? "right" : "left",
-            }}
-            value={search}
-            selectionColor="#C0C0C0"
-            // label="Search"
-            onChange={(text) => setSearch(text.nativeEvent.text)}
-            onClearIconPress={() => setSearch("")}
-          />
-        </View>
-        <View
-          style={{
-            backgroundColor: "#C9C9C9",
-            marginTop: "1%",
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-            height: "85%",
-            paddingBottom: 10,
+            },
+          }}
+          style={[
+            styles.searchBar,
+            { flexDirection: isRTL ? "row-reverse" : "row" },
+          ]}
+          inputStyle={{
+            textAlign: isRTL ? "right" : "left",
+          }}
+          value={search}
+          selectionColor="#C0C0C0"
+          placeholder={
+            localization.SearchPlaceholder?.[storedSettings.language] ||
+            "Search"
+          }
+          onChangeText={text => setSearch(text)}
+          onClearIconPress={() => setSearch("")}
+        />
+      </View>
+
+      <View style={styles.listContainer}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {itemsState.collectionTags.map((collection, index) => {
+            const collectionItems = groupedData.collections[index];
+            if (!collectionItems || collectionItems.length === 0) return null;
+
+            return (
+              <CollectionContainer
+                key={`col-${index}`}
+                color={addOpacityToHex(collection.color ?? colors.white, 0.2)}
+                label={collection.label}
+              >
+                <View style={styles.gridRow}>
+                  {collectionItems.map(item => (
+                    <View key={item.id} style={styles.gridItem}>
+                      <SelectionItemBox
+                        primary={item.primaryColor || colors.white}
+                        secondary={item.secondaryColor || colors.white}
+                        tertiary={item.tertiaryColor || colors.white}
+                        image={item.image}
+                        name={item.name}
+                        type={item.type}
+                        id={item.id}
+                        setSelectedIdCollector={setSelectedIdCollector}
+                        selectedIdCollector={selectedIdCollector}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </CollectionContainer>
+            );
+          })}
+
+          {groupedData.nonCollected.length > 0 && (
+            <View style={styles.gridRow}>
+              {groupedData.nonCollected.map(item => (
+                <View key={item.id} style={styles.gridItem}>
+                  <SelectionItemBox
+                    primary={item.primaryColor || colors.white}
+                    secondary={item.secondaryColor || colors.white}
+                    tertiary={item.tertiaryColor || colors.white}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                    setSelectedIdCollector={setSelectedIdCollector}
+                    selectedIdCollector={selectedIdCollector}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
+          <View style={styles.bottomSpacer} />
+        </ScrollView>
+      </View>
+
+      <View style={styles.footer}>
+        <Button
+          style={styles.nextButton}
+          mode="contained"
+          buttonColor={colors.mainCyan}
+          textColor={colors.white}
+          onPress={() => {
+            if (selectedIdCollector.length > 0) {
+              navigation.navigate("EventLogForm", {
+                selectedIDs: selectedIdCollector,
+              });
+            } else {
+              onToggleSnackBar();
+            }
           }}
         >
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            {itemsState.collectionTags.map((collection, index) => {
-              if (!search) {
-                if (allCollections[index]?.length ?? 0 != 0) {
-                  return (
-                    <CollectionContainer
-                      key={index}
-                      color={addOpacityToHex(collection.color ?? "#fff", 0.2)}
-                      label={collection.label}
-                    >
-                      <>
-                        <FlashList
-                          extraData={selectedIdCollector}
-                          numColumns={4}
-                          data={allCollections[index]}
-                          estimatedItemSize={64}
-                          renderItem={({ item }) => (
-                            <View
-                              style={{
-                                display: "flex",
-                                flex: 1,
-                                alignItems: "center",
-                              }}
-                            >
-                              <SelectionItemBox
-                                primary={item.primaryColor || "#fff"}
-                                secondary={item.secondaryColor || "#fff"}
-                                tertiary={item.tertiaryColor || "#fff"}
-                                key={"cols" + item.id}
-                                image={item.image}
-                                name={item.name}
-                                type={item.type}
-                                id={item.id}
-                                setSelectedIdCollector={setSelectedIdCollector}
-                                selectedIdCollector={selectedIdCollector}
-                              />
-                            </View>
-                          )}
-                        />
-                      </>
-                    </CollectionContainer>
-                  );
-                }
-              } else {
-                if (allCollectionsFilter[index]?.length ?? 0 != 0) {
-                  return (
-                    //searching & filtering
-                    <CollectionContainer
-                      key={index}
-                      color={addOpacityToHex(collection.color, 0.2)}
-                      label={collection.label}
-                    >
-                      <>
-                        <FlashList
-                          extraData={selectedIdCollector}
-                          numColumns={4}
-                          data={
-                            filterCollectionsBySearch(allCollections, search)[
-                              index
-                            ]
-                          }
-                          estimatedItemSize={64}
-                          renderItem={({ item }) => (
-                            <View
-                              style={{
-                                display: "flex",
-                                flex: 1,
-                                alignItems: "center",
-                              }}
-                            >
-                              <SelectionItemBox
-                                primary={item.primaryColor || "#fff"}
-                                secondary={item.secondaryColor || "#fff"}
-                                tertiary={item.tertiaryColor || "#fff"}
-                                key={"ser" + item.id}
-                                image={item.image}
-                                name={item.name}
-                                type={item.type}
-                                id={item.id}
-                                setSelectedIdCollector={setSelectedIdCollector}
-                                selectedIdCollector={selectedIdCollector}
-                              />
-                            </View>
-                          )}
-                        />
-                      </>
-                    </CollectionContainer>
-                  );
-                }
-              }
-            })}
-            {search == "" ? (
-              <FlashList
-                data={nonCollectnized}
-                numColumns={4}
-                estimatedItemSize={64}
-                extraData={selectedIdCollector}
-                renderItem={({ item, index }) => (
-                  <View
-                    style={{
-                      display: "flex",
-                      flex: 1,
-                      alignItems: "center",
-                    }}
-                  >
-                    <SelectionItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                      setSelectedIdCollector={setSelectedIdCollector}
-                      selectedIdCollector={selectedIdCollector}
-                    />
-                  </View>
-                )}
-              />
-            ) : (
-              <FlashList
-                extraData={selectedIdCollector}
-                numColumns={4}
-                data={nonCategorizedFilter}
-                estimatedItemSize={64}
-                renderItem={({ item, index }) => (
-                  <View
-                    style={{
-                      display: "flex",
-                      flex: 1,
-                      alignItems: "center",
-                    }}
-                  >
-                    <SelectionItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={index + item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                      setSelectedIdCollector={setSelectedIdCollector}
-                      selectedIdCollector={selectedIdCollector}
-                    />
-                  </View>
-                )}
-              />
-            )}
-            <View className={"h-14"} />
-          </ScrollView>
-        </View>
-        <View className="absolute bottom-[2%] w-full">
-          <Button
-            className="mx-auto w-28 my-1"
-            mode="contained"
-            buttonColor={colors.mainCyan}
-            textColor={colors.white}
-            onPress={() => {
-              if (selectedIdCollector.length > 0) {
-                navigation.navigate("EventLogForm", {
-                  selectedIDs: selectedIdCollector,
-                });
-              } else {
-                onToggleSnackBar();
-              }
-            }}
-          >
-            {localization.Next[storedSettings.language]}
-          </Button>
-          <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
-            {localization.SelectAtLeastOneItem[storedSettings.language]}
-          </Snackbar>
-        </View>
-      </>
+          {localization.Next[storedSettings.language]}
+        </Button>
+        <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+          {localization.SelectAtLeastOneItem[storedSettings.language]}
+        </Snackbar>
+      </View>
     </ThemeView>
   );
 };
+
+const styles = StyleSheet.create({
+  nextButton: {
+    width: 120,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  searchBar: {
+    width: "100%",
+    height: 50,
+  },
+  listContainer: {
+    backgroundColor: "#C9C9C9",
+    marginTop: "1%",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    flex: 1,
+    paddingBottom: 10,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  gridRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: 8,
+  },
+  gridItem: {
+    width: "25%",
+    alignItems: "center",
+    paddingVertical: 5,
+  },
+  bottomSpacer: {
+    height: 80,
+  },
+  footer: {
+    position: "absolute",
+    bottom: "2%",
+    width: "100%",
+    alignItems: "center",
+  },
+});

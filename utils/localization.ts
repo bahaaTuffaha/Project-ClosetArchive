@@ -149,6 +149,12 @@ export const localization = {
     "Seleccionar un color",
     "Scegli un colore",
   ],
+  SearchPlaceholder: [
+    "Search",
+    "بحث",
+    "Buscar",
+    "Cerca",
+  ],
   SetBlack: ["Set Black", "تعيين الأسود", "Establecer Negro", "Imposta Nero"],
   Primary_color: [
     "Primary color",

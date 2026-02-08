@@ -1,15 +1,32 @@
 import { useNavigation } from "@react-navigation/native";
-import { Keyboard, TouchableOpacity, View, useColorScheme } from "react-native";
+import {
+  Keyboard,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+  StyleSheet,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { colors } from "../utils/colors";
+import { ThemeText } from "./ThemeText";
 
-export const BackButton = () => {
+interface BackButtonProps {
+  pageTitle?: string;
+}
+
+export const BackButton = ({ pageTitle }: BackButtonProps) => {
   const navigation = useNavigation<any>();
   const isDarkMode = useColorScheme() === "dark";
+
   return (
-    <View className="absolute top-3 left-3 z-10">
+    <View style={styles.container}>
+      {pageTitle && (
+        <View style={styles.titleContainer}>
+          <ThemeText classNameStyle="text-xl italic">{pageTitle}</ThemeText>
+        </View>
+      )}
       <TouchableOpacity
-        className="w-12 h-12"
+        style={styles.button}
         onPress={() => {
           Keyboard.dismiss();
           navigation.goBack();
@@ -24,3 +41,32 @@ export const BackButton = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    zIndex: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 56,
+  },
+  titleContainer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    position: "absolute",
+    left: 12,
+    zIndex: 20,
+    width: 44,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

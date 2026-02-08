@@ -54,53 +54,50 @@ export const CategoryForm = ({ navigation }: { navigation: any }) => {
         colorSelection={0}
       />
       <ThemeView>
-        <>
-          <BackButton />
+        <BackButton
+          pageTitle={localization.Add_a_Category[storedSettings.language]}
+        />
 
-          <View className="flex flex-col items-center space-y-3">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono">
-              {localization.Add_a_Category[storedSettings.language]}
-            </ThemeText>
-            <CustomInput
-              mode="outlined"
-              outlineColor={appColors.mainGreen}
-              selectionColor="#C0C0C0"
-              activeOutlineColor={appColors.mainGreen}
-              textContentType="name"
-              style={[
-                styles.customWidth,
-                {
-                  textAlign: storedSettings.language == 1 ? "right" : "left",
-                },
-              ]}
-              label={localization.Category_Name[storedSettings.language]}
-              value={name}
-              onChange={(text) => setName(text.nativeEvent.text)}
-            />
-            {errorsList.length > 0 && (
-              <View>
-                {errorsList.map((error, index) => {
-                  return (
-                    <Text key={index} className="text-[#C70039]">
-                      {error}
-                    </Text>
-                  );
-                })}
-              </View>
-            )}
-          </View>
+        <View className="flex flex-col items-center gap-y-3">
+          <CustomInput
+            mode="outlined"
+            outlineColor={appColors.mainGreen}
+            selectionColor="#C0C0C0"
+            activeOutlineColor={appColors.mainGreen}
+            textContentType="name"
+            style={[
+              styles.customWidth,
+              {
+                textAlign: storedSettings.language == 1 ? "right" : "left",
+              },
+            ]}
+            label={localization.Category_Name[storedSettings.language]}
+            value={name}
+            onChange={text => setName(text.nativeEvent.text)}
+          />
+          {errorsList.length > 0 && (
+            <View>
+              {errorsList.map((error, index) => {
+                return (
+                  <Text key={index} className="text-[#C70039]">
+                    {error}
+                  </Text>
+                );
+              })}
+            </View>
+          )}
+        </View>
 
-          <Button
-            // className="mb-5"
-            mode="contained"
-            buttonColor={appColors.mainCyan}
-            textColor={appColors.white}
-            onPress={addCategoryHandler}
-            className="mx-10 my-5"
-          >
-            {localization.Save[storedSettings.language]}
-          </Button>
-        </>
+        <Button
+          // className="mb-5"
+          mode="contained"
+          buttonColor={appColors.mainCyan}
+          textColor={appColors.white}
+          onPress={addCategoryHandler}
+          className="mx-10 my-5"
+        >
+          {localization.Save[storedSettings.language]}
+        </Button>
       </ThemeView>
     </>
   );

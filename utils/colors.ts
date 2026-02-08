@@ -1,13 +1,15 @@
 export const colors = {
-  mainCyan: "#77AEBB",
-  mainGreen: "#AEBB77",
-  mainPink: "#BB77AE",
-  darkblue: "#2b2e3d",
-  black: "#000000",
-  white: "white",
-  gray: "gray",
-  yellow: "#F7C600",
-  red: "#D30047",
+  mainCyan: '#77AEBB',
+  mainGreen: '#AEBB77',
+  mainPink: '#BB77AE',
+  darkblue: '#2b2e3d',
+  black: '#000000',
+  white: '#FFFFFF',
+  gray: '#808080',
+  yellow: '#F7C600',
+  red: '#D30047',
+  goldenrod: '#DAA520',
+  lightGray: '#C9C9C9',
 };
 
 export function categorizeColor(hexColor: string) {

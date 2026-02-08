@@ -6,10 +6,11 @@ import {
   StyleSheet,
   Keyboard,
   Image,
+  FlatList,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import React, { useEffect, useState } from "react";
-import { FlashList } from "@shopify/flash-list";
+// replaced FlashList with FlatList from react-native
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { LogComponent } from "../../components/LogComponent";
@@ -44,13 +45,13 @@ export const OutfitLog = () => {
   const handleOpenDrawer = () => {
     // Update the space value to trigger the animation
     Keyboard.dismiss();
-    setIsOpen((prev) => !prev);
+    setIsOpen(prev => !prev);
     if (!isOpen) {
       space.value = width / 2 - 5;
     }
   };
   useEffect(() => {
-    let info = logsState.find((x) => x.eventId == modalEventId);
+    let info = logsState.find(x => x.eventId == modalEventId);
     setModalInfo(info);
   }, [modalEventId]);
 
@@ -122,7 +123,7 @@ export const OutfitLog = () => {
         <SideModal space={space} isOpen={isOpen} setIsOpen={setIsOpen}>
           <>
             <RadioButton.Group
-              onValueChange={(value) => setSortValue(value)}
+              onValueChange={value => setSortValue(value)}
               value={sortValue}
             >
               <RadioButton.Item
@@ -190,7 +191,7 @@ export const OutfitLog = () => {
           }}
           selectionColor="#C0C0C0"
           // label="Search"
-          onChange={(text) => setSearch(text.nativeEvent.text)}
+          onChange={text => setSearch(text.nativeEvent.text)}
           onClearIconPress={() => setSearch("")}
         />
         <View
@@ -217,7 +218,7 @@ export const OutfitLog = () => {
               </ThemeText>
             </View>
           )}
-          <FlashList
+          <FlatList
             showsVerticalScrollIndicator={false}
             data={filteredLogs}
             extraData={refresh}
@@ -231,7 +232,6 @@ export const OutfitLog = () => {
                 setModalEventId={setModalEventId}
               />
             )}
-            estimatedItemSize={200}
           />
         </View>
       </>

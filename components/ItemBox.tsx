@@ -1,4 +1,10 @@
-import { View, Image, Text, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  TouchableWithoutFeedback,
+  StyleSheet,
+} from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -33,7 +39,7 @@ export const ItemBox = ({
   logs: string[];
   addSpace?: boolean;
 }) => {
-  const boxStyle = "w-16 h-16 rounded-lg";
+  const BOX_SIZE = 64;
   const scaleDownAnimation = useSharedValue(1);
   const navigation = useNavigation<any>();
   function navToEdit() {
@@ -67,53 +73,72 @@ export const ItemBox = ({
     (state: RootState) => state.CategoryList.CategoryCustomTypes,
   );
   const combinedCustomTypes = storedCatTypes
-    ? [].concat(...storedCatTypes.map((x) => x?.customTypes))
+    ? [].concat(...storedCatTypes.map(x => x?.customTypes))
     : [];
   return (
     <TouchableWithoutFeedback onPress={handleTap}>
       <Animated.View style={animatedStyle}>
         <GestureDetector gesture={scaleHandler}>
           <View
-            className={`my-1 relative ${boxStyle} ${addSpace ? "mx-1" : ""}`}
+            style={[
+              styles.container,
+              {
+                width: BOX_SIZE,
+                height: BOX_SIZE,
+                marginHorizontal: addSpace ? 4 : 0,
+              },
+            ]}
           >
             <Image
-              style={{
-                borderColor: storedSettings.enableHeatMap
-                  ? HeatBorderColor
-                  : "transparent",
-                borderWidth: storedSettings.enableHeatMap ? 4 : 0,
-              }}
-              className="absolute z-20 rounded-lg "
               source={layoutFinder(type, combinedCustomTypes)}
+              style={[
+                styles.overlaySprite,
+                {
+                  borderColor: storedSettings.enableHeatMap
+                    ? HeatBorderColor
+                    : "transparent",
+                  borderWidth: storedSettings.enableHeatMap ? 4 : 0,
+                },
+              ]}
             />
             <Text
-              style={{
-                textShadowColor: colors.black,
-                textShadowRadius: 15,
-              }}
-              className="absolute z-10 rounded-lg text-center font-medium text-xs text-white self-center w-full mt-1"
+              style={[
+                styles.nameText,
+                { textShadowColor: colors.black, textShadowRadius: 15 },
+              ]}
             >
               {name}
             </Text>
+
             {image !== "" ? (
               <Image
-                className="w-full h-full rounded-lg"
                 source={{ uri: `data:image/*;base64,${image}` }}
+                style={styles.fullImage}
               />
             ) : (
-              <View className={`flex flex-row rounded-lg ${boxStyle}`}>
+              <View
+                style={[
+                  styles.colorStripContainer,
+                  { width: BOX_SIZE, height: BOX_SIZE },
+                ]}
+              >
                 <View
-                  className="w-1/3 h-full rounded-l-lg"
-                  style={{ backgroundColor: primary }}
-                ></View>
+                  style={[
+                    styles.colorStrip,
+                    styles.leftRounded,
+                    { backgroundColor: primary },
+                  ]}
+                />
                 <View
-                  className="w-1/3 h-full"
-                  style={{ backgroundColor: secondary }}
-                ></View>
+                  style={[styles.colorStrip, { backgroundColor: secondary }]}
+                />
                 <View
-                  className="w-1/3 h-full rounded-r-lg"
-                  style={{ backgroundColor: tertiary }}
-                ></View>
+                  style={[
+                    styles.colorStrip,
+                    styles.rightRounded,
+                    { backgroundColor: tertiary },
+                  ]}
+                />
               </View>
             )}
           </View>
@@ -122,3 +147,54 @@ export const ItemBox = ({
     </TouchableWithoutFeedback>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 4,
+    borderRadius: 8,
+    position: "relative",
+    overflow: "hidden",
+    backgroundColor: "transparent",
+  },
+  overlaySprite: {
+    position: "absolute",
+    zIndex: 20,
+    borderRadius: 8,
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  nameText: {
+    position: "absolute",
+    zIndex: 10,
+    textAlign: "center",
+    fontWeight: "500",
+    fontSize: 12,
+    color: "white",
+    width: "100%",
+    marginTop: 4,
+  },
+  fullImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
+    resizeMode: "cover",
+  },
+  colorStripContainer: {
+    flexDirection: "row",
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  colorStrip: {
+    flex: 1,
+    height: "100%",
+  },
+  leftRounded: {
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+  },
+  rightRounded: {
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+  },
+});

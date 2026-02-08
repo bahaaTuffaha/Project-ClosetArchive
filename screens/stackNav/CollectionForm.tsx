@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { useState } from "react";
@@ -15,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ThemeText } from "../../components/ThemeText";
 import { addCollection } from "../../redux/itemsSlice";
-import { FlashList } from "@shopify/flash-list";
+// replaced FlashList with FlatList from react-native
 import Icon2 from "react-native-vector-icons/MaterialIcons";
 import { colors as appColors } from "./../../utils/colors";
 import { localization } from "../../utils/localization";
@@ -44,7 +45,7 @@ export const CollectionForm = () => {
       errors.push("Please enter a name within 20 characters max");
     }
     if (
-      CollectionsState.find((x) => x.label.toLowerCase() == name.toLowerCase())
+      CollectionsState.find(x => x.label.toLowerCase() == name.toLowerCase())
     ) {
       errors.push("Please enter a different name");
     }
@@ -71,12 +72,11 @@ export const CollectionForm = () => {
       />
       <ThemeView>
         <>
-          <BackButton />
+          <BackButton
+            pageTitle={localization.Add_a_collection[storedSettings.language]}
+          />
 
-          <View className="flex flex-col items-center space-y-3">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
-              {localization.Add_a_collection[storedSettings.language]}
-            </ThemeText>
+          <View className="flex flex-col items-center gap-y-3">
             <TouchableOpacity
               style={{ backgroundColor: colors[0] }}
               onPress={() => {
@@ -96,7 +96,7 @@ export const CollectionForm = () => {
               style={styles.customWidth}
               label={localization.Collection_name[storedSettings.language]}
               value={name}
-              onChange={(text) => setName(text.nativeEvent.text)}
+              onChange={text => setName(text.nativeEvent.text)}
             />
             {errorsList.length > 0 && (
               <View>
@@ -129,7 +129,7 @@ export const CollectionForm = () => {
             {localization.Collections[storedSettings.language]}
           </ThemeText>
           {CollectionsState.length > 0 ? (
-            <FlashList
+            <FlatList
               showsVerticalScrollIndicator={false}
               data={CollectionsState}
               extraData={refresh}
@@ -140,7 +140,6 @@ export const CollectionForm = () => {
                   CollectionsState={CollectionsState}
                 />
               )}
-              estimatedItemSize={200}
             />
           ) : (
             <View className="flex flex-col justify-center items-center w-full h-[50%]">

@@ -19,7 +19,7 @@ export const ThemeText = ({
   const isDarkMode = useColorScheme() === "dark";
   return (
     <Text
-      className={classNameStyle}
+      className={classNameStyle || ""}
       style={[{ color: isDarkMode ? darkColor : lightColor }, customStyle]}
     >
       {children}

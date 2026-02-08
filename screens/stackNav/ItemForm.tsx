@@ -29,14 +29,14 @@ import { RootState } from "../../redux/store";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import CustomModal from "../../components/CustomModal";
 // import { getAllSwatches } from "react-native-palette";
-import { getColors } from "react-native-image-colors";
+import { getPalette } from "@somesoap/react-native-image-palette";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { CommonActions } from "@react-navigation/native";
 import { DatePicker } from "../../components/DatePicker";
 import { RandomNamesP1, fitList, sizeList, seasonList } from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
-import * as FileSystem from "expo-file-system";
+import ReactNativeBlobUtil from "react-native-blob-util";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 import { clothesList, localization } from "../../utils/localization";
 // import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -61,7 +61,7 @@ export const ItemForm = ({
     (state: RootState) => state.itemsList.collectionTags,
   );
   const currentIndex = useSelector((state: RootState) =>
-    state.itemsList.items.findIndex((x) => x.id === editingIndex),
+    state.itemsList.items.findIndex(x => x.id === editingIndex),
   );
   const storedItems = useSelector(
     (state: RootState) => state.itemsList.items[currentIndex],
@@ -86,7 +86,9 @@ export const ItemForm = ({
   );
   const [size, setSize] = useState(storedItems ? storedItems.size : "");
   const [purchaseDate, setPurchaseDate] = useState(
-    storedItems ? JSON.parse(storedItems.purchaseDate ?? "") : new Date(),
+    storedItems && storedItems.purchaseDate
+      ? new Date(JSON.parse(storedItems.purchaseDate))
+      : new Date(),
   );
   const [imageUrl, setImageUrl] = useState<string>(
     storedItems ? storedItems.image : "",
@@ -132,7 +134,7 @@ export const ItemForm = ({
           ...(
             storedCatTypes?.[selectedCategory ?? storedItems.category]
               ?.customTypes || []
-          ).map((item) => ({
+          ).map(item => ({
             label: item.label,
             value: item.value,
           })),
@@ -140,7 +142,7 @@ export const ItemForm = ({
       : (
           storedCatTypes?.[selectedCategory ?? storedItems.category]
             ?.customTypes || []
-        ).map((item) => ({
+        ).map(item => ({
           label: item.label,
           value: item.value,
         }));
@@ -232,22 +234,30 @@ export const ItemForm = ({
     }
   }
 
-  const onToggleSwitch = () => {
-    if (imageUrl) {
-      if (isAutoOn == false) {
-        colorsExtractor(imageUrl);
-      }
-      setIsAutoOn(!isAutoOn);
+  const onToggleSwitch = (val: boolean) => {
+    setIsAutoOn(val);
+    if (val && imageUrl) {
+      colorsExtractor(imageUrl);
     }
   };
 
-  const colorsExtractor = (base64: string) => {
+  const colorsExtractor = async (base64: string) => {
     try {
-      getColors(`data:image/*;base64,${base64}`, {
-        quality: "high",
-      }).then((colors: any) =>
-        setColors([colors.dominant, colors.vibrant, colors.darkVibrant]),
-      );
+      const tmp = `${
+        ReactNativeBlobUtil.fs.dirs.CacheDir
+      }/palette_${Date.now()}.jpg`;
+      await ReactNativeBlobUtil.fs.writeFile(tmp, base64, "base64");
+      const uri = `file://${tmp}`;
+      const pal: any = await getPalette(uri);
+      // Simple mapping similar to previous lib
+      const primary =
+        pal.dominant || pal.vibrant || pal.darkVibrant || "#777777";
+      const secondary = pal.vibrant || "#999999";
+      const tertiary = pal.darkVibrant || "#555555";
+      setColors([primary, secondary, tertiary]);
+      try {
+        await ReactNativeBlobUtil.fs.unlink(tmp);
+      } catch {}
     } catch (e) {
       console.log("colorExtractor error:", e);
     }
@@ -259,7 +269,7 @@ export const ItemForm = ({
           mediaType: "photo",
           selectionLimit: 1,
         },
-        (response) => {
+        response => {
           if (response.didCancel) {
             console.log("Image picker cancelled");
           } else if (response.errorCode) {
@@ -274,16 +284,16 @@ export const ItemForm = ({
               0,
               null,
             )
-              .then(async (response) => {
-                const base64 = await FileSystem.readAsStringAsync(
+              .then(async response => {
+                const base64 = await ReactNativeBlobUtil.fs.readFile(
                   response.uri,
-                  { encoding: "base64" },
+                  "base64",
                 );
                 console.log("imageSize", response.size);
                 setImageUrl(base64 || "");
                 setImageModalVisible(false);
               })
-              .catch((err) => {
+              .catch(err => {
                 // Oops, something went wrong. Check that the filename is correct and
                 // inspect err to get more details.
                 console.log("image comparison error: ", err);
@@ -297,7 +307,7 @@ export const ItemForm = ({
           {
             mediaType: "photo",
           },
-          (response) => {
+          response => {
             if (response.didCancel) {
               console.log("Image picker cancelled");
             } else if (response.errorCode) {
@@ -312,16 +322,16 @@ export const ItemForm = ({
                 0,
                 null,
               )
-                .then(async (response) => {
-                  const base64 = await FileSystem.readAsStringAsync(
+                .then(async response => {
+                  const base64 = await ReactNativeBlobUtil.fs.readFile(
                     response.uri,
-                    { encoding: "base64" },
+                    "base64",
                   );
                   console.log("imageSize", response.size);
                   setImageUrl(base64 || "");
                   setImageModalVisible(false);
                 })
-                .catch((err) => {
+                .catch(err => {
                   console.log("image comparison error: ", err);
                 });
             }
@@ -358,7 +368,7 @@ export const ItemForm = ({
         visible={imageModalVisible}
         label={localization.import_image[storedSettings.language]}
       >
-        <View className="px-6 space-y-5 mt-5">
+        <View className="px-6 gap-y-5 mt-5">
           <Button
             buttonColor={appColors.mainCyan}
             textColor={appColors.white}
@@ -387,14 +397,15 @@ export const ItemForm = ({
       </CustomModal>
       <ThemeView>
         <>
-          <BackButton />
-          <View className="flex items-center space-y-2">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
-              {editingIndex
+          <BackButton
+            pageTitle={
+              editingIndex
                 ? localization.EditingItem[storedSettings.language]
-                : localization.Adding_an_item[storedSettings.language]}
-            </ThemeText>
-            <View className="flex flex-row">
+                : localization.Adding_an_item[storedSettings.language]
+            }
+          />
+          <View className="flex items-center gap-y-2">
+            <View className="flex flex-row mt-4">
               <View className="w-1/3"></View>
               <View className="w-1/3 flex flex-row justify-center">
                 <ImageViewer
@@ -442,7 +453,7 @@ export const ItemForm = ({
               ]}
               label={localization.Name[storedSettings.language]}
               value={name}
-              onChange={(text) => setName(text.nativeEvent.text)}
+              onChange={text => setName(text.nativeEvent.text)}
               right={
                 <Pressable
                   hitSlop={{ bottom: 20, left: 20, right: 10, top: 20 }}
@@ -514,7 +525,7 @@ export const ItemForm = ({
                 style={{ width: "40%" }}
                 label={localization.Quantity[storedSettings.language]}
                 value={String(quantity)}
-                onChange={(text) => setQuantity(Number(text.nativeEvent.text))}
+                onChange={text => setQuantity(Number(text.nativeEvent.text))}
                 keyboardType="numeric"
                 maxLength={2}
               />
@@ -540,7 +551,7 @@ export const ItemForm = ({
                 style={{ width: "28%" }}
                 label={localization.Size[storedSettings.language]}
                 value={String(size)}
-                onChange={(text) => setSize(text.nativeEvent.text)}
+                onChange={text => setSize(text.nativeEvent.text)}
                 maxLength={6}
               />
             </View>
@@ -663,7 +674,7 @@ export const ItemForm = ({
                 })}
               </View>
             )}
-            <View className="flex flex-row justify-center space-x-5">
+            <View className="flex flex-row justify-center gap-x-5">
               <Button
                 // className="mb-5"
                 mode="contained"
