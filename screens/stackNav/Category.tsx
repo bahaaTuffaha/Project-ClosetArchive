@@ -2,7 +2,7 @@ import { Dimensions, Pressable, View, TouchableOpacity } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import SpriteAnimation from "../../components/SpriteAnimator";
 import { interpolate } from "react-native-reanimated";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -69,6 +69,7 @@ export function Category() {
     [width],
   );
   const dispatch = useDispatch();
+  const [activeIndex, setActiveIndex] = useState(0);
   return (
     <ThemeView>
       <BackButton />
@@ -80,10 +81,7 @@ export function Category() {
         autoPlay={false}
         data={[
           ...defaultCategories,
-          ...categoriesState.Categories.map(cat => ({
-            ...cat,
-            spriteSheet: accessoriesSprite,
-          })),
+          ...categoriesState.Categories,
           {
             name: localization.Add_New_Category,
             spriteSheet: newCategorySprite,
@@ -93,7 +91,11 @@ export function Category() {
         ]}
         scrollAnimationDuration={1000}
         customAnimation={animationStyle}
-        renderItem={({ item }) => (
+        onProgressChange={(_, absoluteProgress) => {
+          const idx = Math.round(absoluteProgress);
+          setActiveIndex(idx);
+        }}
+        renderItem={({ item, index }) => (
           <View className="flex-1 items-center relative">
             <Pressable
               onPress={() =>
@@ -108,7 +110,7 @@ export function Category() {
               }
             >
               <ThemeText classNameStyle="text-3xl mt-20 uppercase mx-auto font-bold">
-                {item.index > 3
+                {item.index >= defaultCategories.length
                   ? item.name[0]
                   : item.name[storedSettings.language]}
               </ThemeText>
@@ -123,10 +125,11 @@ export function Category() {
                   width: 500,
                   height: 500,
                 }}
+                visible={index === activeIndex}
               />
             </Pressable>
             <View className="absolute top-0 flex flex-row gap-x-5">
-              {item.index > 3 && (
+              {item.index >= defaultCategories.length && (
                 <TouchableOpacity
                   className="bg-mainPink border-solid rounded-full p-2"
                   onPress={() => {

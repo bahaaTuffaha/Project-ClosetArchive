@@ -4,6 +4,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useColorScheme,
 } from "react-native";
@@ -21,7 +22,6 @@ import {
   enableLaundry4Object,
 } from "../../redux/itemsSlice";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import ColorModal from "../../components/ColorModal";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { CustomInput } from "../../components/CustomInput";
@@ -39,13 +39,13 @@ import { colors as appColors } from "./../../utils/colors";
 import ReactNativeBlobUtil from "react-native-blob-util";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 import { clothesList, localization } from "../../utils/localization";
-// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { defaultCategories } from "./Category";
 import LaundryOptions from "../../assets/images/laundryOptions.png";
 import LaundryOptions2 from "../../assets/images/LaundryOptions2.png";
 import { LaundryOptionsModal } from "../../components/LaundryOptionsModal";
 import { ImageViewer } from "../../components/ImageViewer";
 
-export function get_random(list: string[] | string[][]) {
+export function get_random<T>(list: T[]): T {
   return list[Math.floor(Math.random() * list.length)];
 }
 export const ItemForm = ({
@@ -126,7 +126,7 @@ export const ItemForm = ({
     storedItems ? storedItems.overrideMaxLaundry : false,
   );
   const combiningTypesData =
-    (selectedCategory ?? storedItems.category) <= 3
+    (selectedCategory ?? storedItems.category) < defaultCategories.length
       ? [
           ...(clothesList[storedSettings.language]?.[
             selectedCategory ?? storedItems.category

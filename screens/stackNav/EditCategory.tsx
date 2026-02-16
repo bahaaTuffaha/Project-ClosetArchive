@@ -1,6 +1,5 @@
 import { Keyboard, StyleSheet, Text, View, FlatList } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
-import { ThemeText } from "../../components/ThemeText";
 import { clothesList, localization } from "../../utils/localization";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -12,13 +11,7 @@ import { Button } from "react-native-paper";
 import { addTypeToCategory } from "../../redux/categoriesSlice";
 import { EditItemList } from "../../components/EditItemList";
 
-export const EditCategory = ({
-  navigation,
-  route,
-}: {
-  navigation: any;
-  route: any;
-}) => {
+export const EditCategory = ({ route }: { navigation: any; route: any }) => {
   const { categoryIndex } = route.params;
   const storedSettings = useSelector((state: RootState) => state.settings);
   const [refresh, setRefresh] = useState(false);

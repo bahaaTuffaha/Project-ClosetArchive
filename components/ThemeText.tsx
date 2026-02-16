@@ -1,5 +1,5 @@
-import { ComponentProps } from "react";
-import { useColorScheme, Text } from "react-native";
+import { ReactNode } from "react";
+import { useColorScheme, Text, StyleProp, TextStyle } from "react-native";
 import { colors } from "../utils/colors";
 
 export const ThemeText = ({
@@ -9,13 +9,12 @@ export const ThemeText = ({
   lightColor = colors.gray,
   children,
 }: {
-  children: string;
-  classNameStyle?: ComponentProps<"p">["className"];
-  customStyle?: {};
+  children?: ReactNode;
+  classNameStyle?: string;
+  customStyle?: StyleProp<TextStyle>;
   darkColor?: string;
   lightColor?: string;
 }) => {
-  //used for background usually
   const isDarkMode = useColorScheme() === "dark";
   return (
     <Text

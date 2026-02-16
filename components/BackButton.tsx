@@ -22,7 +22,9 @@ export const BackButton = ({ pageTitle }: BackButtonProps) => {
     <View style={styles.container}>
       {pageTitle && (
         <View style={styles.titleContainer}>
-          <ThemeText classNameStyle="text-xl italic">{pageTitle}</ThemeText>
+          <ThemeText customStyle={{ fontSize: 20, fontStyle: "italic" }}>
+            {pageTitle}
+          </ThemeText>
         </View>
       )}
       <TouchableOpacity

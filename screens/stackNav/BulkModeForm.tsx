@@ -22,7 +22,8 @@ import { addItem } from "../../redux/itemsSlice";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { CommonActions } from "@react-navigation/native";
 import { clothesList, localization } from "../../utils/localization";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { defaultCategories } from "./Category";
+import { launchImageLibrary } from "react-native-image-picker";
 import ReactNativeBlobUtil from "react-native-blob-util";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 
@@ -38,7 +39,6 @@ export const BulkModeForm = ({
   const [imageNum, setImageNum] = useState(2);
   const [openType, setOpenType] = useState(false);
   const [openCollection, setOpenCollection] = useState(false);
-  const isDarkMode = useColorScheme() === "dark";
   const colorScheme = String(useColorScheme()?.toUpperCase()) as ThemeNameType;
   const [collection, setCollection] = useState([]);
   const [type, setType] = useState("");
@@ -57,7 +57,7 @@ export const BulkModeForm = ({
   const isRTL = language === 1;
 
   const combiningTypesData = useMemo(() => {
-    if (selectedCategory <= 3) {
+    if (selectedCategory < defaultCategories.length) {
       return [
         ...(clothesList[language]?.[selectedCategory] || []),
         ...(storedCatTypes?.[selectedCategory]?.customTypes || []).map(

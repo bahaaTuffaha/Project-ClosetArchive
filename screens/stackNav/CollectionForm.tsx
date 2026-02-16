@@ -71,84 +71,82 @@ export const CollectionForm = () => {
         colorSelection={0}
       />
       <ThemeView>
-        <>
-          <BackButton
-            pageTitle={localization.Add_a_collection[storedSettings.language]}
-          />
+        <BackButton
+          pageTitle={localization.Add_a_collection[storedSettings.language]}
+        />
 
-          <View className="flex flex-col items-center gap-y-3">
-            <TouchableOpacity
-              style={{ backgroundColor: colors[0] }}
-              onPress={() => {
-                setVisible(true);
-                setColors([""]);
-              }}
-              className="flex justify-center items-center w-16 h-16 border-[2px] border-gray rounded-xl mt-2"
-            >
-              <Icon2 name="colorize" size={30} color={appColors.mainCyan} />
-            </TouchableOpacity>
-            <CustomInput
-              mode="outlined"
-              outlineColor={appColors.mainGreen}
-              selectionColor="#C0C0C0"
-              activeOutlineColor={appColors.mainGreen}
-              textContentType="name"
-              style={styles.customWidth}
-              label={localization.Collection_name[storedSettings.language]}
-              value={name}
-              onChange={text => setName(text.nativeEvent.text)}
-            />
-            {errorsList.length > 0 && (
-              <View>
-                {errorsList.map((error, index) => {
-                  return (
-                    <Text key={index} className="text-[#C70039]">
-                      {error}
-                    </Text>
-                  );
-                })}
-              </View>
-            )}
-          </View>
-
-          <Button
-            // className="mb-5"
-            mode="contained"
-            buttonColor={appColors.mainCyan}
-            textColor={appColors.white}
+        <View className="flex flex-col items-center gap-y-3">
+          <TouchableOpacity
+            style={{ backgroundColor: colors[0] }}
             onPress={() => {
-              addCollectionHandler();
-              Keyboard.dismiss();
+              setVisible(true);
+              setColors([""]);
             }}
-            className="mx-10 my-5"
+            className="flex justify-center items-center w-16 h-16 border-[2px] border-gray rounded-xl mt-2"
           >
-            {localization.Save[storedSettings.language]}
-          </Button>
-          <View className="w-full h-1 bg-gray" />
-          <ThemeText classNameStyle="w-full text-center font-mono text-xl my-5">
-            {localization.Collections[storedSettings.language]}
-          </ThemeText>
-          {CollectionsState.length > 0 ? (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={CollectionsState}
-              extraData={refresh}
-              renderItem={({ item }) => (
-                <EditItemList
-                  item={item}
-                  setRefresh={setRefresh}
-                  CollectionsState={CollectionsState}
-                />
-              )}
-            />
-          ) : (
-            <View className="flex flex-col justify-center items-center w-full h-[50%]">
-              <Text>
-                {localization.There_is_no_collection[storedSettings.language]}
-              </Text>
+            <Icon2 name="colorize" size={30} color={appColors.mainCyan} />
+          </TouchableOpacity>
+          <CustomInput
+            mode="outlined"
+            outlineColor={appColors.mainGreen}
+            selectionColor="#C0C0C0"
+            activeOutlineColor={appColors.mainGreen}
+            textContentType="name"
+            style={styles.customWidth}
+            label={localization.Collection_name[storedSettings.language]}
+            value={name}
+            onChange={text => setName(text.nativeEvent.text)}
+          />
+          {errorsList.length > 0 && (
+            <View>
+              {errorsList.map((error, index) => {
+                return (
+                  <Text key={index} className="text-[#C70039]">
+                    {error}
+                  </Text>
+                );
+              })}
             </View>
           )}
-        </>
+        </View>
+
+        <Button
+          // className="mb-5"
+          mode="contained"
+          buttonColor={appColors.mainCyan}
+          textColor={appColors.white}
+          onPress={() => {
+            addCollectionHandler();
+            Keyboard.dismiss();
+          }}
+          className="mx-10 my-5"
+        >
+          {localization.Save[storedSettings.language]}
+        </Button>
+        <View className="w-full h-1 bg-gray" />
+        <ThemeText classNameStyle="w-full text-center font-mono text-xl my-5">
+          {localization.Collections[storedSettings.language]}
+        </ThemeText>
+        {CollectionsState.length > 0 ? (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={CollectionsState}
+            extraData={refresh}
+            renderItem={({ item }) => (
+              <EditItemList
+                item={item}
+                setRefresh={setRefresh}
+                CollectionsState={CollectionsState}
+              />
+            )}
+          />
+        ) : (
+          <View className="flex flex-col justify-center items-center w-full h-[50%]">
+            <ThemeText>
+              {localization.There_is_no_collection[storedSettings.language]}
+            </ThemeText>
+          </View>
+        )}
       </ThemeView>
     </>
   );

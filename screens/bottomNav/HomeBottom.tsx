@@ -224,7 +224,9 @@ export function HomeBottom() {
             !search && (
               <CollectionContainer
                 color={addOpacityToHex(colors.red, 0.2)}
-                label={localization.Laundry_reminder[language]}
+                label={
+                  localization.Laundry_reminder[storedSettings.language ?? 0]
+                }
                 LaundryReminder={true}
               >
                 <View style={styles.gridContainer}>
