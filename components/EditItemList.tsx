@@ -1,4 +1,4 @@
-import { Image, TouchableOpacity, View, useColorScheme } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CustomInput } from "../components/CustomInput";
 import { useDispatch } from "react-redux";
@@ -10,18 +10,14 @@ import {
   updateCollection,
 } from "../redux/itemsSlice";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {
-  addOpacityToHex,
-  colors as appColors,
-  colors,
-} from "./../utils/colors";
+import { colors as appColors, getContrastColor } from "./../utils/colors";
 import {
   changeCategoryTypeByIndex,
   changeCategoryTypesIcon,
   delCategoryTypeByIndex,
 } from "../redux/categoriesSlice";
 import { categoryLayoutIcons } from "../utils/data";
-import { styles } from "../screens/stackNav/CategoryForm";
+import ColorModal from "./ColorModal";
 
 export const EditItemList = ({
   item,
@@ -48,11 +44,15 @@ export const EditItemList = ({
 }) => {
   const [enableEditing, setEnableEditing] = useState(false);
   const dispatch = useDispatch();
-  const isDarkMode = useColorScheme() === "dark";
   const [newNameInput, setNewNameInput] = useState(item.label || "");
-  const [iconIndex, setIconIndex] = useState(item?.icon ?? 0);
+  const [iconIndex, setIconIndex] = useState((item as any)?.icon ?? 0);
   const [updateIcon, setUpdateIcon] = useState(false);
   const [initialRender, setInitialRender] = useState(true);
+  const [isColorVisible, setIsColorVisible] = useState(false);
+  const [itemColors, setItemColors] = useState([item.color || "#fff"]);
+
+  const contrastColor = getContrastColor(item.color || "#fff");
+
   useEffect(() => {
     if (initialRender) {
       setInitialRender(false);
@@ -69,22 +69,46 @@ export const EditItemList = ({
 
   return (
     <View
-      style={{ backgroundColor: addOpacityToHex(item.color ?? "#fff", 0.2) }}
+      style={{ backgroundColor: item.color ?? "#fff" }}
       className="w-[80%] h-[59px] pt-0 rounded-lg self-center mb-5 relative border-mainGreen border-[1px] flex flex-row items-center justify-between"
     >
+      <ColorModal
+        colors={itemColors}
+        setColors={setItemColors}
+        visible={isColorVisible}
+        setVisible={setIsColorVisible}
+        colorSelection={0}
+      />
       {enableEditing ? (
-        <CustomInput
-          mode="outlined"
-          outlineColor={appColors.mainGreen}
-          selectionColor="#C0C0C0"
-          activeOutlineColor={appColors.mainGreen}
-          textContentType="name"
-          style={[styles.customWidth, { marginBottom: 5, paddingVertical: 3 }]}
-          value={newNameInput}
-          onChange={(text) => setNewNameInput(text.nativeEvent.text)}
-        />
+        <View className="flex-1 ml-5 mr-2">
+          <CustomInput
+            mode="outlined"
+            outlineColor={appColors.mainGreen}
+            selectionColor="#C0C0C0"
+            activeOutlineColor={appColors.mainGreen}
+            textContentType="name"
+            style={{ height: 40 }}
+            value={newNameInput}
+            onChangeText={text => setNewNameInput(text)}
+          />
+        </View>
       ) : (
-        <ThemeText classNameStyle="font-bold ml-5">{item.label}</ThemeText>
+        <ThemeText
+          classNameStyle="font-bold ml-5 flex-1"
+          customStyle={{ color: contrastColor }}
+        >
+          {item.label}
+        </ThemeText>
+      )}
+      {enableEditing && !isCatType && (
+        <View className="mr-2">
+          <TouchableOpacity
+            onPress={() => setIsColorVisible(true)}
+            className="w-10 h-10 flex items-center justify-center"
+          >
+            <Icon name="palette" size={30} color={contrastColor} />
+          </TouchableOpacity>
+        </View>
       )}
       {isCatType &&
         (currentIndex ?? 0) >= (ignoreNum ?? 0) &&
@@ -96,7 +120,7 @@ export const EditItemList = ({
                 prev + 1 >= categoryLayoutIcons.length ? 0 : prev + 1,
               );
               // setRefresh((prev) => !prev);
-              setUpdateIcon((prev) => !prev);
+              setUpdateIcon(prev => !prev);
             }}
           >
             <Image
@@ -112,18 +136,19 @@ export const EditItemList = ({
             onPress={() => {
               if (
                 (CollectionsState.filter(
-                  (x) => x.label.toLowerCase() == newNameInput.toLowerCase(),
+                  x => x.label.toLowerCase() === newNameInput.toLowerCase(),
                 ).length < 1 &&
                   newNameInput.length < 20) ||
-                newNameInput == item.label
+                newNameInput === item.label
               ) {
-                setEnableEditing((prev) => !prev);
+                setEnableEditing(prev => !prev);
                 if (enableEditing) {
                   !isCatType
                     ? dispatch(
                         updateCollection({
                           name: item.label,
                           newName: newNameInput || item.label,
+                          color: itemColors[0],
                         }),
                       )
                     : dispatch(
@@ -133,7 +158,7 @@ export const EditItemList = ({
                           typeName: newNameInput || item.label,
                         }),
                       );
-                  setRefresh((prev) => !prev);
+                  setRefresh(prev => !prev);
                 }
               }
             }}
@@ -141,7 +166,7 @@ export const EditItemList = ({
             <Icon
               name={enableEditing ? "check-bold" : "note-edit"}
               size={25}
-              color={isDarkMode ? colors.mainCyan : "gray"}
+              color={contrastColor}
             />
           </TouchableOpacity>
           {!enableEditing && (
@@ -159,13 +184,13 @@ export const EditItemList = ({
                     }),
                   );
                 }
-                setRefresh((prev) => !prev);
+                setRefresh(prev => !prev);
               }}
             >
               <Icon
                 name="delete"
                 size={30}
-                color={isDarkMode ? "#660000" : "red"}
+                color={contrastColor === appColors.white ? "#ff4444" : "red"}
               />
             </TouchableOpacity>
           )}

@@ -35,10 +35,8 @@ export function categorizeColor(hexColor: string) {
   // Calculate the hue using the RGB values
   let max = Math.max(r, g, b);
   let min = Math.min(r, g, b);
-  let hue;
-  if (max === min) {
-    hue = 0;
-  } else {
+  let hue = 0;
+  if (max !== min) {
     switch (max) {
       case r:
         hue = (60 * ((g - b) / (max - min)) + 360) % 360;
@@ -82,23 +80,22 @@ export function categorizeColor(hexColor: string) {
   }
 }
 
-export function addOpacityToHex(hexColor: string, opacity: any) {
-  // Remove the "#" character if it's present
-  hexColor = hexColor.replace(/^#/, "");
+export const getContrastColor = (hexColor: string) => {
+  if (!hexColor || hexColor.length < 4) return colors.black;
+  const hex = hexColor.replace("#", "");
+  const r = parseInt(
+    hex.length === 3 ? hex[0] + hex[0] : hex.substring(0, 2),
+    16,
+  );
+  const g = parseInt(
+    hex.length === 3 ? hex[1] + hex[1] : hex.substring(2, 4),
+    16,
+  );
+  const b = parseInt(
+    hex.length === 3 ? hex[2] + hex[2] : hex.substring(4, 6),
+    16,
+  );
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? colors.black : colors.white;
+};
 
-  // Calculate the RGB values from the hex color
-  const r = parseInt(hexColor.slice(0, 2), 16);
-  const g = parseInt(hexColor.slice(2, 4), 16);
-  const b = parseInt(hexColor.slice(4, 6), 16);
-
-  // Check if the opacity is a valid number between 0 and 1
-  opacity = parseFloat(opacity);
-  if (isNaN(opacity) || opacity < 0 || opacity > 1) {
-    throw new Error("Opacity must be a number between 0 and 1");
-  }
-
-  // Convert to rgba format
-  const rgbaColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
-
-  return rgbaColor;
-}

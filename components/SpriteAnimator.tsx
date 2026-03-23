@@ -76,7 +76,6 @@ const SpriteAnimation: React.FC<Props> = ({
   return (
     <View style={[styles.container, style]}>
       <Animated.Image
-        resizeMethod="none"
         width={sheetWidth}
         height={sheetHeight}
         source={spriteSheet}

@@ -13,7 +13,7 @@ import { item } from "../../redux/itemsSlice";
 import { SelectionItemBox } from "../../components/SelectionItemBox";
 import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../components/BackButton";
-import { addOpacityToHex, colors } from "../../utils/colors";
+import { colors } from "../../utils/colors";
 import { localization } from "../../utils/localization";
 
 export const ItemSelector = () => {
@@ -99,7 +99,7 @@ export const ItemSelector = () => {
             return (
               <CollectionContainer
                 key={`col-${index}`}
-                color={addOpacityToHex(collection.color ?? colors.white, 0.2)}
+                color={collection.color ?? colors.white}
                 label={collection.label}
               >
                 <View style={styles.gridRow}>

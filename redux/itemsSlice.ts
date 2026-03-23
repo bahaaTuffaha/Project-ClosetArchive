@@ -121,6 +121,9 @@ const itemsSlice = createSlice({
         (x) => x.label === action.payload.name,
       );
       state.collectionTags[collectionIndex].label = action.payload.newName;
+      if (action.payload.color) {
+        state.collectionTags[collectionIndex].color = action.payload.color;
+      }
     },
     toggleCollection: (state, action) => {
       const collectionIndex = state.collectionTags.findIndex(
@@ -140,12 +143,12 @@ const itemsSlice = createSlice({
             (x) => x === action.payload.name,
           );
 
-          if (itemCollectionIndex != -1) {
+          if (itemCollectionIndex !== undefined && itemCollectionIndex !== -1) {
             state.items[i].collection?.splice(itemCollectionIndex, 1);
           }
         }
       } catch (err) {
-        console.log("Error occurred at deleteCollection");
+        console.log("Error occurred at deleteCollection: " + err);
       }
     },
     addEventLog: (state, action) => {

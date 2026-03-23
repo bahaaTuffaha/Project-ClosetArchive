@@ -37,8 +37,15 @@ const CustomModal = ({
       >
         {label && (
           <Dialog.Title
-            style={{ color: isDarkMode ? colors.white : colors.gray }}
-            className="self-center text-2xl font-bold capitalize italic"
+            style={{
+              color: isDarkMode ? colors.white : colors.gray,
+              textAlign: "center",
+              fontSize: 20,
+              fontWeight: "bold",
+              fontStyle: "italic",
+              paddingHorizontal: 10,
+              marginHorizontal: 0,
+            }}
           >
             {label}
           </Dialog.Title>

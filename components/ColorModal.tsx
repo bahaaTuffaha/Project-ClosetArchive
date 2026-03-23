@@ -1,13 +1,15 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { View, Keyboard, useColorScheme } from "react-native";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { View, Keyboard } from "react-native";
 import ColorPicker from "react-native-wheel-color-picker";
-import { Button, TextInput } from "react-native-paper";
+import { Button, HelperText, TextInput } from "react-native-paper";
 import { colors as appColors } from "../utils/colors";
 import CustomModal from "./CustomModal";
 import { localization } from "../utils/localization";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-let Reg_Exp = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
+
+const HEX_COLOR_PATTERN = /^#([0-9A-F]{3}){1,2}$/i;
+
 const ColorModal = ({
   setVisible,
   visible,
@@ -21,10 +23,46 @@ const ColorModal = ({
   setVisible: Dispatch<SetStateAction<boolean>>;
   visible: boolean;
 }) => {
-  let newColors = colors;
-  const [currentColor, setCurrentColor] = useState(colors[colorSelection]);
-  const isDarkMode = useColorScheme() === "dark";
+  const initialColor = colors[colorSelection] || "#000000";
+  const [draftColor, setDraftColor] = useState(initialColor);
+  const [inputValue, setInputValue] = useState(initialColor);
   const storedSettings = useSelector((state: RootState) => state.settings);
+  const isValidHex = HEX_COLOR_PATTERN.test(inputValue);
+  const savedColor = colors[colorSelection] || "#000000";
+  const hasChanged = draftColor !== savedColor;
+
+  useEffect(() => {
+    if (visible) {
+      setDraftColor(savedColor);
+      setInputValue(savedColor);
+    }
+  }, [visible, savedColor]);
+
+  const updateDraftColor = (color: string) => {
+    setDraftColor(color);
+    setInputValue(color);
+  };
+
+  const confirmColor = () => {
+    if (!isValidHex) {
+      return;
+    }
+
+    const updatedColors = [...colors];
+    updatedColors[colorSelection] = inputValue;
+    setColors(updatedColors);
+    setVisible(false);
+  };
+
+  const handleInputChange = (text: string) => {
+    setInputValue(text);
+  };
+
+  const syncHexToPicker = () => {
+    if (HEX_COLOR_PATTERN.test(inputValue)) {
+      setDraftColor(inputValue.toUpperCase());
+    }
+  };
 
   return (
     <CustomModal
@@ -34,70 +72,55 @@ const ColorModal = ({
       minHeight={250}
     >
       <>
-        <View className="h-52">
+        <View className="h-[280px] p-4">
           <ColorPicker
             onInteractionStart={() => Keyboard.dismiss()}
-            color={colors[colorSelection]}
-            onColorChangeComplete={(color) => {
-              newColors[colorSelection] = color;
-              setColors(newColors);
-              setCurrentColor(color);
-            }}
+            color={draftColor}
+            onColorChange={updateDraftColor}
             thumbSize={40}
             sliderSize={40}
             noSnap={true}
             row={false}
             swatches={false}
-            sliderHidden={true}
+            sliderHidden={false}
+            wheelHidden={false}
           />
-        </View>
-        <View className="flex flex-row justify-center">
-          <Button
-            mode="text"
-            textColor={isDarkMode ? appColors.white : appColors.mainCyan}
-            onPress={() => {
-              newColors[colorSelection] = "#ffffff";
-              setColors(newColors);
-              setCurrentColor("#ffffff");
-            }}
-          >
-            {localization.Reset[storedSettings.language]}
-          </Button>
-          <Button
-            mode="text"
-            textColor={appColors.black}
-            onPress={() => {
-              newColors[colorSelection] = "#000";
-              setColors(newColors);
-              setCurrentColor("#000");
-            }}
-          >
-            {localization.SetBlack[storedSettings.language]}
-          </Button>
         </View>
         <TextInput
           mode="outlined"
           outlineColor={appColors.mainGreen}
           selectionColor="#C0C0C0"
           activeOutlineColor={appColors.mainGreen}
-          textContentType="name"
           className="m-2"
-          theme={{
-            roundness: 10,
-            colors: {
-              background: isDarkMode ? appColors.darkblue : appColors.white,
-            },
-          }}
+          theme={{ roundness: 10 }}
           label="HEX"
-          value={currentColor}
-          onChange={(text) => {
-            setCurrentColor(text.nativeEvent.text);
-            if (Reg_Exp.test(currentColor)) {
-              newColors[colorSelection] = currentColor;
-              setColors(newColors);
-            }
-          }}
+          value={inputValue}
+          onChangeText={handleInputChange}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
+          keyboardType="default"
+          right={
+            <TextInput.Icon
+              icon="check"
+              disabled={!isValidHex}
+              onPress={syncHexToPicker}
+            />
+          }
         />
+        <HelperText type="error" visible={inputValue.length > 0 && !isValidHex}>
+          Enter a valid HEX color like #D30047 or #F00.
+        </HelperText>
+        <Button
+          mode="contained"
+          buttonColor={appColors.mainGreen}
+          textColor={appColors.black}
+          className="m-2"
+          disabled={!isValidHex || !hasChanged}
+          onPress={confirmColor}
+        >
+          {localization.Save[storedSettings.language]}
+        </Button>
       </>
     </CustomModal>
   );

@@ -14,7 +14,7 @@ import { item } from "../../redux/itemsSlice";
 import { useNavigation } from "@react-navigation/native";
 import settingsIcon from "../../assets/images/settings.png";
 import settingsIconDark from "../../assets/images/settingsUnselected.png";
-import { addOpacityToHex, colors } from "../../utils/colors";
+import { colors } from "../../utils/colors";
 import { useSharedValue } from "react-native-reanimated";
 import { SideModal } from "../../components/SideModal";
 import HomeFilterPanel, {
@@ -179,6 +179,7 @@ export function HomeBottom() {
             : storedSettings.laundryNumber) &&
         (x.laundryable ?? true),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     itemsState.items,
     storedSettings.enableLaundry,
@@ -223,7 +224,7 @@ export function HomeBottom() {
             laundryItems.length > 0 &&
             !search && (
               <CollectionContainer
-                color={addOpacityToHex(colors.red, 0.2)}
+                color={colors.red}
                 label={
                   localization.Laundry_reminder[storedSettings.language ?? 0]
                 }
@@ -258,7 +259,7 @@ export function HomeBottom() {
             return (
               <CollectionContainer
                 key={`collection-${index}`}
-                color={addOpacityToHex(collection.color ?? colors.white, 0.2)}
+                color={collection.color ?? colors.white}
                 label={collection.label}
               >
                 <View style={styles.gridContainer}>

@@ -45,7 +45,7 @@ export const CollectionForm = () => {
       errors.push("Please enter a name within 20 characters max");
     }
     if (
-      CollectionsState.find(x => x.label.toLowerCase() == name.toLowerCase())
+      CollectionsState.find(x => x.label.toLowerCase() === name.toLowerCase())
     ) {
       errors.push("Please enter a different name");
     }
@@ -80,7 +80,6 @@ export const CollectionForm = () => {
             style={{ backgroundColor: colors[0] }}
             onPress={() => {
               setVisible(true);
-              setColors([""]);
             }}
             className="flex justify-center items-center w-16 h-16 border-[2px] border-gray rounded-xl mt-2"
           >

@@ -62,179 +62,172 @@ export const OutfitLog = () => {
   const storedSettings = useSelector((state: RootState) => state.settings);
   return (
     <ThemeView classNameStyle="px-1">
-      <>
-        <CustomModal
-          setVisible={setModalVisible}
-          visible={modalVisible}
-          label={modalInfo?.eventName || "Event Name"}
-        >
-          <View className="w-[90%] mr-auto ml-auto">
-            <View className="mt-5 bg-[#77aebb5d] rounded-lg p-5">
-              {/* <ThemeText classNameStyle="text-[16px]">Date:</ThemeText> */}
-              <ThemeText lightColor={colors.gray} customStyle={styles.dayStyle}>
-                {dayjs(
-                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
-                ).format("dddd")}
-              </ThemeText>
-              <ThemeText lightColor={colors.gray} customStyle={styles.date}>
-                {dayjs(
-                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
-                ).format("MMM DD, YYYY")}
-              </ThemeText>
-              <View
-                className={`w-[60%] h-[1px] ${
-                  isDarkMode ? "bg-white" : "bg-black"
-                }`}
-              />
-              <View className="flex flex-row items-baseline mt-2">
-                {/* <ThemeText classNameStyle="text-[16px]">Time:</ThemeText> */}
-                <ThemeText
-                  lightColor={colors.gray}
-                  customStyle={styles.timeStyle}
-                >
-                  {dayjs(
-                    modalInfo?.eventDate
-                      ? JSON.parse(modalInfo?.eventDate)
-                      : "",
-                  ).format("h:mm ")}
-                </ThemeText>
-                <ThemeText lightColor={colors.gray} customStyle={styles.timeA}>
-                  {dayjs(
-                    modalInfo?.eventDate
-                      ? JSON.parse(modalInfo?.eventDate)
-                      : "",
-                  ).format("A")}
-                </ThemeText>
-              </View>
-            </View>
-
-            {modalInfo?.additionalNotes && (
-              <View className="p-2">
-                <ThemeText customStyle={styles.notes}>
-                  {localization.Additional_notes[storedSettings.language]}
-                </ThemeText>
-                <ThemeText classNameStyle="h-fit text-[14px]">
-                  {modalInfo?.additionalNotes}
-                </ThemeText>
-              </View>
-            )}
-          </View>
-        </CustomModal>
-        <SideModal space={space} isOpen={isOpen} setIsOpen={setIsOpen}>
-          <>
-            <RadioButton.Group
-              onValueChange={value => setSortValue(value)}
-              value={sortValue}
-            >
-              <RadioButton.Item
-                label={localization.Last_Added[storedSettings.language]}
-                value="LA"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.Name_Asc[storedSettings.language]}
-                value="NA"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.Name_Desc[storedSettings.language]}
-                value="ND"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.Date_Asc[storedSettings.language]}
-                value="DA"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-              <RadioButton.Item
-                label={localization.Date_Desc[storedSettings.language]}
-                value="DD"
-                color={colors.mainCyan}
-                labelStyle={{ fontSize: 14 }}
-              />
-            </RadioButton.Group>
-          </>
-        </SideModal>
-        <View className="flex flex-row items-center justify-center w-full h-14 rounded-t-2xl shadow-2xl bg-mainCyan mb-[1%]">
-          <Text className="text-xl text-white font-bold">
-            {localization.Logs[storedSettings.language]}
-          </Text>
-          <View className="w-[1%] h-full bg-white absolute right-[15%]" />
-          <Pressable
-            onPress={() => {
-              handleOpenDrawer();
-            }}
-            className="w-[15%] h-full bg-mainGreen absolute right-0 rounded-tr-2xl flex justify-center items-center"
-          >
-            <Icon name="filter" size={25} color={colors.white} />
-          </Pressable>
-        </View>
-        <Searchbar
-          className="w-full"
-          theme={{
-            roundness: 0,
-            colors: {
-              onSurfaceVariant: isDarkMode ? colors.white : colors.black,
-              elevation: { level3: "#aebb77b0" },
-            },
-          }}
-          value={search}
-          style={{
-            flexDirection: storedSettings.language == 1 ? "row-reverse" : "row",
-          }}
-          inputStyle={{
-            textAlign: storedSettings.language == 1 ? "right" : "left",
-          }}
-          selectionColor="#C0C0C0"
-          // label="Search"
-          onChange={text => setSearch(text.nativeEvent.text)}
-          onClearIconPress={() => setSearch("")}
-        />
-        <View
-          style={{
-            width: "100%",
-            height: "78%",
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-          }}
-          className="flex flex-row flex-wrap bg-gray mx-auto mt-[1%] px-5"
-        >
-          {logsState.length <= 0 && (
-            <View className="flex flex-col w-full justify-center">
-              <Image
-                style={{ width: "100%", height: 150, resizeMode: "contain" }}
-                source={require("../../assets/images/empty.png")}
-              />
+      <CustomModal
+        setVisible={setModalVisible}
+        visible={modalVisible}
+        label={modalInfo?.eventName || "Event Name"}
+      >
+        <View className="w-[90%] mr-auto ml-auto">
+          <View className="mt-5 bg-[#77aebb5d] rounded-lg p-5">
+            <ThemeText lightColor={colors.gray} customStyle={styles.dayStyle}>
+              {dayjs(
+                modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
+              ).format("dddd")}
+            </ThemeText>
+            <ThemeText lightColor={colors.gray} customStyle={styles.date}>
+              {dayjs(
+                modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
+              ).format("MMM DD, YYYY")}
+            </ThemeText>
+            <View
+              className={`w-[60%] h-[1px] ${
+                isDarkMode ? "bg-white" : "bg-black"
+              }`}
+            />
+            <View className="flex flex-row items-baseline mt-2">
+              {/* <ThemeText classNameStyle="text-[16px]">Time:</ThemeText> */}
               <ThemeText
-                darkColor={colors.black}
-                lightColor={colors.white}
-                classNameStyle="self-center"
+                lightColor={colors.gray}
+                customStyle={styles.timeStyle}
               >
-                {localization.ClosetHistoryEmpty[storedSettings.language]}
+                {dayjs(
+                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
+                ).format("h:mm ")}
+              </ThemeText>
+              <ThemeText lightColor={colors.gray} customStyle={styles.timeA}>
+                {dayjs(
+                  modalInfo?.eventDate ? JSON.parse(modalInfo?.eventDate) : "",
+                ).format("A")}
+              </ThemeText>
+            </View>
+          </View>
+
+          {modalInfo?.additionalNotes && (
+            <View className="p-2">
+              <ThemeText customStyle={styles.notes}>
+                {localization.Additional_notes[storedSettings.language]}
+              </ThemeText>
+              <ThemeText classNameStyle="h-fit text-[14px]">
+                {modalInfo?.additionalNotes}
               </ThemeText>
             </View>
           )}
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={filteredLogs}
-            extraData={refresh}
-            renderItem={({ item }) => (
-              <LogComponent
-                eventName={item.eventName}
-                eventDate={JSON.parse(item.eventDate)}
-                eventId={item.eventId}
-                setRefresh={setRefresh}
-                setModalVisible={setModalVisible}
-                setModalEventId={setModalEventId}
-              />
-            )}
-          />
         </View>
-      </>
+      </CustomModal>
+      <SideModal space={space} isOpen={isOpen} setIsOpen={setIsOpen}>
+        <>
+          <RadioButton.Group
+            onValueChange={value => setSortValue(value)}
+            value={sortValue}
+          >
+            <RadioButton.Item
+              label={localization.Last_Added[storedSettings.language]}
+              value="LA"
+              color={colors.mainCyan}
+              labelStyle={{ fontSize: 14 }}
+            />
+            <RadioButton.Item
+              label={localization.Name_Asc[storedSettings.language]}
+              value="NA"
+              color={colors.mainCyan}
+              labelStyle={{ fontSize: 14 }}
+            />
+            <RadioButton.Item
+              label={localization.Name_Desc[storedSettings.language]}
+              value="ND"
+              color={colors.mainCyan}
+              labelStyle={{ fontSize: 14 }}
+            />
+            <RadioButton.Item
+              label={localization.Date_Asc[storedSettings.language]}
+              value="DA"
+              color={colors.mainCyan}
+              labelStyle={{ fontSize: 14 }}
+            />
+            <RadioButton.Item
+              label={localization.Date_Desc[storedSettings.language]}
+              value="DD"
+              color={colors.mainCyan}
+              labelStyle={{ fontSize: 14 }}
+            />
+          </RadioButton.Group>
+        </>
+      </SideModal>
+      <View className="flex flex-row items-center justify-center w-full h-14 rounded-t-2xl shadow-2xl bg-mainCyan mb-[1%]">
+        <Text className="text-xl text-white font-bold">
+          {localization.Logs[storedSettings.language]}
+        </Text>
+        <View className="w-[1%] h-full bg-white absolute right-[15%]" />
+        <Pressable
+          onPress={() => {
+            handleOpenDrawer();
+          }}
+          className="w-[15%] h-full bg-mainGreen absolute right-0 rounded-tr-2xl flex justify-center items-center"
+        >
+          <Icon name="filter" size={25} color={colors.white} />
+        </Pressable>
+      </View>
+      <Searchbar
+        className="w-full"
+        theme={{
+          roundness: 0,
+          colors: {
+            onSurfaceVariant: isDarkMode ? colors.white : colors.black,
+            elevation: { level3: "#aebb77b0" },
+          },
+        }}
+        value={search}
+        style={{
+          flexDirection: storedSettings.language == 1 ? "row-reverse" : "row",
+        }}
+        inputStyle={{
+          textAlign: storedSettings.language == 1 ? "right" : "left",
+        }}
+        selectionColor="#C0C0C0"
+        // label="Search"
+        onChange={text => setSearch(text.nativeEvent.text)}
+        onClearIconPress={() => setSearch("")}
+      />
+      <View
+        style={{
+          width: "100%",
+          height: "78%",
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+        }}
+        className="flex flex-row flex-wrap bg-gray mx-auto mt-[1%] px-5"
+      >
+        {logsState.length <= 0 && (
+          <View className="flex flex-col w-full justify-center">
+            <Image
+              style={{ width: "100%", height: 150, resizeMode: "contain" }}
+              source={require("../../assets/images/empty.png")}
+            />
+            <ThemeText
+              darkColor={colors.white}
+              lightColor={colors.gray}
+              classNameStyle="self-center"
+            >
+              {localization.ClosetHistoryEmpty[storedSettings.language]}
+            </ThemeText>
+          </View>
+        )}
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={filteredLogs}
+          extraData={refresh}
+          renderItem={({ item }) => (
+            <LogComponent
+              eventName={item.eventName}
+              eventDate={JSON.parse(item.eventDate)}
+              eventId={item.eventId}
+              setRefresh={setRefresh}
+              setModalVisible={setModalVisible}
+              setModalEventId={setModalEventId}
+            />
+          )}
+        />
+      </View>
     </ThemeView>
   );
 };
