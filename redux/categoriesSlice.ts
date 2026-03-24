@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { customCategory } from "../screens/stackNav/images";
+import { customCategorySprite } from "../screens/stackNav/images";
 
 export type Category = {
   name: string[];
-  sprites: NodeRequire[];
+  spriteSheet: any;
   screen: string;
   index: number;
 };
@@ -27,7 +27,7 @@ const categoriesSlice = createSlice({
       state.Categories.push({
         name: [action.payload.name],
         screen: "ItemForm",
-        sprites: customCategory,
+        spriteSheet: customCategorySprite,
         index:
           state.Categories.length == 0
             ? 4

@@ -28,7 +28,7 @@ export const CollectionContainer = ({
   const [isFolded, setIsFolded] = useState(
     LaundryReminder
       ? false
-      : collectionTags.find((x) => x.label === label)?.isOpen,
+      : collectionTags.find(x => x.label === label)?.isOpen,
   );
 
   const isDarkMode = useColorScheme() === "dark";
@@ -50,7 +50,7 @@ export const CollectionContainer = ({
     >
       <Pressable
         onPress={() => {
-          setIsFolded((prev) => !prev);
+          setIsFolded(prev => !prev);
           !LaundryReminder && dispatch(toggleCollection({ name: label }));
         }}
         className="w-full h-8 flex flex-row items-center justify-between pr-5"
@@ -92,7 +92,7 @@ export const CollectionContainer = ({
           size={20}
         />
       </Pressable>
-      <View className={`${isFolded && "min-h-[72px]"}`}>
+      <View className={isFolded ? "min-h-[72px]" : ""}>
         {isFolded && children}
       </View>
     </View>

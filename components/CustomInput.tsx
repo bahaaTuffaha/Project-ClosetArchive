@@ -1,9 +1,8 @@
 import { StyleSheet, TextInput, View, useColorScheme } from "react-native";
-import { TextInput as TextInput2 } from "react-native-paper";
-import { Props } from "react-native-paper/lib/typescript/src/components/TextInput/TextInput";
+import { TextInput as TextInput2, TextInputProps } from "react-native-paper";
 import { colors } from "../utils/colors";
 
-export interface CustomInputProps extends Props {
+export interface CustomInputProps extends TextInputProps {
   left?: React.ReactElement;
   right?: React.ReactElement;
   textArea?: boolean;
@@ -20,12 +19,13 @@ export const CustomInput = ({
     theme={{
       roundness: 10,
       colors: {
-        background: useColorScheme() == "light" ? colors.white : colors.darkblue,
+        background:
+          useColorScheme() === "light" ? colors.white : colors.darkblue,
       },
     }}
     {...props}
-    render={(inputProps) => (
-      <View style={{ flexDirection: "row" }}>
+    render={inputProps => (
+      <View style={styles.inputContainer}>
         {left && <View style={styles.customLeft}>{left}</View>}
         <TextInput
           className={`${right ? "w-10/12" : "w-full"}`}
@@ -38,6 +38,9 @@ export const CustomInput = ({
 );
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: "row",
+  },
   customLeft: {
     position: "absolute",
     left: 0,

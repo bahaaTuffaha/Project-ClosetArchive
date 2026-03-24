@@ -3,10 +3,18 @@ import { BackButton } from "../../components/BackButton";
 import { ThemeView } from "../../components/ThemeView";
 import { colors } from "../../utils/colors";
 import { CustomInput } from "../../components/CustomInput";
-import { Text, View, useColorScheme } from "react-native";
+import {
+  Text,
+  View,
+  useColorScheme,
+  StyleSheet,
+  ScrollView,
+  Keyboard,
+  Alert,
+} from "react-native";
 import { RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ThemeText } from "../../components/ThemeText";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { handleNumberChange } from "../../utils/validators";
@@ -14,8 +22,9 @@ import { addItem } from "../../redux/itemsSlice";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { CommonActions } from "@react-navigation/native";
 import { clothesList, localization } from "../../utils/localization";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import * as FileSystem from "expo-file-system";
+import { defaultCategories } from "./Category";
+import { launchImageLibrary, launchCamera } from "react-native-image-picker";
+import ReactNativeBlobUtil from "react-native-blob-util";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 
 export const BulkModeForm = ({
@@ -35,7 +44,6 @@ export const BulkModeForm = ({
   const [type, setType] = useState("");
   const dispatch = useDispatch();
   const [errorsList, setErrorsList] = useState<string[]>([]);
-  // const [images, setImages] = useState<[]>([]);
 
   const storedSettings = useSelector((state: RootState) => state.settings);
   const collectionState = useSelector(
@@ -45,79 +53,126 @@ export const BulkModeForm = ({
     (state: RootState) => state.CategoryList.CategoryCustomTypes,
   );
 
-  const combiningTypesData =
-    selectedCategory <= 3
-      ? [
-          ...(clothesList[storedSettings.language]?.[selectedCategory] || []),
-          ...(storedCatTypes?.[selectedCategory]?.customTypes || []).map(
-            (item) => ({
-              label: item.label,
-              value: item.value,
-            }),
-          ),
-        ]
-      : storedCatTypes?.[selectedCategory]?.customTypes.map((item) => ({
-          label: item.label,
-          value: item.value,
-        }));
+  const language = storedSettings.language ?? 0;
+  const isRTL = language === 1;
 
-  const handleImagePicker = async (type: number, createItem: any) => {
-    if (type === 0) {
+  const combiningTypesData = useMemo(() => {
+    if (selectedCategory < defaultCategories.length) {
+      return [
+        ...(clothesList[language]?.[selectedCategory] || []),
+        ...(storedCatTypes?.[selectedCategory]?.customTypes || []).map(
+          item => ({
+            label: item.label,
+            value: item.value,
+          }),
+        ),
+      ];
+    }
+    return (
+      storedCatTypes?.[selectedCategory]?.customTypes.map(item => ({
+        label: item.label,
+        value: item.value,
+      })) || []
+    );
+  }, [selectedCategory, language, storedCatTypes]);
+
+  const createItemsFromUris = async (uris: string[]) => {
+    try {
+      for (let i = 0; i < uris.length; i++) {
+        const response = await ImageResizer.createResizedImage(
+          uris[i],
+          500,
+          500,
+          "JPEG",
+          40,
+          0,
+        );
+
+        const imgBase64 = await ReactNativeBlobUtil.fs.readFile(
+          response.uri,
+          "base64",
+        );
+
+        dispatch(
+          addItem({
+            name: prefix + ` ${i + 1}`,
+            collection: collection,
+            category: selectedCategory,
+            type: type,
+            fit: "",
+            season: "",
+            size: "",
+            sizeUnit: "",
+            quantity: 1,
+            purchaseDate: JSON.stringify(new Date()),
+            image: imgBase64,
+            automaticColor: false,
+            primaryColor: "",
+            secondaryColor: "",
+            tertiaryColor: "",
+          }),
+        );
+      }
+      navigation.popToTop();
+      navigation.dispatch(CommonActions.goBack());
+    } catch (error) {
+      console.error("Bulk item creation error:", error);
+      Alert.alert(
+        "Error",
+        `Something went wrong while processing images: ${error}`,
+      );
+    }
+  };
+
+  const handleImagePicker = async (mode: number) => {
+    if (mode === 0) {
       try {
         const response = await launchImageLibrary({
           mediaType: "photo",
           selectionLimit: imageNum,
         });
 
-        if (response.didCancel) {
-          console.log("Image picker cancelled");
-          return;
-        } else if (response.errorCode) {
-          console.log("Image picker error: ", response.errorMessage);
-          return;
-        }
+        if (response.didCancel || !response.assets) return;
 
-        const newImages = [];
-        for (let i = 0; i < response.assets?.length; i++) {
-          newImages.push(response.assets[i]?.uri);
-        }
-        createItem(newImages); // Update the state with the new array
+        const uris = response.assets
+          .map(asset => asset.uri)
+          .filter((uri): uri is string => !!uri);
+
+        createItemsFromUris(uris);
       } catch (error) {
-        console.error("Image picker error:", error);
+        console.error("Gallery picker error:", error);
       }
     } else {
-      const newImages = [];
+      const uris: string[] = [];
       for (let i = 0; i < imageNum; i++) {
         try {
-          await launchCamera(
-            {
-              mediaType: "photo",
-            },
-            (response) => {
-              if (response.didCancel) {
-                console.log("Image picker cancelled");
-              } else if (response.errorCode) {
-                console.log("Image picker error: ", response.errorMessage);
-                return;
-              } else {
-                newImages.push(response.assets[0]?.uri);
-              }
-            },
-          );
+          const result = await launchCamera({ mediaType: "photo" });
+          if (result.didCancel) break;
+          if (result.errorCode) {
+            Alert.alert("Camera Error", result.errorMessage);
+            break;
+          }
+          if (result.assets?.[0]?.uri) {
+            uris.push(result.assets[0].uri);
+          }
         } catch (error) {
-          console.log("permission error", error);
+          console.error("Camera capture error:", error);
+          break;
         }
       }
-      createItem(newImages);
+      if (uris.length > 0) {
+        createItemsFromUris(uris);
+      }
     }
   };
-  function addItemHandler(mode: number) {
+
+  const addItemHandler = (mode: number) => {
+    Keyboard.dismiss();
     const errors = [];
 
-    if (prefix.length <= 0) {
+    if (prefix.trim().length <= 0) {
       errors.push("Please enter item prefix");
-    }
-    if (prefix.length > 20) {
+    } else if (prefix.length > 20) {
       errors.push("Please enter a name within 20 characters");
     }
 
@@ -126,75 +181,32 @@ export const BulkModeForm = ({
       return;
     }
     setErrorsList([]);
+    handleImagePicker(mode);
+  };
 
-    handleImagePicker(mode, createItem);
-
-    function createItem(images: any[]) {
-      for (let i = 0; i < images.length; i++) {
-        ImageResizer.createResizedImage(images[i], 500, 500, "JPEG", 40, 0)
-          .then(async (response) => {
-            const imgBase64 = await FileSystem.readAsStringAsync(response.uri, {
-              encoding: "base64",
-            });
-            console.log("imageSize", response.size);
-            dispatch(
-              addItem({
-                name: prefix + ` ${i + 1}`,
-                collection: collection,
-                category: selectedCategory,
-                type: type,
-                fit: "",
-                season: "",
-                size: "",
-                sizeUnit: "",
-                quantity: 1,
-                purchaseDate: JSON.stringify(new Date()),
-                image: imgBase64,
-                automaticColor: false,
-                primaryColor: "",
-                secondaryColor: "",
-                tertiaryColor: "",
-              }),
-            );
-          })
-          .catch((err) => {
-            console.log("image comparison error: ", err);
-          });
-      }
-    }
-
-    navigation.popToTop("Category");
-
-    navigation.dispatch(CommonActions.goBack());
-  }
   return (
     <ThemeView>
-      <>
-        <View className="w-full flex flex-row h-14 justify-center items-center">
-          <BackButton />
-          <ThemeText classNameStyle="text-xl italic">
-            {localization.BulkMode[storedSettings.language]}
-          </ThemeText>
-        </View>
-        <View className="space-y-5">
+      <BackButton pageTitle={localization.addMultiItems[language]} />
+
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.formContainer}>
           <CustomInput
             mode="outlined"
             outlineColor={colors.mainGreen}
             selectionColor="#C0C0C0"
             activeOutlineColor={colors.mainGreen}
             textContentType="name"
-            className="mx-20"
-            style={[
-              {
-                textAlign: storedSettings.language == 1 ? "right" : "left",
-              },
-            ]}
-            label={localization.Prefix[storedSettings.language]}
+            style={[styles.input, { textAlign: isRTL ? "right" : "left" }]}
+            label={localization.Prefix[language]}
             value={prefix}
-            onChange={(text) => setPrefix(text.nativeEvent.text)}
+            onChangeText={setPrefix}
           />
+
           {combiningTypesData?.length > 0 && (
-            <View style={{ zIndex: 2, marginHorizontal: 80 }}>
+            <View style={[styles.dropdownContainer, { zIndex: 2 }]}>
               <DropDownPicker
                 open={openType}
                 value={type}
@@ -203,14 +215,15 @@ export const BulkModeForm = ({
                 setValue={setType}
                 mode="SIMPLE"
                 listMode="MODAL"
-                placeholder={localization.Type[storedSettings.language]}
-                style={{ borderColor: colors.mainGreen }}
-                dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+                placeholder={localization.Type[language]}
+                style={styles.picker}
+                dropDownContainerStyle={styles.pickerDropdown}
                 theme={colorScheme}
               />
             </View>
           )}
-          <View style={{ zIndex: 1, marginHorizontal: 80 }}>
+
+          <View style={[styles.dropdownContainer, { zIndex: 1 }]}>
             <DropDownPicker
               open={openCollection}
               value={collection}
@@ -219,81 +232,124 @@ export const BulkModeForm = ({
               setValue={setCollection}
               multiple={true}
               theme={colorScheme}
-              // badgeDotColors={CollectionColors}
               showBadgeDot={false}
               badgeTextStyle={{ color: colors.black }}
               mode="BADGE"
-              placeholder={localization.Collection[storedSettings.language]}
-              style={{ borderColor: colors.mainGreen }}
-              dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+              placeholder={localization.Collection[language]}
+              style={styles.picker}
+              dropDownContainerStyle={styles.pickerDropdown}
             />
           </View>
+
           <CustomInput
             mode="outlined"
             outlineColor={colors.mainGreen}
             selectionColor="#C0C0C0"
             activeOutlineColor={colors.mainGreen}
-            textContentType="name"
-            className="mx-20"
-            label={localization.NumberOfItems[storedSettings.language]}
+            label={localization.NumberOfItems[language]}
             value={imageNum.toString()}
-            onChange={(text) =>
-              handleNumberChange(
-                () => {
-                  setImageNum(Number(text.nativeEvent.text));
-                },
-                text.nativeEvent.text,
-                0,
-                30,
-              )
+            onChangeText={text =>
+              handleNumberChange(() => setImageNum(Number(text)), text, 0, 30)
             }
             keyboardType="numeric"
+            style={[styles.input, { zIndex: 0 }]}
           />
+
           <View
-            className={`flex  mx-16 ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            }`}
+            style={[
+              styles.infoRow,
+              { flexDirection: isRTL ? "row-reverse" : "row" },
+            ]}
           >
             <Icon name="info-circle" size={15} color={colors.mainCyan} />
-            <ThemeText classNameStyle="text-xs mx-2">
-              {localization.bulkInfo[storedSettings.language]}
+            <ThemeText customStyle={styles.infoText}>
+              {localization.bulkInfo[language]}
             </ThemeText>
           </View>
+
           {errorsList.length > 0 && (
-            <View>
-              {errorsList.map((error, index) => {
-                return (
-                  <Text key={index} className="text-[#C70039] self-center">
-                    {error}
-                  </Text>
-                );
-              })}
+            <View style={styles.errorContainer}>
+              {errorsList.map((error, index) => (
+                <Text key={index} style={styles.errorText}>
+                  {error}
+                </Text>
+              ))}
             </View>
           )}
-          <Button
-            className="mx-5"
-            mode="contained"
-            buttonColor={colors.mainCyan}
-            textColor={colors.white}
-            onPress={() => {
-              addItemHandler(0);
-            }}
-          >
-            {localization.startLocalImages[storedSettings.language]}
-          </Button>
-          <Button
-            className="mx-5"
-            mode="contained"
-            buttonColor={colors.mainCyan}
-            textColor={colors.white}
-            onPress={() => {
-              addItemHandler(1);
-            }}
-          >
-            {localization.startWCamera[storedSettings.language]}
-          </Button>
+
+          <View style={styles.buttonGroup}>
+            <Button
+              style={styles.actionButton}
+              mode="contained"
+              buttonColor={colors.mainCyan}
+              textColor={colors.white}
+              onPress={() => addItemHandler(0)}
+            >
+              {localization.startLocalImages[language]}
+            </Button>
+
+            <Button
+              style={styles.actionButton}
+              mode="contained"
+              buttonColor={colors.mainCyan}
+              textColor={colors.white}
+              onPress={() => addItemHandler(1)}
+            >
+              {localization.startWCamera[language]}
+            </Button>
+          </View>
         </View>
-      </>
+      </ScrollView>
     </ThemeView>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  formContainer: {
+    alignItems: "center",
+    gap: 20,
+    marginTop: 10,
+  },
+  input: {
+    width: "80%",
+  },
+  dropdownContainer: {
+    width: "80%",
+  },
+  picker: {
+    borderColor: colors.mainGreen,
+    borderRadius: 4,
+  },
+  pickerDropdown: {
+    borderColor: colors.mainGreen,
+  },
+  infoRow: {
+    width: "80%",
+    alignItems: "center",
+  },
+  infoText: {
+    fontSize: 12,
+    marginHorizontal: 8,
+  },
+  errorContainer: {
+    width: "80%",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#C70039",
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  buttonGroup: {
+    width: "80%",
+    gap: 12,
+    marginTop: 10,
+  },
+  actionButton: {
+    borderRadius: 8,
+    paddingVertical: 4,
+  },
+});

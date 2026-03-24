@@ -149,6 +149,12 @@ export const localization = {
     "Seleccionar un color",
     "Scegli un colore",
   ],
+  SearchPlaceholder: [
+    "Search",
+    "بحث",
+    "Buscar",
+    "Cerca",
+  ],
   SetBlack: ["Set Black", "تعيين الأسود", "Establecer Negro", "Imposta Nero"],
   Primary_color: [
     "Primary color",
@@ -354,6 +360,14 @@ export const localization = {
     "Filtrar por color",
     "Filtra per colore",
   ],
+  ConfirmDelete: [
+    "Are you sure you want to delete this log?",
+    "هل أنت متأكد أنك تريد حذف هذا السجل؟",
+    "¿Estás seguro de que quieres borrar este registro?",
+    "Sei sicuro di voler eliminare questo registro?",
+  ],
+  Yes: ["Yes", "نعم", "Sí", "Sì"],
+  No: ["No", "لا", "No", "No"],
 };
 
 export const clothingReminderMessages = [

@@ -33,10 +33,10 @@ export const SelectionItemBox = ({
 
   useEffect(() => {
     if (isSelected) {
-      setSelectedIdCollector((prevArray) => [...prevArray, id]);
+      setSelectedIdCollector(prevArray => [...prevArray, id]);
     } else {
-      setSelectedIdCollector((prevArray) =>
-        prevArray.filter((item) => isSelected || item !== id),
+      setSelectedIdCollector(prevArray =>
+        prevArray.filter(item => isSelected || item !== id),
       );
     }
   }, [isSelected]);
@@ -45,7 +45,7 @@ export const SelectionItemBox = ({
     (state: RootState) => state.CategoryList.CategoryCustomTypes,
   );
   const combinedCustomTypes = storedCatTypes
-    ? [].concat(...storedCatTypes.map((x) => x?.customTypes))
+    ? [].concat(...storedCatTypes.map(x => x?.customTypes))
     : [];
 
   return (
@@ -53,10 +53,11 @@ export const SelectionItemBox = ({
       onPress={() => {
         setIsSelected(!isSelected);
       }}
-      className={`my-1 relative ${boxStyle}`}
+      className={`my-1 relative overflow-hidden ${boxStyle}`}
     >
       <Image
-        className="flex-1 absolute z-20 rounded-lg"
+        style={{ resizeMode: "contain" }}
+        className="w-full h-full absolute z-20 rounded-lg"
         source={
           selectedIdCollector.includes(id)
             ? require("../assets/images/layoutSelection.png")
@@ -74,6 +75,7 @@ export const SelectionItemBox = ({
       </Text>
       {image !== "" ? (
         <Image
+          style={{ resizeMode: "cover" }}
           className="w-full h-full rounded-lg"
           source={{ uri: `data:image/*;base64,${image}` }}
         />

@@ -4,17 +4,24 @@ import { colors } from "../utils/colors";
 
 export const ThemeView = ({
   classNameStyle,
+  customStyle,
   children,
 }: {
-  children: ReactElement;
+  children: ReactElement[];
   classNameStyle?: ComponentProps<"div">["className"];
+  customStyle?: {};
 }) => {
-  //used for background usually
   const isDarkMode = useColorScheme() === "dark";
   return (
     <View
-      className={classNameStyle}
-      style={{ flex: 1, backgroundColor: isDarkMode ? colors.darkblue : colors.white }}
+      className={classNameStyle || ""}
+      style={[
+        {
+          flex: 1,
+          backgroundColor: isDarkMode ? colors.darkblue : colors.white,
+        },
+        customStyle,
+      ]}
     >
       {children}
     </View>

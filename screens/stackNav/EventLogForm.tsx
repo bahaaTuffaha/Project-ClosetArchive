@@ -65,13 +65,10 @@ export const EventLogForm = ({
   return (
     <ThemeView>
       <>
-        <View className="w-full flex flex-row h-14 justify-center items-center">
-          <BackButton />
-          <ThemeText classNameStyle="text-xl italic">
-            {localization.EventInfo[storedSettings.language]}
-          </ThemeText>
-        </View>
-        <View className="flex items-center space-y-3">
+        <BackButton
+          pageTitle={localization.EventInfo[storedSettings.language]}
+        />
+        <View className="flex items-center gap-y-3 mt-4">
           <CustomInput
             mode="outlined"
             outlineColor={colors.mainGreen}
@@ -87,7 +84,7 @@ export const EventLogForm = ({
             className="mb-5"
             label={localization.EventName[storedSettings.language]}
             value={eventName}
-            onChange={(text) => setEventName(text.nativeEvent.text)}
+            onChange={text => setEventName(text.nativeEvent.text)}
           />
           <DatePicker
             title={localization.EventDate[storedSettings.language]}
@@ -112,7 +109,7 @@ export const EventLogForm = ({
             textArea={true}
             label={localization.Additional_notes[storedSettings.language]}
             value={additionalNotes}
-            onChange={(text) => setAdditionalNotes(text.nativeEvent.text)}
+            onChange={text => setAdditionalNotes(text.nativeEvent.text)}
           />
           {errorsList.length > 0 && (
             <View>

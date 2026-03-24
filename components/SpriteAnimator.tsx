@@ -1,49 +1,112 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ImageSourcePropType,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+  ActivityIndicator,
+} from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withRepeat,
+  Easing,
+  useDerivedValue,
+} from "react-native-reanimated";
 
-const SpriteAnimator = ({ sheet, columns, size, fps = 16, play = true }) => {
-  const imgRef = useRef(null);
-  const [imgWidth, setImgWidth] = useState(0);
-  const [spriteIndex, setSpriteIndex] = useState(0);
+interface Props {
+  spriteSheet: ImageSourcePropType;
+  frameWidth: number;
+  frameHeight: number;
+  columns: number;
+  totalFrames?: number;
+  fps?: number;
+  style?: StyleProp<ViewStyle>;
+  visible?: boolean;
+}
+
+const SpriteAnimation: React.FC<Props> = ({
+  spriteSheet,
+  frameWidth,
+  frameHeight,
+  columns,
+  totalFrames = 72,
+  fps = 24,
+  style,
+  visible = true,
+}) => {
+  const progress = useSharedValue(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (imgRef.current && imgWidth == 0) {
-      setImgWidth((_) => size * columns);
-    }
-  }, [imgRef, imgWidth]);
+    const loopDuration = (totalFrames / fps) * 1000;
 
-  useEffect(() => {
-    if (play) {
-      if (spriteIndex < columns - 1) {
-        setTimeout(() => {
-          setSpriteIndex((prev) => prev + 1);
-        }, 1000 / fps);
-      } else {
-        setTimeout(() => {
-          setSpriteIndex(0);
-        }, 1000 / fps);
-      }
-    } else if (!play && spriteIndex > 0) {
-      setSpriteIndex(0);
-    }
-  }, [spriteIndex]);
+    progress.value = withRepeat(
+      withTiming(1, { duration: loopDuration, easing: Easing.linear }),
+      -1,
+      false,
+    );
+  }, [progress, totalFrames, fps]);
+
+  const frameIndex = useDerivedValue(() => {
+    const idx = Math.floor(progress.value * totalFrames);
+    return idx % totalFrames;
+  });
+
+  const column = useDerivedValue(() => frameIndex.value % columns);
+  const row = useDerivedValue(() => Math.floor(frameIndex.value / columns));
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: -Math.round(column.value * frameWidth) },
+      { translateY: -Math.round(row.value * frameHeight) },
+    ],
+  }));
+
+  const sheetWidth = columns * frameWidth;
+  const rows = Math.ceil(totalFrames / columns);
+  const sheetHeight = rows * frameHeight;
+
+  if (!visible) {
+    return null;
+  }
 
   return (
-    <View
-      style={{ height: size, width: imgWidth / columns, overflow: "hidden" }}
-    >
-      <Image
-        source={sheet}
-        ref={imgRef}
-        style={{
-          position: "relative",
-          right: (spriteIndex * imgWidth) / columns,
-          height: size,
-          width: imgWidth,
-        }}
+    <View style={[styles.container, style]}>
+      <Animated.Image
+        width={sheetWidth}
+        height={sheetHeight}
+        source={spriteSheet}
+        style={animatedStyle}
+        resizeMode="stretch"
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
+        onError={() => setLoading(false)}
       />
+      {loading && (
+        <View style={styles.loader} pointerEvents="none">
+          <ActivityIndicator size="small" />
+        </View>
+      )}
     </View>
   );
 };
 
-export default SpriteAnimator;
+export default SpriteAnimation;
+
+const styles = StyleSheet.create({
+  container: {
+    overflow: "hidden",
+  },
+  loader: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

@@ -21,6 +21,9 @@ export const DatePicker = ({
   type?: "date" | "time" | "both";
 }) => {
   const isDark = useColorScheme() == "dark";
+  const safeDate = (date && (date as any).getTime)
+    ? (date as unknown as Date)
+    : new Date((date as unknown as any) || Date.now());
   return (
     <>
       <Pressable
@@ -45,13 +48,14 @@ export const DatePicker = ({
       </Pressable>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
+        date={safeDate}
         display={
           type == "both" ? "inline" : type == "date" ? "spinner" : "clock"
         }
         mode={type == "both" ? "datetime" : type == "date" ? "date" : "time"}
-        onConfirm={(date: Date) => {
+        onConfirm={(picked: Date) => {
           setDatePickerVisibility(false);
-          setDate(date);
+          setDate(picked);
         }}
         onCancel={() => {
           setDatePickerVisibility(false);

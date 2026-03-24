@@ -1,0 +1,8 @@
+improved animations, updated packages.
+
+- Created a new custom Sprite system.
+- Improved performance and responsiveness across the app.
+- cleaning up expo packages and unused assets.
+- Updated internal packages and dependencies for better stability.
+- Enhanced Color Picker with manual HEX confirmation and lightness slider.
+- Improved collection editing.

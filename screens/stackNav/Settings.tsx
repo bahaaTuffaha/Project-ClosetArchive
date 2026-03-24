@@ -1,4 +1,4 @@
-import { View, useColorScheme } from "react-native";
+import { View, useColorScheme, StyleSheet } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
@@ -28,243 +28,256 @@ import { handleNumberChange } from "../../utils/validators";
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
   const storedSettings = useSelector((state: RootState) => state.settings);
-  const [lang, setLang] = useState(
-    storedSettings ? storedSettings.language : "",
-  );
+  const {
+    language,
+    name,
+    laundryNumber,
+    enableLaundry,
+    enableReminder,
+    enableHeatMap,
+  } = storedSettings;
+  const isRtl = language === 1;
+
+  const [lang, setLang] = useState(language);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setLang(language);
+  }, [language]);
+
   useEffect(() => {
     dispatch(changeLanguage({ lang: lang }));
-  }, [lang]);
+  }, [lang, dispatch]);
+
   const [visible, setVisible] = useState(false);
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
   const [exportOrImport, setExportOrImport] = useState(0);
-  const [checkedLau, setCheckedLau] = useState(storedSettings.enableLaundry);
-  const [checkedRem, setCheckedRem] = useState(storedSettings.enableReminder);
-  const [checkedHeatMap, setCheckedHeatMap] = useState(
-    storedSettings.enableHeatMap,
-  );
+  const [checkedLau, setCheckedLau] = useState(enableLaundry);
+  const [checkedRem, setCheckedRem] = useState(enableReminder);
+  const [checkedHeatMap, setCheckedHeatMap] = useState(enableHeatMap);
+
   const setCheckboxes = (
-    // a callback
-    enableLaundry: boolean,
-    enableReminder: boolean,
-    enableHeatMap: boolean,
+    newEnableLaundry: boolean,
+    newEnableReminder: boolean,
+    newEnableHeatMap: boolean,
   ) => {
-    setCheckedLau(enableLaundry);
-    setCheckedRem(enableReminder);
-    setCheckedHeatMap(enableHeatMap);
+    setCheckedLau(newEnableLaundry);
+    setCheckedRem(newEnableReminder);
+    setCheckedHeatMap(newEnableHeatMap);
   };
+
+  const rowStyle = isRtl ? styles.rowReverse : styles.row;
+
   return (
     <ThemeView>
-      <>
-        <View className="w-full flex flex-row h-14 justify-center items-center">
-          <BackButton />
-          <ThemeText classNameStyle="text-xl italic">
-            {localization.Settings[storedSettings.language]}
+      <BackButton pageTitle={localization.Settings[language]} />
+      <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
+        {exportOrImport === 0
+          ? "Exported to destination"
+          : "Imported successfully"}
+      </Snackbar>
+      <View style={styles.container}>
+        <View style={[rowStyle, { columnGap: 8 }]}>
+          <ThemeText customStyle={styles.textLabel10}>
+            {localization.Your_Name[language]}
+          </ThemeText>
+          <CustomInput
+            mode="outlined"
+            outlineColor={colors.mainGreen}
+            selectionColor="#C0C0C0"
+            activeOutlineColor={colors.mainGreen}
+            textContentType="name"
+            style={[{ width: "50%" }, { textAlign: isRtl ? "right" : "left" }]}
+            label={localization.User_Name[language]}
+            value={name}
+            onChange={(text: any) =>
+              text.nativeEvent.text.length < 8 &&
+              dispatch(userNameSetter({ name: text.nativeEvent.text }))
+            }
+          />
+        </View>
+        <View style={[rowStyle, { columnGap: 8 }, { zIndex: 20 }]}>
+          <ThemeText customStyle={styles.textLabel10}>
+            {localization.Language[language]}
+          </ThemeText>
+          <View style={styles.dropdownWrapper}>
+            <DropDownPicker
+              open={openLang}
+              value={lang}
+              items={languagesList}
+              setOpen={setOpenLang}
+              setValue={setLang}
+              mode="SIMPLE"
+              placeholder="Language"
+              style={styles.dropdown}
+              dropDownContainerStyle={{ borderColor: colors.mainGreen }}
+              theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
+            />
+          </View>
+        </View>
+        <View style={rowStyle}>
+          <ThemeText customStyle={styles.textLabel10}>
+            {localization.Export[language]}
+          </ThemeText>
+          <Button
+            onPress={async () => {
+              if (await exportStoreToJson()) {
+                setExportOrImport(0);
+                onToggleSnackBar();
+              }
+            }}
+            mode="contained"
+            style={{ width: "50%" }}
+            buttonColor={colors.mainCyan}
+          >
+            {localization.Export[language]}
+          </Button>
+        </View>
+        <View style={[rowStyle, { zIndex: 0 }]}>
+          <ThemeText customStyle={styles.textLabel10}>
+            {localization.Import[language]}
+          </ThemeText>
+          <Button
+            onPress={async () => {
+              if (await importStoreFromJson(setCheckboxes)) {
+                setExportOrImport(1);
+                onToggleSnackBar();
+              }
+            }}
+            mode="contained"
+            style={{ width: "50%" }}
+            buttonColor={colors.mainCyan}
+          >
+            {localization.Import[language]}
+          </Button>
+        </View>
+        <View style={rowStyle}>
+          <ThemeText customStyle={styles.textLabel5}>
+            {localization.Laundry_reminder[language]}
+          </ThemeText>
+          <CustomInput
+            mode="outlined"
+            outlineColor={colors.mainGreen}
+            selectionColor="#C0C0C0"
+            activeOutlineColor={colors.mainGreen}
+            textContentType="name"
+            style={styles.laundryInput}
+            label={localization.N[language]}
+            value={laundryNumber.toString()}
+            onChange={(text: any) =>
+              handleNumberChange(
+                () => {
+                  dispatch(
+                    laundryNumberSetter({
+                      number: Number(text.nativeEvent.text),
+                    }),
+                  );
+                  dispatch(laundryRefresher());
+                },
+                text.nativeEvent.text,
+                0,
+                30,
+              )
+            }
+            keyboardType="numeric"
+          />
+          <ThemeText customStyle={styles.textLabel5}>
+            {localization.Times[language]}
+          </ThemeText>
+          <Checkbox
+            status={checkedLau ? "checked" : "unchecked"}
+            onPress={() => {
+              setCheckedLau(prev => !prev);
+              dispatch(setEnableLaundry({ enableLaundry: !checkedLau }));
+            }}
+          />
+        </View>
+        <View style={{ flexDirection: isRtl ? "row-reverse" : "row" }}>
+          <Icon name="info-circle" size={15} color={colors.mainCyan} />
+          <ThemeText customStyle={styles.infoText}>
+            {localization.ThisWillRemind[language]}
           </ThemeText>
         </View>
-        <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
-          {exportOrImport == 0
-            ? "Exported to destination"
-            : "Imported successfully"}
-        </Snackbar>
-        <View className="w-full px-5 space-y-3 pt-2">
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            } space-x-2 justify-between items-center`}
-          >
-            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              {localization.Your_Name[storedSettings.language]}
-            </ThemeText>
-            <CustomInput
-              mode="outlined"
-              outlineColor={colors.mainGreen}
-              selectionColor="#C0C0C0"
-              activeOutlineColor={colors.mainGreen}
-              textContentType="name"
-              style={{
-                width: "50%",
-                textAlign: storedSettings.language == 1 ? "right" : "left",
-              }}
-              label={localization.User_Name[storedSettings.language]}
-              value={storedSettings.name}
-              onChange={(text) =>
-                text.nativeEvent.text.length < 8 &&
-                dispatch(userNameSetter({ name: text.nativeEvent.text }))
-              }
-            />
-          </View>
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            } space-x-2 justify-between items-center z-20`}
-          >
-            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              {localization.Language[storedSettings.language]}
-            </ThemeText>
-            <View style={{ marginBottom: 10, width: "50%" }}>
-              <DropDownPicker
-                open={openLang}
-                value={lang}
-                items={languagesList}
-                setOpen={setOpenLang}
-                setValue={setLang}
-                mode="SIMPLE"
-                placeholder="Language"
-                style={{ borderColor: colors.mainGreen, zIndex: 10 }}
-                dropDownContainerStyle={{
-                  borderColor: colors.mainGreen,
-                }}
-                theme={String(useColorScheme()?.toUpperCase()) as ThemeNameType}
-              />
-            </View>
-          </View>
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            } justify-between items-center`}
-          >
-            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              {localization.Export[storedSettings.language]}
-            </ThemeText>
-            <Button
-              onPress={async () => {
-                if (await exportStoreToJson()) {
-                  setExportOrImport(0);
-                  onToggleSnackBar();
-                }
-              }}
-              mode="contained"
-              className="w-[50%]"
-              buttonColor={colors.mainCyan}
-            >
-              {localization.Export[storedSettings.language]}
-            </Button>
-          </View>
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            } justify-between items-center z-0 `}
-          >
-            <ThemeText customStyle={{ paddingBottom: 10, fontSize: 15 }}>
-              {localization.Import[storedSettings.language]}
-            </ThemeText>
-            <Button
-              onPress={async () => {
-                if (await importStoreFromJson(setCheckboxes)) {
-                  setExportOrImport(1);
-                  onToggleSnackBar();
-                }
-              }}
-              mode="contained"
-              className="w-[50%]"
-              buttonColor={colors.mainCyan}
-            >
-              {localization.Import[storedSettings.language]}
-            </Button>
-          </View>
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            } justify-between items-center`}
-          >
-            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-              {localization.Laundry_reminder[storedSettings.language]}
-            </ThemeText>
-            <CustomInput
-              mode="outlined"
-              outlineColor={colors.mainGreen}
-              selectionColor="#C0C0C0"
-              activeOutlineColor={colors.mainGreen}
-              textContentType="name"
-              className="w-[50px] mx-5"
-              label={localization.N[storedSettings.language]}
-              value={storedSettings.laundryNumber.toString()}
-              onChange={(text) =>
-                handleNumberChange(
-                  () => {
-                    dispatch(
-                      laundryNumberSetter({
-                        number: Number(text.nativeEvent.text),
-                      }),
-                    );
-                    dispatch(laundryRefresher());
-                  },
-                  text.nativeEvent.text,
-                  0,
-                  30,
-                )
-              }
-              keyboardType="numeric"
-            />
-            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-              {localization.Times[storedSettings.language]}
-            </ThemeText>
-            <Checkbox
-              status={checkedLau ? "checked" : "unchecked"}
-              onPress={() => {
-                setCheckedLau((prev) => !prev);
-                dispatch(setEnableLaundry({ enableLaundry: !checkedLau }));
-              }}
-            />
-          </View>
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            }`}
-          >
-            <Icon name="info-circle" size={15} color={colors.mainCyan} />
-            <ThemeText classNameStyle="text-xs mx-5">
-              {localization.ThisWillRemind[storedSettings.language]}
-            </ThemeText>
-          </View>
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            } justify-between items-center`}
-          >
-            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-              {localization.Daily_reminder[storedSettings.language]}
-            </ThemeText>
-            <Checkbox
-              status={checkedRem ? "checked" : "unchecked"}
-              onPress={() => {
-                setCheckedRem((prev) => !prev);
-                dispatch(setReminder({ enableReminder: !checkedRem }));
-              }}
-            />
-          </View>
-
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            } justify-between items-center`}
-          >
-            <ThemeText customStyle={{ paddingBottom: 5, fontSize: 15 }}>
-              {localization.Enable_heatMap[storedSettings.language]}
-            </ThemeText>
-            <Checkbox
-              status={checkedHeatMap ? "checked" : "unchecked"}
-              onPress={() => {
-                setCheckedHeatMap((prev) => !prev);
-                dispatch(setHeatMap({ enableHeatMap: !checkedHeatMap }));
-              }}
-            />
-          </View>
-          <View
-            className={`flex ${
-              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-            }`}
-          >
-            <Icon name="info-circle" size={15} color={colors.mainCyan} />
-            <ThemeText classNameStyle="text-xs mx-5">
-              {localization.HeatMap_description[storedSettings.language]}
-            </ThemeText>
-          </View>
+        <View style={rowStyle}>
+          <ThemeText customStyle={styles.textLabel5}>
+            {localization.Daily_reminder[language]}
+          </ThemeText>
+          <Checkbox
+            status={checkedRem ? "checked" : "unchecked"}
+            onPress={() => {
+              setCheckedRem(prev => !prev);
+              dispatch(setReminder({ enableReminder: !checkedRem }));
+            }}
+          />
         </View>
-        {/* <View className="w-full h-1 bg-gray" /> */}
-      </>
+
+        <View style={rowStyle}>
+          <ThemeText customStyle={styles.textLabel5}>
+            {localization.Enable_heatMap[language]}
+          </ThemeText>
+          <Checkbox
+            status={checkedHeatMap ? "checked" : "unchecked"}
+            onPress={() => {
+              setCheckedHeatMap(prev => !prev);
+              dispatch(setHeatMap({ enableHeatMap: !checkedHeatMap }));
+            }}
+          />
+        </View>
+        <View style={{ flexDirection: isRtl ? "row-reverse" : "row" }}>
+          <Icon name="info-circle" size={15} color={colors.mainCyan} />
+          <ThemeText customStyle={styles.infoText}>
+            {localization.HeatMap_description[language]}
+          </ThemeText>
+        </View>
+      </View>
     </ThemeView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    rowGap: 12,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  rowReverse: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  textLabel10: {
+    paddingBottom: 10,
+    fontSize: 15,
+  },
+  textLabel5: {
+    paddingBottom: 5,
+    fontSize: 15,
+  },
+
+  dropdownWrapper: {
+    marginBottom: 10,
+    width: "50%",
+  },
+  dropdown: {
+    borderColor: colors.mainGreen,
+    zIndex: 10,
+  },
+
+  laundryInput: {
+    width: 50,
+    marginHorizontal: 20,
+  },
+
+  infoText: {
+    fontSize: 12,
+    marginHorizontal: 20,
+  },
+});

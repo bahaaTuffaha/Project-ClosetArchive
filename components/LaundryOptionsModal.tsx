@@ -47,7 +47,7 @@ export const LaundryOptionsModal = ({
           {localization.Laundry_Options[storedSettings.language]}
         </Dialog.Title>
         <Dialog.Content>
-          <View className="space-y-2">
+          <View className="gap-y-2">
             <View className={`flex ${rtl} items-center justify-start`}>
               <Checkbox
                 status={LaundryCheck ? "checked" : "unchecked"}

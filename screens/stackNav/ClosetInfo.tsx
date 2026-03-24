@@ -1,7 +1,7 @@
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
 import { ThemeView } from "../../components/ThemeView";
-import { View } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import {
   categoryInfo,
   closetInfo,
@@ -10,8 +10,8 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Animated, { SlideInLeft } from "react-native-reanimated";
-import { Children, ReactElement, useEffect, useMemo, useState } from "react";
-import { FlashList } from "@shopify/flash-list";
+import { Children, ReactNode, useMemo } from "react";
+import { colors } from "../../utils/colors";
 import { defaultCategories } from "./Category";
 import { ItemBox } from "../../components/ItemBox";
 import { item } from "../../redux/itemsSlice";
@@ -23,20 +23,19 @@ const InfoCardWrapper = ({
 }: {
   title: string;
   index: number;
-  children: ReactElement;
+  children?: ReactNode;
 }) => {
+  if (Children.count(children) === 0) {
+    return null;
+  }
   return (
     <Animated.View
-      className="flex flex-col items-center bg-mainGreen border-white border-solid border-[1px]"
+      style={[styles.cardWrapper]}
       entering={SlideInLeft.delay(index * 200)}
     >
-      {Children.count(children) > 0 && (
-        <>
-          <ThemeText>{title}</ThemeText>
+      <ThemeText>{title}</ThemeText>
 
-          <View className="flex flex-row">{children}</View>
-        </>
-      )}
+      <View style={styles.row}>{children}</View>
     </Animated.View>
   );
 };
@@ -51,7 +50,7 @@ const InfoCardNumber = ({
 }) => {
   return (
     <Animated.View
-      className="flex flex-col bg-mainCyan text-white items-center border-white border-solid border-[1px]"
+      style={[styles.cardNumber]}
       entering={SlideInLeft.delay(index * 200)}
     >
       <ThemeText classNameStyle="text-bold">{title}</ThemeText>
@@ -68,40 +67,31 @@ const InfoCardCategories = ({
   Categories: Category[];
   language: number;
 }) => {
-  const [value, setValue] = useState<number[]>([]);
-  useEffect(() => {
-    let newArray = items;
-    Categories.forEach((Category) => {
-      setValue((prev) => [
-        ...prev,
-        newArray.filter((item) => Category.index == item.category).length,
-      ]);
-    });
-  }, [Categories.length, items.length]);
+  const counts = Categories.map(
+    cat => items.filter(it => cat.index == it.category).length,
+  );
 
   return (
     <View>
-      {Categories.map((category, index) => {
-        return (
-          <Animated.View
-            entering={SlideInLeft.delay(index * 300)}
-            key={"Card" + index}
-            className="flex flex-col bg-mainCyan text-white items-center border-white border-solid border-[1px]"
-          >
-            <ThemeText>
-              {category.name[language] + " " + categoryInfo[language]}
+      {Categories.map((category, index) => (
+        <Animated.View
+          entering={SlideInLeft.delay(index * 300)}
+          key={"Card" + index}
+          style={[styles.cardNumber]}
+        >
+          <ThemeText>
+            {category.name[language] + " " + categoryInfo[language]}
+          </ThemeText>
+          <View style={styles.countRow}>
+            <ThemeText classNameStyle="text-[40px]">
+              {String(counts[index] || 0)}
             </ThemeText>
-            <View className="flex flex-row items-center">
-              <ThemeText classNameStyle="text-[40px]">
-                {String(value[index])}
-              </ThemeText>
-              <ThemeText classNameStyle="text-[10px]">
-                {" item" + (value[index] > 1 ? "s" : "")}
-              </ThemeText>
-            </View>
-          </Animated.View>
-        );
-      })}
+            <ThemeText classNameStyle="text-[10px]">
+              {" item" + ((counts[index] || 0) > 1 ? "s" : "")}
+            </ThemeText>
+          </View>
+        </Animated.View>
+      ))}
     </View>
   );
 };
@@ -120,25 +110,27 @@ export const ClosetInfo = ({}) => {
 
   const data = useMemo(() => {
     const sortedItems = [...storedItems].sort(
-      (a, b) => b.logIds.length - a.logIds.length,
+      (a, b) => (b.logIds?.length || 0) - (a.logIds?.length || 0),
     );
     const currentDate = new Date();
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(currentDate.getMonth() - 1);
 
-    const filteredEventsLastMonth = storedEvents.filter((x) => {
+    const filteredEventsLastMonth = storedEvents.filter(x => {
       const eventDate = new Date(JSON.parse(x.eventDate));
       return eventDate >= oneMonthAgo && eventDate <= currentDate;
     });
 
     const top5LastMonth = sortedItems
-      .filter((x) => {
-        return x.logIds?.some((logId) =>
-          filteredEventsLastMonth.some((event) => event.eventId === logId),
+      .filter(x => {
+        return x.logIds?.some(logId =>
+          filteredEventsLastMonth.some(event => event.eventId === logId),
         );
       })
       .slice(0, 5);
-    const top5 = sortedItems.filter((item, index) => index < 5);
+    const top5 = sortedItems
+      .filter(x => x.logIds && x.logIds.length > 0)
+      .slice(0, 5);
     let info = [
       storedItems.length,
       storedEvents.length,
@@ -148,63 +140,83 @@ export const ClosetInfo = ({}) => {
     ];
 
     return info;
-  }, [storedCategories.length, storedCollections.length, storedItems.length]);
+  }, [storedItems, storedEvents, storedCollections]);
 
   return (
     <ThemeView>
-      <>
-        <View className="w-full flex flex-row h-14 justify-center items-center">
-          <BackButton />
-          <ThemeText classNameStyle="text-xl italic">
-            {localization.ClosetInfo[storedSettings.language]}
-          </ThemeText>
-        </View>
-        <FlashList
-          ListFooterComponent={
-            <InfoCardCategories
-              Categories={storedCategories}
-              items={storedItems}
-              language={storedSettings.language}
+      <BackButton
+        pageTitle={localization.ClosetInfo[storedSettings.language]}
+      />
+      <FlatList
+        ListFooterComponent={
+          <InfoCardCategories
+            Categories={storedCategories}
+            items={storedItems}
+            language={storedSettings.language}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+        data={closetInfo[storedSettings.language]}
+        renderItem={({ item, index }) =>
+          index > 2 ? (
+            <InfoCardWrapper
+              index={index}
+              key={"infoCard" + index}
+              title={item}
+            >
+              {data[index].map((item: item) => {
+                return (
+                  <ItemBox
+                    primary={item.primaryColor || "#fff"}
+                    secondary={item.secondaryColor || "#fff"}
+                    tertiary={item.tertiaryColor || "#fff"}
+                    key={item.id}
+                    image={item.image}
+                    name={item.name}
+                    type={item.type}
+                    id={item.id}
+                    logs={item.logIds || []}
+                    addSpace={true}
+                  />
+                );
+              })}
+            </InfoCardWrapper>
+          ) : (
+            <InfoCardNumber
+              index={index}
+              key={"infoCardNum" + index}
+              title={item}
+              value={data[index] as number}
             />
-          }
-          showsVerticalScrollIndicator={false}
-          data={closetInfo[storedSettings.language]}
-          renderItem={({ item, index }) =>
-            index > 2 ? (
-              <InfoCardWrapper
-                index={index}
-                key={"infoCard" + index}
-                title={item}
-              >
-                {data[index].map((item: item) => {
-                  return (
-                    <ItemBox
-                      primary={item.primaryColor || "#fff"}
-                      secondary={item.secondaryColor || "#fff"}
-                      tertiary={item.tertiaryColor || "#fff"}
-                      key={item.id}
-                      image={item.image}
-                      name={item.name}
-                      type={item.type}
-                      id={item.id}
-                      logs={item.logIds || []}
-                      addSpace={true}
-                    />
-                  );
-                })}
-              </InfoCardWrapper>
-            ) : (
-              <InfoCardNumber
-                index={index}
-                key={"infoCardNum" + index}
-                title={item}
-                value={data[index] as number}
-              />
-            )
-          }
-          estimatedItemSize={64}
-        />
-      </>
+          )
+        }
+      />
     </ThemeView>
   );
 };
+
+const styles = StyleSheet.create({
+  cardWrapper: {
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: colors.mainGreen,
+    borderColor: colors.white,
+    borderWidth: 1,
+    padding: 8,
+  },
+  cardNumber: {
+    flexDirection: "column",
+    backgroundColor: colors.mainCyan,
+    alignItems: "center",
+    borderColor: colors.white,
+    borderWidth: 1,
+    padding: 8,
+  },
+  row: {
+    flexDirection: "row",
+  },
+  countRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});

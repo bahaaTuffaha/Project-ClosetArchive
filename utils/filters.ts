@@ -183,3 +183,17 @@ export function HomeFilter(
     return newArray;
   }
 }
+
+export function filterCollectionsBySearch(array: item[][], search: string) {
+  if (!search) return array;
+  const searchLower = search.toLowerCase();
+  return array.map(collection =>
+    collection.filter(x => x.name.toLowerCase().includes(searchLower)),
+  );
+}
+
+export function filterItemsBySearch(array: item[], search: string) {
+  if (!search) return array;
+  const searchLower = search.toLowerCase();
+  return array.filter(x => x.name.toLowerCase().includes(searchLower));
+}

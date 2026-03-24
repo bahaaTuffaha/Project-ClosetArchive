@@ -1,4 +1,4 @@
-import { Dispatch, ReactElement, SetStateAction } from "react";
+import { ReactElement } from "react";
 import { useColorScheme } from "react-native";
 import { colors } from "../utils/colors";
 import { Button, Dialog, Portal } from "react-native-paper";
@@ -14,7 +14,7 @@ const CustomModal = ({
   showClose = true,
   children,
 }: {
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  setVisible: (visible: boolean) => void;
   visible: boolean;
   label?: string;
   minHeight?: number;
@@ -37,8 +37,15 @@ const CustomModal = ({
       >
         {label && (
           <Dialog.Title
-            style={{ color: isDarkMode ? colors.white : colors.gray }}
-            className="self-center text-2xl font-bold capitalize italic"
+            style={{
+              color: isDarkMode ? colors.white : colors.gray,
+              textAlign: "center",
+              fontSize: 20,
+              fontWeight: "bold",
+              fontStyle: "italic",
+              paddingHorizontal: 10,
+              marginHorizontal: 0,
+            }}
           >
             {label}
           </Dialog.Title>

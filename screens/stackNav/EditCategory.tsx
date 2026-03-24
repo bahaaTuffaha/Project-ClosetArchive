@@ -1,7 +1,5 @@
-import { FlashList } from "@shopify/flash-list";
-import { Keyboard, StyleSheet, Text, View } from "react-native";
+import { Keyboard, StyleSheet, Text, View, FlatList } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
-import { ThemeText } from "../../components/ThemeText";
 import { clothesList, localization } from "../../utils/localization";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -13,13 +11,7 @@ import { Button } from "react-native-paper";
 import { addTypeToCategory } from "../../redux/categoriesSlice";
 import { EditItemList } from "../../components/EditItemList";
 
-export const EditCategory = ({
-  navigation,
-  route,
-}: {
-  navigation: any;
-  route: any;
-}) => {
+export const EditCategory = ({ route }: { navigation: any; route: any }) => {
   const { categoryIndex } = route.params;
   const storedSettings = useSelector((state: RootState) => state.settings);
   const [refresh, setRefresh] = useState(false);
@@ -52,7 +44,7 @@ export const EditCategory = ({
     if (newType.length > 20) {
       errors.push("Please enter a name within 20 characters max");
     }
-    if (allList?.find((x) => x.label.toLowerCase() == newType.toLowerCase())) {
+    if (allList?.find(x => x.label.toLowerCase() == newType.toLowerCase())) {
       errors.push("Please enter a different name");
     }
     if (errors.length > 0) {
@@ -71,79 +63,74 @@ export const EditCategory = ({
 
   return (
     <ThemeView>
-      <>
-        <View className="w-full flex flex-row justify-center items-center ">
-          <BackButton />
-          <View className="flex flex-col items-center space-y-3">
-            <ThemeText classNameStyle="text-xl mt-4 font-mono italic">
-              {localization.Edit_Category[storedSettings.language]}
-            </ThemeText>
-            <CustomInput
-              mode="outlined"
-              outlineColor={colors.mainGreen}
-              selectionColor="#C0C0C0"
-              activeOutlineColor={colors.mainGreen}
-              textContentType="name"
-              style={styles.customWidth}
-              label={localization.Add_Type[storedSettings.language]}
-              value={newType}
-              onChange={(text) => setNewType(text.nativeEvent.text)}
-            />
-            {errorsList.length > 0 && (
-              <View>
-                {errorsList.map((error, index) => {
-                  return (
-                    <Text key={index} className="text-[#C70039]">
-                      {error}
-                    </Text>
-                  );
-                })}
-              </View>
-            )}
-            <Button
-              mode="contained"
-              buttonColor={colors.mainCyan}
-              textColor={colors.white}
-              onPress={() => {
-                addTypeHandler(categoryIndex, catData);
-                Keyboard.dismiss();
-              }}
-              className="mx-10 my-5"
-            >
-              {localization.Save[storedSettings.language]}
-            </Button>
-          </View>
-        </View>
-        <FlashList
-          numColumns={1}
-          extraData={refresh}
-          data={catData}
-          estimatedItemSize={64}
-          renderItem={({ item, index }) => (
-            <View
-              style={{
-                display: "flex",
-                flex: 1,
-                alignItems: "center",
-              }}
-            >
-              {/* <CategoryItem key={index} type={item} /> */}
-              <EditItemList
-                item={item}
-                setRefresh={setRefresh}
-                CollectionsState={catData}
-                isCatType={true}
-                catIndex={categoryIndex}
-                ignoreNum={
-                  clothesList[storedSettings.language][categoryIndex]?.length
-                }
-                currentIndex={index}
-                key={index}
-              />
-            </View>
-          )}
+      <BackButton
+        pageTitle={localization.Edit_Category[storedSettings.language]}
+      />
+      <View className="flex flex-col items-center gap-y-3 mt-4">
+        <CustomInput
+          mode="outlined"
+          outlineColor={colors.mainGreen}
+          selectionColor="#C0C0C0"
+          activeOutlineColor={colors.mainGreen}
+          textContentType="name"
+          style={styles.customWidth}
+          label={localization.Add_Type[storedSettings.language]}
+          value={newType}
+          onChange={(text: any) => setNewType(text.nativeEvent.text)}
         />
-      </>
+        {errorsList.length > 0 && (
+          <View>
+            {errorsList.map((error, index) => {
+              return (
+                <Text key={index} className="text-[#C70039]">
+                  {error}
+                </Text>
+              );
+            })}
+          </View>
+        )}
+        <Button
+          mode="contained"
+          buttonColor={colors.mainCyan}
+          textColor={colors.white}
+          onPress={() => {
+            addTypeHandler(categoryIndex, catData);
+            Keyboard.dismiss();
+          }}
+          className="mx-10 my-5"
+        >
+          {localization.Save[storedSettings.language]}
+        </Button>
+      </View>
+      <FlatList
+        numColumns={1}
+        extraData={refresh}
+        data={catData}
+        renderItem={({ item, index }) => (
+          <View
+            style={{
+              display: "flex",
+              flex: 1,
+              alignItems: "center",
+            }}
+          >
+            {/* <CategoryItem key={index} type={item} /> */}
+            <EditItemList
+              item={item}
+              setRefresh={setRefresh}
+              CollectionsState={catData}
+              isCatType={true}
+              catIndex={categoryIndex}
+              ignoreNum={
+                clothesList[storedSettings.language][categoryIndex]?.length
+              }
+              currentIndex={index}
+              key={index}
+            />
+          </View>
+        )}
+      />
+      <View />
     </ThemeView>
   );
 };
