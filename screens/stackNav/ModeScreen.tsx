@@ -1,4 +1,4 @@
-import { Image, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemeText } from "../../components/ThemeText";
 import { BackButton } from "../../components/BackButton";
@@ -7,6 +7,7 @@ import singleBox from "../../assets/images/single.png";
 import { localization } from "../../utils/localization";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { colors } from "../../utils/colors";
 
 export const ModeScreen = ({
   navigation,
@@ -20,44 +21,48 @@ export const ModeScreen = ({
   return (
     <ThemeView>
       <BackButton />
-      <TouchableOpacity
-        className="w-full flex flex-row items-center justify-center bg-mainGreen h-1/2 relative"
-        onPress={() =>
-          navigation.navigate(screenName, {
-            selectedCategory: selectedCategory,
-          })
-        }
-      >
-        <ThemeText
-          customStyle={{ fontFamily: "TSMorabaat-Regular" }}
-          classNameStyle="text-[50px] z-10 text-bold"
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          className="w-full flex-1 flex flex-row items-center justify-center bg-mainGreen relative"
+          onPress={() =>
+            navigation.navigate(screenName, {
+              selectedCategory: selectedCategory,
+            })
+          }
         >
-          {localization.addSingleItem[storedSettings.language]}
-        </ThemeText>
-        <Image
-          source={singleBox}
-          className="w-[80%] h-[70%] rounded-md object-cover z-0 self-center absolute"
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="w-full flex flex-row items-center justify-center bg-mainCyan h-1/2 relative"
-        onPress={() =>
-          navigation.navigate("BulkModeForm", {
-            selectedCategory: selectedCategory,
-          })
-        }
-      >
-        <ThemeText
-          customStyle={{ fontFamily: "TSMorabaat-Regular" }}
-          classNameStyle="text-[50px] z-10"
+          <ThemeText
+            lightColor={colors.white}
+            customStyle={{ fontFamily: "TSMorabaat-Regular" }}
+            classNameStyle="text-[50px] z-10 text-bold"
+          >
+            {localization.addSingleItem[storedSettings.language]}
+          </ThemeText>
+          <Image
+            source={singleBox}
+            className="w-[80%] h-[70%] rounded-md object-cover z-0 self-center absolute"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="w-full flex-1 flex flex-row items-center justify-center bg-mainCyan relative"
+          onPress={() =>
+            navigation.navigate("BulkModeForm", {
+              selectedCategory: selectedCategory,
+            })
+          }
         >
-          {localization.addMultiItems[storedSettings.language]}
-        </ThemeText>
-        <Image
-          source={bulkBoxes}
-          className="w-[80%] h-[90%] rounded-md object-cover z-0 self-center absolute"
-        />
-      </TouchableOpacity>
+          <ThemeText
+            lightColor={colors.white}
+            customStyle={{ fontFamily: "TSMorabaat-Regular" }}
+            classNameStyle="text-[50px] z-10"
+          >
+            {localization.addMultiItems[storedSettings.language]}
+          </ThemeText>
+          <Image
+            source={bulkBoxes}
+            className="w-[80%] h-[90%] rounded-md object-cover z-0 self-center absolute"
+          />
+        </TouchableOpacity>
+      </View>
     </ThemeView>
   );
 };

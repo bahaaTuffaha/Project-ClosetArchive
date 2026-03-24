@@ -9,7 +9,7 @@ import {
   FlatList,
 } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 // replaced FlashList with FlatList from react-native
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -29,7 +29,6 @@ import { localization } from "../../utils/localization";
 
 export const OutfitLog = () => {
   const [search, setSearch] = useState("");
-  const [filteredLogs, setFilteredLogs] = useState<logsType[]>([]);
   const isDarkMode = useColorScheme() === "dark";
   const logsState = useSelector((state: RootState) => state.itemsList.logs);
   const [refresh, setRefresh] = useState(false);
@@ -55,9 +54,9 @@ export const OutfitLog = () => {
     setModalInfo(info);
   }, [modalEventId]);
 
-  useEffect(() => {
-    setFilteredLogs(LogFilter(sortValue, logsState, search));
-  }, [logsState.length, search, sortValue]);
+  const filteredLogs = useMemo(() => {
+    return LogFilter(sortValue, logsState, search);
+  }, [logsState, search, sortValue]);
 
   const storedSettings = useSelector((state: RootState) => state.settings);
   return (
@@ -191,11 +190,11 @@ export const OutfitLog = () => {
       <View
         style={{
           width: "100%",
-          height: "78%",
+          flex: 1,
           borderBottomLeftRadius: 20,
           borderBottomRightRadius: 20,
         }}
-        className="flex flex-row flex-wrap bg-gray mx-auto mt-[1%] px-5"
+        className="bg-gray mx-auto mt-[1%] px-5"
       >
         {logsState.length <= 0 && (
           <View className="flex flex-col w-full justify-center">

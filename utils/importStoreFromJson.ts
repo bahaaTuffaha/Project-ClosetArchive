@@ -1,6 +1,5 @@
 import { RootState, persistor, store } from "../redux/store"; // Replace with the correct path to your rootReducer file
 import * as ScopedStorage from "react-native-scoped-storage";
-import ReactNativeBlobUtil from "react-native-blob-util";
 import { importCategory } from "../redux/categoriesSlice";
 import { importItems } from "../redux/itemsSlice";
 import { importSettings } from "../redux/settingsSlice";
@@ -15,16 +14,13 @@ export const importStoreFromJson = async (
 ) => {
   try {
     // Open the Document Picker to allow the user to select a file
-    const file = await ScopedStorage.openDocument();
+    const file = await ScopedStorage.openDocument(true, "utf8");
 
     if (file) {
       // Check if the selected file is a JSON file based on MIME type or file extension
       if (file.mime === "application/json" || file.name.endsWith(".json")) {
         // Read the serialized state from the selected JSON file
-        const serializedState = await ReactNativeBlobUtil.fs.readFile(
-          file.uri,
-          "utf8",
-        );
+        const serializedState = file.data;
           const state: RootState = JSON.parse(serializedState);
           store.dispatch(
             importCategory({

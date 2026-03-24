@@ -23,7 +23,7 @@ import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { CommonActions } from "@react-navigation/native";
 import { clothesList, localization } from "../../utils/localization";
 import { defaultCategories } from "./Category";
-import { launchImageLibrary } from "react-native-image-picker";
+import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import ReactNativeBlobUtil from "react-native-blob-util";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
 
@@ -117,13 +117,15 @@ export const BulkModeForm = ({
       navigation.dispatch(CommonActions.goBack());
     } catch (error) {
       console.error("Bulk item creation error:", error);
-      Alert.alert("Error", "Something went wrong while processing images.");
+      Alert.alert(
+        "Error",
+        `Something went wrong while processing images: ${error}`,
+      );
     }
   };
 
   const handleImagePicker = async (mode: number) => {
     if (mode === 0) {
-      // Gallery
       try {
         const response = await launchImageLibrary({
           mediaType: "photo",
@@ -141,11 +143,26 @@ export const BulkModeForm = ({
         console.error("Gallery picker error:", error);
       }
     } else {
-      // Camera
-      Alert.alert(
-        "Notice",
-        "Camera mode requires taking one photo at a time. This feature is being updated.",
-      );
+      const uris: string[] = [];
+      for (let i = 0; i < imageNum; i++) {
+        try {
+          const result = await launchCamera({ mediaType: "photo" });
+          if (result.didCancel) break;
+          if (result.errorCode) {
+            Alert.alert("Camera Error", result.errorMessage);
+            break;
+          }
+          if (result.assets?.[0]?.uri) {
+            uris.push(result.assets[0].uri);
+          }
+        } catch (error) {
+          console.error("Camera capture error:", error);
+          break;
+        }
+      }
+      if (uris.length > 0) {
+        createItemsFromUris(uris);
+      }
     }
   };
 
@@ -235,7 +252,7 @@ export const BulkModeForm = ({
               handleNumberChange(() => setImageNum(Number(text)), text, 0, 30)
             }
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, { zIndex: 0 }]}
           />
 
           <View

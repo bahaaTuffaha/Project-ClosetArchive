@@ -224,7 +224,7 @@ export function HomeBottom() {
             laundryItems.length > 0 &&
             !search && (
               <CollectionContainer
-                color={colors.red}
+                color={colors.gray}
                 label={
                   localization.Laundry_reminder[storedSettings.language ?? 0]
                 }

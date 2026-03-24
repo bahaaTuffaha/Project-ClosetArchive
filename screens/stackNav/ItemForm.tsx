@@ -73,11 +73,11 @@ export const ItemForm = ({
   );
   const [name, setName] = useState(storedItems ? storedItems.name : "");
   const [collection, setCollection] = useState(
-    storedItems ? storedItems.collection : [],
+    storedItems?.collection ?? [],
   );
   const [type, setType] = useState(storedItems ? storedItems.type : "");
   const [fit, setFit] = useState(storedItems ? storedItems.fit : "");
-  const [season, setSeason] = useState(storedItems ? storedItems.season : "");
+  const [season, setSeason] = useState(storedItems?.season ?? null);
   const [quantity, setQuantity] = useState(
     storedItems ? storedItems.quantity : 1,
   );
@@ -95,9 +95,9 @@ export const ItemForm = ({
   );
   const [errorsList, setErrorsList] = useState<string[]>([]);
   const [colors, setColors] = useState([
-    storedItems ? storedItems.primaryColor : "",
-    storedItems ? storedItems.secondaryColor : "",
-    storedItems ? storedItems.tertiaryColor : "",
+    storedItems?.primaryColor || "",
+    storedItems?.secondaryColor || "",
+    storedItems?.tertiaryColor || "",
   ]);
   const [colorSelection, setColorSelection] = useState(0);
   const [openType, setOpenType] = useState(false);
@@ -252,7 +252,7 @@ export const ItemForm = ({
       // Simple mapping similar to previous lib
       const primary =
         pal.dominant || pal.vibrant || pal.darkVibrant || "#777777";
-      const secondary = pal.vibrant || "#999999";
+      const secondary = pal.muted || pal.vibrant || "#999999";
       const tertiary = pal.darkVibrant || "#555555";
       setColors([primary, secondary, tertiary]);
       try {
@@ -274,9 +274,9 @@ export const ItemForm = ({
             console.log("Image picker cancelled");
           } else if (response.errorCode) {
             console.log("Image picker error: ", response.errorMessage);
-          } else {
+          } else if (response.assets?.[0]?.uri) {
             ImageResizer.createResizedImage(
-              response.assets[0].uri,
+              response.assets[0].uri!,
               500,
               500,
               "JPEG",
@@ -294,8 +294,6 @@ export const ItemForm = ({
                 setImageModalVisible(false);
               })
               .catch(err => {
-                // Oops, something went wrong. Check that the filename is correct and
-                // inspect err to get more details.
                 console.log("image comparison error: ", err);
               });
           }
@@ -312,9 +310,9 @@ export const ItemForm = ({
               console.log("Image picker cancelled");
             } else if (response.errorCode) {
               console.log("Image picker error: ", response.errorMessage);
-            } else {
+            } else if (response.assets?.[0]?.uri) {
               ImageResizer.createResizedImage(
-                response.assets[0].uri,
+                response.assets[0].uri!,
                 500,
                 500,
                 "JPEG",
@@ -396,323 +394,315 @@ export const ItemForm = ({
         </View>
       </CustomModal>
       <ThemeView>
-        <>
-          <BackButton
-            pageTitle={
-              editingIndex
-                ? localization.EditingItem[storedSettings.language]
-                : localization.Adding_an_item[storedSettings.language]
+        <BackButton
+          pageTitle={
+            editingIndex
+              ? localization.EditingItem[storedSettings.language]
+              : localization.Adding_an_item[storedSettings.language]
+          }
+        />
+        <View className="flex items-center gap-y-2">
+          <View className="flex flex-row mt-4">
+            <View className="w-1/3"></View>
+            <View className="w-1/3 flex flex-row justify-center">
+              <ImageViewer
+                imageUrl={imageUrl}
+                setImageModalVisible={setImageModalVisible}
+              />
+            </View>
+            <View className="w-1/3 flex flex-row justify-center items-center">
+              {editingIndex && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setOpenLaundryOpt(true);
+                  }}
+                  className="flex flex-col items-center mr-5"
+                >
+                  {colorScheme == "DARK" ? (
+                    <Image
+                      source={LaundryOptions2}
+                      alt="Laundry Options Icon"
+                      style={{ width: 34, height: 42 }}
+                    />
+                  ) : (
+                    <Image
+                      source={LaundryOptions}
+                      alt="Laundry Options Icon2"
+                      style={{ width: 34, height: 42 }}
+                    />
+                  )}
+                  <ThemeText>{storedItems.laundryCounter}</ThemeText>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+          <CustomInput
+            mode="outlined"
+            outlineColor={appColors.mainGreen}
+            selectionColor="#C0C0C0"
+            activeOutlineColor={appColors.mainGreen}
+            textContentType="name"
+            style={[
+              styles.customWidth,
+              {
+                textAlign: storedSettings.language == 1 ? "right" : "left",
+              },
+            ]}
+            label={localization.Name[storedSettings.language]}
+            value={name}
+            onChange={text => setName(text.nativeEvent.text)}
+            right={
+              <Pressable
+                hitSlop={{ bottom: 20, left: 20, right: 10, top: 20 }}
+                onPress={() => setName(get_random(RandomNamesP1))}
+              >
+                <Icon name="dice" size={15} color={appColors.mainCyan} />
+              </Pressable>
             }
           />
-          <View className="flex items-center gap-y-2">
-            <View className="flex flex-row mt-4">
-              <View className="w-1/3"></View>
-              <View className="w-1/3 flex flex-row justify-center">
-                <ImageViewer
-                  imageUrl={imageUrl}
-                  setImageModalVisible={setImageModalVisible}
+          {combiningTypesData?.length > 0 && (
+            <View style={[{ zIndex: 2 }, styles.customWidth]}>
+              <DropDownPicker
+                open={openType}
+                value={type}
+                items={combiningTypesData}
+                setOpen={setOpenType}
+                setValue={setType}
+                mode="SIMPLE"
+                listMode="MODAL"
+                placeholder={localization.Type[storedSettings.language]}
+                style={{ borderColor: appColors.mainGreen }}
+                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                theme={colorScheme}
+              />
+            </View>
+          )}
+          {(selectedCategory ?? storedItems.category) < 2 && (
+            <View className="w-[80%] flex flex-row justify-between items-center z-[3]">
+              <View style={{ width: "49%" }}>
+                <DropDownPicker
+                  open={openFit}
+                  value={fit}
+                  items={fitList}
+                  setOpen={setOpenFit}
+                  setValue={setFit}
+                  mode="SIMPLE"
+                  placeholder={localization.Fit[storedSettings.language]}
+                  style={{ borderColor: appColors.mainGreen }}
+                  dropDownContainerStyle={{
+                    borderColor: appColors.mainGreen,
+                  }}
+                  theme={colorScheme}
                 />
               </View>
-              <View className="w-1/3 flex flex-row justify-center items-center">
-                {editingIndex && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setOpenLaundryOpt(true);
-                    }}
-                    className="flex flex-col items-center mr-5"
-                  >
-                    {colorScheme == "DARK" ? (
-                      <Image
-                        source={LaundryOptions2}
-                        alt="Laundry Options Icon"
-                        style={{ width: 34, height: 42 }}
-                      />
-                    ) : (
-                      <Image
-                        source={LaundryOptions}
-                        alt="Laundry Options Icon2"
-                        style={{ width: 34, height: 42 }}
-                      />
-                    )}
-                    <ThemeText>{storedItems.laundryCounter}</ThemeText>
-                  </TouchableOpacity>
-                )}
+              <View style={{ width: "49%" }}>
+                <DropDownPicker
+                  open={openSeason}
+                  value={season}
+                  items={seasonList[storedSettings.language]}
+                  setOpen={setOpenSeason}
+                  setValue={setSeason}
+                  mode="SIMPLE"
+                  placeholder={localization.Season[storedSettings.language]}
+                  style={{ borderColor: appColors.mainGreen }}
+                  dropDownContainerStyle={{
+                    borderColor: appColors.mainGreen,
+                  }}
+                  theme={colorScheme}
+                />
               </View>
+            </View>
+          )}
+          <View className="w-[80%] flex flex-row justify-between items-center z-[2]">
+            <CustomInput
+              mode="outlined"
+              outlineColor={appColors.mainGreen}
+              selectionColor="#C0C0C0"
+              activeOutlineColor={appColors.mainGreen}
+              style={{ width: "40%" }}
+              label={localization.Quantity[storedSettings.language]}
+              value={String(quantity)}
+              onChange={text => setQuantity(Number(text.nativeEvent.text))}
+              keyboardType="numeric"
+              maxLength={2}
+            />
+            <View style={{ width: "28%" }}>
+              <DropDownPicker
+                open={openSizeUnit}
+                value={sizeUnit}
+                items={sizeList}
+                setOpen={setOpenSizeUnit}
+                setValue={setSizeUnit}
+                mode="SIMPLE"
+                placeholder={localization.Unit[storedSettings.language]}
+                style={{ borderColor: appColors.mainGreen, marginTop: 5 }}
+                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
+                theme={colorScheme}
+              />
             </View>
             <CustomInput
               mode="outlined"
               outlineColor={appColors.mainGreen}
               selectionColor="#C0C0C0"
               activeOutlineColor={appColors.mainGreen}
-              textContentType="name"
-              style={[
-                styles.customWidth,
-                {
-                  textAlign: storedSettings.language == 1 ? "right" : "left",
-                },
-              ]}
-              label={localization.Name[storedSettings.language]}
-              value={name}
-              onChange={text => setName(text.nativeEvent.text)}
-              right={
-                <Pressable
-                  hitSlop={{ bottom: 20, left: 20, right: 10, top: 20 }}
-                  onPress={() => setName(get_random(RandomNamesP1))}
-                >
-                  <Icon name="dice" size={15} color={appColors.mainCyan} />
-                </Pressable>
-              }
+              style={{ width: "28%" }}
+              label={localization.Size[storedSettings.language]}
+              value={String(size)}
+              onChange={text => setSize(text.nativeEvent.text)}
+              maxLength={6}
             />
-            {combiningTypesData?.length > 0 && (
-              <View style={[{ zIndex: 2 }, styles.customWidth]}>
-                <DropDownPicker
-                  open={openType}
-                  value={type}
-                  items={combiningTypesData}
-                  setOpen={setOpenType}
-                  setValue={setType}
-                  mode="SIMPLE"
-                  listMode="MODAL"
-                  placeholder={localization.Type[storedSettings.language]}
-                  style={{ borderColor: appColors.mainGreen }}
-                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={colorScheme}
-                />
-              </View>
-            )}
-            {(selectedCategory ?? storedItems.category) < 2 && (
-              <View className="w-[80%] flex flex-row justify-between items-center z-[3]">
-                <View style={{ width: "49%" }}>
-                  <DropDownPicker
-                    open={openFit}
-                    value={fit}
-                    items={fitList}
-                    setOpen={setOpenFit}
-                    setValue={setFit}
-                    mode="SIMPLE"
-                    placeholder={localization.Fit[storedSettings.language]}
-                    style={{ borderColor: appColors.mainGreen }}
-                    dropDownContainerStyle={{
-                      borderColor: appColors.mainGreen,
-                    }}
-                    theme={colorScheme}
-                  />
-                </View>
-                <View style={{ width: "49%" }}>
-                  <DropDownPicker
-                    open={openSeason}
-                    value={season}
-                    items={seasonList[storedSettings.language]}
-                    setOpen={setOpenSeason}
-                    setValue={setSeason}
-                    mode="SIMPLE"
-                    placeholder={localization.Season[storedSettings.language]}
-                    style={{ borderColor: appColors.mainGreen }}
-                    dropDownContainerStyle={{
-                      borderColor: appColors.mainGreen,
-                    }}
-                    theme={colorScheme}
-                  />
-                </View>
-              </View>
-            )}
-            <View className="w-[80%] flex flex-row justify-between items-center z-[2]">
-              <CustomInput
-                mode="outlined"
-                outlineColor={appColors.mainGreen}
-                selectionColor="#C0C0C0"
-                activeOutlineColor={appColors.mainGreen}
-                style={{ width: "40%" }}
-                label={localization.Quantity[storedSettings.language]}
-                value={String(quantity)}
-                onChange={text => setQuantity(Number(text.nativeEvent.text))}
-                keyboardType="numeric"
-                maxLength={2}
-              />
-              <View style={{ width: "28%" }}>
-                <DropDownPicker
-                  open={openSizeUnit}
-                  value={sizeUnit}
-                  items={sizeList}
-                  setOpen={setOpenSizeUnit}
-                  setValue={setSizeUnit}
-                  mode="SIMPLE"
-                  placeholder={localization.Unit[storedSettings.language]}
-                  style={{ borderColor: appColors.mainGreen, marginTop: 5 }}
-                  dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-                  theme={colorScheme}
-                />
-              </View>
-              <CustomInput
-                mode="outlined"
-                outlineColor={appColors.mainGreen}
-                selectionColor="#C0C0C0"
-                activeOutlineColor={appColors.mainGreen}
-                style={{ width: "28%" }}
-                label={localization.Size[storedSettings.language]}
-                value={String(size)}
-                onChange={text => setSize(text.nativeEvent.text)}
-                maxLength={6}
-              />
-            </View>
-            <View></View>
-            <DatePicker
-              title={localization.Purchase_Date[storedSettings.language]}
-              date={purchaseDate}
-              isDatePickerVisible={isDatePickerVisible}
-              setDate={setPurchaseDate}
-              setDatePickerVisibility={setDatePickerVisibility}
+          </View>
+          <View></View>
+          <DatePicker
+            title={localization.Purchase_Date[storedSettings.language]}
+            date={purchaseDate}
+            isDatePickerVisible={isDatePickerVisible}
+            setDate={setPurchaseDate}
+            setDatePickerVisibility={setDatePickerVisibility}
+          />
+          <View style={[{ zIndex: 1 }, styles.customWidth]}>
+            <DropDownPicker
+              open={openCollection}
+              value={collection}
+              items={collectionState}
+              setOpen={setOpenCollection}
+              setValue={setCollection}
+              multiple={true}
+              theme={colorScheme}
+              // badgeDotColors={CollectionColors}
+              showBadgeDot={false}
+              badgeTextStyle={{ color: appColors.black }}
+              mode="BADGE"
+              placeholder={localization.Collection[storedSettings.language]}
+              style={{ borderColor: appColors.mainGreen }}
+              dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
             />
-            <View style={[{ zIndex: 1 }, styles.customWidth]}>
-              <DropDownPicker
-                open={openCollection}
-                value={collection}
-                items={collectionState}
-                setOpen={setOpenCollection}
-                setValue={setCollection}
-                multiple={true}
-                theme={colorScheme}
-                // badgeDotColors={CollectionColors}
-                showBadgeDot={false}
-                badgeTextStyle={{ color: appColors.black }}
-                mode="BADGE"
-                placeholder={localization.Collection[storedSettings.language]}
-                style={{ borderColor: appColors.mainGreen }}
-                dropDownContainerStyle={{ borderColor: appColors.mainGreen }}
-              />
-            </View>
+          </View>
 
-            <View
-              className={`flex ${
-                storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
-              }`}
-            >
-              <Icon name="info-circle" size={15} color={appColors.mainCyan} />
-              <ThemeText classNameStyle="text-xs mx-2">
-                {localization.You_can_add[storedSettings.language]}
-              </ThemeText>
-            </View>
+          <View
+            className={`flex ${
+              storedSettings.language == 1 ? "flex-row-reverse" : "flex-row"
+            }`}
+          >
+            <Icon name="info-circle" size={15} color={appColors.mainCyan} />
+            <ThemeText classNameStyle="text-xs mx-2">
+              {localization.You_can_add[storedSettings.language]}
+            </ThemeText>
+          </View>
 
-            <View className="flex-row items-center">
+          <View className="flex-row items-center">
+            <ThemeText>
+              {localization.Automatic_color_selection[storedSettings.language]}
+            </ThemeText>
+            <Switch
+              color={appColors.mainCyan}
+              value={isAutoOn}
+              onValueChange={onToggleSwitch}
+            />
+          </View>
+
+          {!isAutoOn && (
+            <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
               <ThemeText>
-                {
-                  localization.Automatic_color_selection[
-                    storedSettings.language
-                  ]
-                }
+                {localization.Primary_color[storedSettings.language]}
               </ThemeText>
-              <Switch
-                color={appColors.mainCyan}
-                value={isAutoOn}
-                onValueChange={onToggleSwitch}
-              />
-            </View>
-
-            {!isAutoOn && (
-              <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>
-                  {localization.Primary_color[storedSettings.language]}
-                </ThemeText>
-                <Pressable
-                  onPress={() => {
-                    setVisible(true);
-                    setColorSelection(0);
-                  }}
-                >
-                  <View
-                    className="h-5 w-5 border-[0.2px]"
-                    style={{ backgroundColor: colors[0] || appColors.gray }}
-                  />
-                </Pressable>
-              </View>
-            )}
-            {!isAutoOn && (
-              <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>
-                  {localization.Secondary_color[storedSettings.language]}
-                </ThemeText>
-                <Pressable
-                  onPress={() => {
-                    setVisible(true);
-                    setColorSelection(1);
-                  }}
-                >
-                  <View
-                    className="h-5 w-5 border-[0.2px]"
-                    style={{ backgroundColor: colors[1] || appColors.gray }}
-                  />
-                </Pressable>
-              </View>
-            )}
-            {!isAutoOn && (
-              <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
-                <ThemeText>
-                  {localization.Tertiary_color[storedSettings.language]}
-                </ThemeText>
-                <Pressable
-                  onPress={() => {
-                    setVisible(true);
-                    setColorSelection(2);
-                  }}
-                >
-                  <View
-                    className="h-5 w-5 border-[0.2px]"
-                    style={{ backgroundColor: colors[2] || appColors.gray }}
-                  />
-                </Pressable>
-              </View>
-            )}
-
-            {errorsList.length > 0 && (
-              <View>
-                {errorsList.map((error, index) => {
-                  return (
-                    <Text key={index} className="text-[#C70039]">
-                      {error}
-                    </Text>
-                  );
-                })}
-              </View>
-            )}
-            <View className="flex flex-row justify-center gap-x-5">
-              <Button
-                // className="mb-5"
-                mode="contained"
-                buttonColor={appColors.mainCyan}
-                textColor={appColors.white}
-                onPress={addItemHandler}
+              <Pressable
+                onPress={() => {
+                  setVisible(true);
+                  setColorSelection(0);
+                }}
               >
-                {localization.Save[storedSettings.language]}
+                <View
+                  className="h-5 w-5 border-[0.2px]"
+                  style={{ backgroundColor: colors[0] || appColors.gray }}
+                />
+              </Pressable>
+            </View>
+          )}
+          {!isAutoOn && (
+            <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
+              <ThemeText>
+                {localization.Secondary_color[storedSettings.language]}
+              </ThemeText>
+              <Pressable
+                onPress={() => {
+                  setVisible(true);
+                  setColorSelection(1);
+                }}
+              >
+                <View
+                  className="h-5 w-5 border-[0.2px]"
+                  style={{ backgroundColor: colors[1] || appColors.gray }}
+                />
+              </Pressable>
+            </View>
+          )}
+          {!isAutoOn && (
+            <View className="flex flex-row justify-between items-center border-[1px] border-mainGreen rounded-lg w-4/5 h-8 px-5">
+              <ThemeText>
+                {localization.Tertiary_color[storedSettings.language]}
+              </ThemeText>
+              <Pressable
+                onPress={() => {
+                  setVisible(true);
+                  setColorSelection(2);
+                }}
+              >
+                <View
+                  className="h-5 w-5 border-[0.2px]"
+                  style={{ backgroundColor: colors[2] || appColors.gray }}
+                />
+              </Pressable>
+            </View>
+          )}
+
+          {errorsList.length > 0 && (
+            <View>
+              {errorsList.map((error, index) => {
+                return (
+                  <Text key={index} className="text-[#C70039]">
+                    {error}
+                  </Text>
+                );
+              })}
+            </View>
+          )}
+          <View className="flex flex-row justify-center gap-x-5">
+            <Button
+              mode="contained"
+              buttonColor={appColors.mainCyan}
+              textColor={appColors.white}
+              onPress={addItemHandler}
+            >
+              {localization.Save[storedSettings.language]}
+            </Button>
+            {editingIndex && (
+              <Button
+                mode="contained"
+                buttonColor="#ee4949"
+                textColor={appColors.white}
+                onPress={deleteItemHandler}
+              >
+                {localization.Delete[storedSettings.language]}
               </Button>
-              {editingIndex && (
+            )}
+            {editingIndex &&
+              (storedItems.laundryCounter ?? 0) >=
+                (storedItems.overrideMaxLaundry ?? false
+                  ? storedItems.maxLaundryNumber
+                  : storedSettings.laundryNumber) &&
+              (storedItems.laundryable ?? true) && (
                 <Button
-                  // className="mb-5"
                   mode="contained"
-                  buttonColor="#ee4949"
+                  buttonColor={"orange"}
                   textColor={appColors.white}
-                  onPress={deleteItemHandler}
+                  onPress={resetLaundryCounterHandler}
                 >
-                  {localization.Delete[storedSettings.language]}
+                  {localization.Cleaned[storedSettings.language]}
                 </Button>
               )}
-              {editingIndex &&
-                (storedItems.laundryCounter ?? 0) >=
-                  (storedItems.overrideMaxLaundry ?? false
-                    ? storedItems.maxLaundryNumber
-                    : storedSettings.laundryNumber) &&
-                (storedItems.laundryable ?? true) && (
-                  <Button
-                    mode="contained"
-                    buttonColor={"orange"}
-                    textColor={appColors.white}
-                    onPress={resetLaundryCounterHandler}
-                  >
-                    {localization.Cleaned[storedSettings.language]}
-                  </Button>
-                )}
-            </View>
           </View>
-        </>
+        </View>
       </ThemeView>
     </>
   );

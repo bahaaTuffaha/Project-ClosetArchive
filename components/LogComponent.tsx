@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useMemo } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -12,6 +12,7 @@ import { ItemBox } from "./ItemBox";
 import dayjs from "dayjs";
 import { deleteEventLog, deleteLog } from "../redux/itemsSlice";
 import { colors } from "../utils/colors";
+import { ConfirmationDialog } from "./ConfirmationDialog";
 
 interface LogComponentProps {
   eventName: string;
@@ -33,6 +34,7 @@ export const LogComponent = ({
   const dispatch = useDispatch();
   const isDarkMode = useColorScheme() === "dark";
   const itemsState = useSelector((state: RootState) => state.itemsList.items);
+  const [confirmVisible, setConfirmVisible] = useState(false);
 
   const associatedItems = useMemo(() => {
     return itemsState.filter(item => item.logIds?.some(id => id === eventId));
@@ -75,13 +77,19 @@ export const LogComponent = ({
         </View>
 
         <TouchableOpacity
-          onPress={handleDelete}
+          onPress={() => setConfirmVisible(true)}
           style={styles.deleteButton}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Text style={styles.deleteIcon}>✕</Text>
         </TouchableOpacity>
       </View>
+
+      <ConfirmationDialog
+        visible={confirmVisible}
+        setVisible={setConfirmVisible}
+        onConfirm={handleDelete}
+      />
 
       <View
         style={[
