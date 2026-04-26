@@ -7,6 +7,10 @@ import {
   filterCollectionsBySearch,
   filterItemsBySearch,
 } from "../../utils/filters";
+import {
+  getCollectionSortValue,
+  getOrderedCollectionTags,
+} from "../../utils/collectionOrder";
 import { Button, Searchbar, Snackbar } from "react-native-paper";
 import { RootState } from "../../redux/store";
 import { item } from "../../redux/itemsSlice";
@@ -30,7 +34,10 @@ export const ItemSelector = () => {
 
   const groupedData = useMemo(() => {
     let collections: item[][] = [];
-    let tags = itemsState.collectionTags;
+    let tags = getOrderedCollectionTags(
+      itemsState.collectionTags,
+      getCollectionSortValue(storedSettings.collectionSortValue),
+    );
     let items = itemsState.items;
 
     if (tags.length > 0) {
@@ -45,10 +52,16 @@ export const ItemSelector = () => {
     );
 
     return {
+      tags,
       collections: filterCollectionsBySearch(collections, search),
       nonCollected: filterItemsBySearch(nonCollected, search),
     };
-  }, [itemsState.items, itemsState.collectionTags, search]);
+  }, [
+    itemsState.items,
+    itemsState.collectionTags,
+    search,
+    storedSettings.collectionSortValue,
+  ]);
 
   const isRTL = storedSettings.language === 1;
 
@@ -92,27 +105,29 @@ export const ItemSelector = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {itemsState.collectionTags.map((collection, index) => {
+          {groupedData.tags.map((collection, index) => {
             const collectionItems = groupedData.collections[index];
             if (!collectionItems || collectionItems.length === 0) return null;
 
             return (
               <CollectionContainer
-                key={`col-${index}`}
+                key={`col-${collection.value}`}
                 color={collection.color ?? colors.white}
                 label={collection.label}
               >
                 <View style={styles.gridRow}>
-                  {collectionItems.map(item => (
-                    <View key={item.id} style={styles.gridItem}>
+                  {collectionItems.map(collectionItem => (
+                    <View key={collectionItem.id} style={styles.gridItem}>
                       <SelectionItemBox
-                        primary={item.primaryColor || colors.white}
-                        secondary={item.secondaryColor || colors.white}
-                        tertiary={item.tertiaryColor || colors.white}
-                        image={item.image}
-                        name={item.name}
-                        type={item.type}
-                        id={item.id}
+                        primary={collectionItem.primaryColor || colors.white}
+                        secondary={
+                          collectionItem.secondaryColor || colors.white
+                        }
+                        tertiary={collectionItem.tertiaryColor || colors.white}
+                        image={collectionItem.image}
+                        name={collectionItem.name}
+                        type={collectionItem.type}
+                        id={collectionItem.id}
                         setSelectedIdCollector={setSelectedIdCollector}
                         selectedIdCollector={selectedIdCollector}
                       />
@@ -125,16 +140,16 @@ export const ItemSelector = () => {
 
           {groupedData.nonCollected.length > 0 && (
             <View style={styles.gridRow}>
-              {groupedData.nonCollected.map(item => (
-                <View key={item.id} style={styles.gridItem}>
+              {groupedData.nonCollected.map(nonCollectedItem => (
+                <View key={nonCollectedItem.id} style={styles.gridItem}>
                   <SelectionItemBox
-                    primary={item.primaryColor || colors.white}
-                    secondary={item.secondaryColor || colors.white}
-                    tertiary={item.tertiaryColor || colors.white}
-                    image={item.image}
-                    name={item.name}
-                    type={item.type}
-                    id={item.id}
+                    primary={nonCollectedItem.primaryColor || colors.white}
+                    secondary={nonCollectedItem.secondaryColor || colors.white}
+                    tertiary={nonCollectedItem.tertiaryColor || colors.white}
+                    image={nonCollectedItem.image}
+                    name={nonCollectedItem.name}
+                    type={nonCollectedItem.type}
+                    id={nonCollectedItem.id}
                     setSelectedIdCollector={setSelectedIdCollector}
                     selectedIdCollector={selectedIdCollector}
                   />

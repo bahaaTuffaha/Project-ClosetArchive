@@ -27,6 +27,10 @@ import {
   filterCollectionsBySearch,
   filterItemsBySearch,
 } from "../../utils/filters";
+import {
+  getCollectionSortValue,
+  getOrderedCollectionTags,
+} from "../../utils/collectionOrder";
 import { defaultCategories } from "../stackNav/Category";
 import useWidthScreen from "../../hooks/useWidthScreen";
 import { ThemeNameType } from "react-native-dropdown-picker";
@@ -112,7 +116,10 @@ export function HomeBottom() {
 
   const groupedCollectionsRaw = useMemo(() => {
     let final: item[][] = [];
-    let tags = itemsState.collectionTags;
+    let tags = getOrderedCollectionTags(
+      itemsState.collectionTags,
+      getCollectionSortValue(storedSettings.collectionSortValue),
+    );
     let items = itemsState.items;
 
     if (tags.length > 0) {
@@ -128,8 +135,12 @@ export function HomeBottom() {
       x => !x.collection || x.collection.length === 0,
     );
 
-    return { final, nonColRaw };
-  }, [itemsState.items, itemsState.collectionTags]);
+    return { final, nonColRaw, tags };
+  }, [
+    itemsState.items,
+    itemsState.collectionTags,
+    storedSettings.collectionSortValue,
+  ]);
 
   const filteredData = useMemo(() => {
     const filters = {
@@ -252,13 +263,13 @@ export function HomeBottom() {
               </CollectionContainer>
             )}
 
-          {itemsState.collectionTags.map((collection, index) => {
+          {groupedCollectionsRaw.tags.map((collection, index) => {
             const collectionItems = filteredData.collections[index];
             if (!collectionItems || collectionItems.length === 0) return null;
 
             return (
               <CollectionContainer
-                key={`collection-${index}`}
+                key={`collection-${collection.value}`}
                 color={collection.color ?? colors.white}
                 label={collection.label}
               >

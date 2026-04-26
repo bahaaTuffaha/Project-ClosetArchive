@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
+import {
+  moveCollectionTag,
+  normalizeCollectionTags,
+} from "../utils/collectionOrder";
 
 export type logsType = {
   eventId: string; //common ID for any combined items.
@@ -45,6 +49,7 @@ export type CollectionTag = {
   value: string;
   color?: string;
   isOpen: boolean;
+  arrangement: number;
 };
 
 const initialState: itemsList = {
@@ -70,7 +75,7 @@ const itemsSlice = createSlice({
         size: action.payload.size,
         quantity: action.payload.quantity,
         collection:
-          action.payload.collection.length == 0
+          action.payload.collection.length === 0
             ? []
             : action.payload.collection,
         category: action.payload.category,
@@ -97,7 +102,7 @@ const itemsSlice = createSlice({
       state.items[itemIndex].sizeUnit = action.payload.sizeUnit;
       state.items[itemIndex].quantity = action.payload.quantity;
       state.items[itemIndex].collection =
-        action.payload.collection.length == 0 ? [] : action.payload.collection;
+        action.payload.collection.length === 0 ? [] : action.payload.collection;
       state.items[itemIndex].automaticColor = action.payload.automaticColor;
       state.items[itemIndex].purchaseDate = action.payload.purchaseDate;
       state.items[itemIndex].primaryColor = action.payload.primaryColor;
@@ -114,12 +119,17 @@ const itemsSlice = createSlice({
         label: action.payload.name,
         color: action.payload.color,
         isOpen: true,
+        arrangement: state.collectionTags.length,
       });
     },
     updateCollection: (state, action) => {
       const collectionIndex = state.collectionTags.findIndex(
-        (x) => x.label === action.payload.name,
+        (x) =>
+          x.label === action.payload.name || x.value === action.payload.name,
       );
+      if (collectionIndex < 0) {
+        return;
+      }
       state.collectionTags[collectionIndex].label = action.payload.newName;
       if (action.payload.color) {
         state.collectionTags[collectionIndex].color = action.payload.color;
@@ -127,20 +137,30 @@ const itemsSlice = createSlice({
     },
     toggleCollection: (state, action) => {
       const collectionIndex = state.collectionTags.findIndex(
-        (x) => x.label === action.payload.name,
+        (x) =>
+          x.label === action.payload.name || x.value === action.payload.name,
       );
+      if (collectionIndex < 0) {
+        return;
+      }
       state.collectionTags[collectionIndex].isOpen =
         !state.collectionTags[collectionIndex].isOpen;
     },
     deleteCollection: (state, action) => {
       const collectionIndex = state.collectionTags.findIndex(
-        (x) => x.label === action.payload.name,
+        (x) =>
+          x.label === action.payload.name || x.value === action.payload.name,
       );
+      if (collectionIndex < 0) {
+        return;
+      }
+      const deletedCollectionValue = state.collectionTags[collectionIndex].value;
       state.collectionTags.splice(collectionIndex, 1);
+      state.collectionTags = normalizeCollectionTags(state.collectionTags);
       try {
         for (let i = 0; i < state.items.length; i++) {
           let itemCollectionIndex = state.items[i].collection?.findIndex(
-            (x) => x === action.payload.name,
+            (x) => x === deletedCollectionValue,
           );
 
           if (itemCollectionIndex !== undefined && itemCollectionIndex !== -1) {
@@ -150,6 +170,13 @@ const itemsSlice = createSlice({
       } catch (err) {
         console.log("Error occurred at deleteCollection: " + err);
       }
+    },
+    moveCollection: (state, action) => {
+      state.collectionTags = moveCollectionTag(
+        state.collectionTags,
+        action.payload.value,
+        action.payload.direction,
+      );
     },
     addEventLog: (state, action) => {
       state.logs.push({
@@ -225,7 +252,9 @@ const itemsSlice = createSlice({
     },
     importItems: (state, action) => {
       state.items = action.payload.items;
-      state.collectionTags = action.payload.collectionTags;
+      state.collectionTags = normalizeCollectionTags(
+        action.payload.collectionTags,
+      );
       state.logs = action.payload.logs;
       state.refreshItems = action.payload.refreshItems;
       state.refreshLaundry = action.payload.refreshLaundry;
@@ -239,6 +268,7 @@ export const {
   toggleCollection,
   deleteCollection,
   updateCollection,
+  moveCollection,
   addLog,
   deleteLog,
   addEventLog,

@@ -13,10 +13,26 @@ import {
   REGISTER,
 } from "redux-persist";
 import settingsSlice from "./settingsSlice";
+import { normalizeCollectionTags } from "../utils/collectionOrder";
 
 const persistConfig = {
   key: "root",
   storage: FilesystemStorage,
+  migrate: async (state: any) => {
+    if (!state?.itemsList) {
+      return state;
+    }
+
+    return {
+      ...state,
+      itemsList: {
+        ...state.itemsList,
+        collectionTags: normalizeCollectionTags(
+          state.itemsList.collectionTags || [],
+        ),
+      },
+    };
+  },
 };
 const rootReducer = combineReducers({
   CategoryList: categoriesSlice,

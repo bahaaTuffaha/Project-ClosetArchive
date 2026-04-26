@@ -3,6 +3,7 @@ import * as ScopedStorage from "react-native-scoped-storage";
 import { importCategory } from "../redux/categoriesSlice";
 import { importItems } from "../redux/itemsSlice";
 import { importSettings } from "../redux/settingsSlice";
+import { normalizeCollectionTags } from "./collectionOrder";
 
 // Function to import the Redux store from a JSON file in the Documents folder
 export const importStoreFromJson = async (
@@ -22,6 +23,9 @@ export const importStoreFromJson = async (
         // Read the serialized state from the selected JSON file
         const serializedState = file.data;
           const state: RootState = JSON.parse(serializedState);
+          const normalizedCollectionTags = normalizeCollectionTags(
+            state.itemsList.collectionTags || [],
+          );
           store.dispatch(
             importCategory({
               Categories: state.CategoryList.Categories,
@@ -30,7 +34,7 @@ export const importStoreFromJson = async (
           );
           store.dispatch(
             importItems({
-              collectionTags: state.itemsList.collectionTags,
+              collectionTags: normalizedCollectionTags,
               logs: state.itemsList.logs,
               items: state.itemsList.items,
               refreshItems: state.itemsList.refreshItems,
@@ -47,6 +51,7 @@ export const importStoreFromJson = async (
               name: state.settings.name,
               enableLaundry: state.settings.enableLaundry,
               enableReminder: state.settings.enableReminder,
+              collectionSortValue: state.settings.collectionSortValue,
             }),
           );
           await persistor.persist();
