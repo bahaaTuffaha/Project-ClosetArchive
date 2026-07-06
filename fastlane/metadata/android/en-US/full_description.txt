@@ -6,3 +6,4 @@ Features
 - Managing Collections.
 - Laundry alert/notification.
 - "Import" and "Export" your data localy.
+- Export wardrobe data for LLMs (text or with images).

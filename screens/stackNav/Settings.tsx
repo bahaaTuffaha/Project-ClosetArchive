@@ -1,7 +1,12 @@
-import { View, useColorScheme, StyleSheet } from "react-native";
+import {
+  View,
+  useColorScheme,
+  StyleSheet,
+} from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
+import { LLMLoadingOverlay } from "../../components/LLMLoadingOverlay";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { useEffect, useState } from "react";
 import { languagesList } from "../../utils/data";
@@ -19,11 +24,14 @@ import {
 import { Button, Checkbox, Snackbar } from "react-native-paper";
 import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
+import { generateLLMText } from "../../utils/exportForLLM";
+import Clipboard from "@react-native-clipboard/clipboard";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
 import { laundryRefresher } from "../../redux/itemsSlice";
 import { localization } from "../../utils/localization";
 import { handleNumberChange } from "../../utils/validators";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
@@ -57,6 +65,11 @@ export const Settings = () => {
   const [checkedRem, setCheckedRem] = useState(enableReminder);
   const [checkedHeatMap, setCheckedHeatMap] = useState(enableHeatMap);
 
+  // LLM copy states
+  const [llmConfirmVisible, setLlmConfirmVisible] = useState(false);
+  const [pendingWithImages, setPendingWithImages] = useState(false);
+  const [isLLMGenerating, setIsLLMGenerating] = useState(false);
+
   const setCheckboxes = (
     newEnableLaundry: boolean,
     newEnableReminder: boolean,
@@ -69,13 +82,43 @@ export const Settings = () => {
 
   const rowStyle = isRtl ? styles.rowReverse : styles.row;
 
+  // LLM copy handlers (with confirmation)
+  const handleLLMButtonPress = (withImages: boolean) => {
+    setPendingWithImages(withImages);
+    setLlmConfirmVisible(true);
+  };
+
+  const confirmAndCopyLLM = async () => {
+    const withImages = pendingWithImages;
+    setLlmConfirmVisible(false);
+
+    if (withImages) {
+      setIsLLMGenerating(true);
+    }
+
+    try {
+      const text = await generateLLMText(withImages);
+      Clipboard.setString(text);
+      setExportOrImport(2);
+      onToggleSnackBar();
+    } catch (error) {
+      console.warn("LLM export failed:", error);
+    } finally {
+      if (withImages) {
+        setIsLLMGenerating(false);
+      }
+    }
+  };
+
   return (
     <ThemeView>
       <BackButton pageTitle={localization.Settings[language]} />
       <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
         {exportOrImport === 0
           ? "Exported to destination"
-          : "Imported successfully"}
+          : exportOrImport === 1
+          ? "Imported successfully"
+          : localization.LLMCopied[language]}
       </Snackbar>
       <View style={styles.container}>
         <View style={[rowStyle, { columnGap: 8 }]}>
@@ -152,6 +195,7 @@ export const Settings = () => {
             {localization.Import[language]}
           </Button>
         </View>
+
         <View style={rowStyle}>
           <ThemeText customStyle={styles.textLabel5}>
             {localization.Laundry_reminder[language]}
@@ -230,7 +274,53 @@ export const Settings = () => {
             {localization.HeatMap_description[language]}
           </ThemeText>
         </View>
+
+        {/* LLM export buttons moved to the end of settings */}
+        <View style={{ width: "100%" }}>
+          <Button
+            onPress={() => handleLLMButtonPress(false)}
+            mode="contained"
+            style={{ width: "100%" }}
+            buttonColor={colors.mainCyan}
+            disabled={isLLMGenerating}
+          >
+            {localization.LLMText[language]}
+          </Button>
+        </View>
+        <View style={{ width: "100%" }}>
+          <Button
+            onPress={() => handleLLMButtonPress(true)}
+            mode="contained"
+            style={{ width: "100%" }}
+            buttonColor={colors.mainGreen}
+            disabled={isLLMGenerating}
+          >
+            {localization.LLMWithImages[language]}
+          </Button>
+        </View>
+        <View style={{ flexDirection: isRtl ? "row-reverse" : "row" }}>
+          <Icon name="info-circle" size={15} color={colors.mainCyan} />
+          <ThemeText customStyle={styles.infoText}>
+            {localization.LLM_info[language]}
+          </ThemeText>
+        </View>
       </View>
+
+      <>
+        <ConfirmationDialog
+          visible={llmConfirmVisible}
+          setVisible={setLlmConfirmVisible}
+          onConfirm={confirmAndCopyLLM}
+          title={localization.LLMConfirmTitle[language]}
+          message={localization.LLMConfirmMessage[language]}
+        />
+
+        <LLMLoadingOverlay
+          visible={isLLMGenerating}
+          preparingText={localization.LLMLoadingPreparing[language]}
+          compressingText={localization.LLMLoadingCompressing[language]}
+        />
+      </>
     </ThemeView>
   );
 };

@@ -89,8 +89,8 @@ android {
         applicationId "com.myclosetx"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "1.1.0"
+        versionCode 10
+        versionName "1.2.0"
     }
     signingConfigs {
         debug {
