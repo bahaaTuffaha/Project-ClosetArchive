@@ -1,8 +1,4 @@
-import {
-  View,
-  useColorScheme,
-  StyleSheet,
-} from "react-native";
+import { View, useColorScheme, StyleSheet } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
@@ -24,7 +20,12 @@ import {
 import { Button, Checkbox, Snackbar } from "react-native-paper";
 import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
-import { generateLLMText } from "../../utils/exportForLLM";
+import {
+  DEFAULT_LLM_EXPORT_SECTIONS,
+  generateLLMText,
+  hasAnyLLMExportSection,
+  LLMExportSections,
+} from "../../utils/exportForLLM";
 import Clipboard from "@react-native-clipboard/clipboard";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
@@ -65,10 +66,11 @@ export const Settings = () => {
   const [checkedRem, setCheckedRem] = useState(enableReminder);
   const [checkedHeatMap, setCheckedHeatMap] = useState(enableHeatMap);
 
-  // LLM copy states
   const [llmConfirmVisible, setLlmConfirmVisible] = useState(false);
-  const [pendingWithImages, setPendingWithImages] = useState(false);
   const [isLLMGenerating, setIsLLMGenerating] = useState(false);
+  const [llmSections, setLlmSections] = useState<LLMExportSections>(
+    DEFAULT_LLM_EXPORT_SECTIONS,
+  );
 
   const setCheckboxes = (
     newEnableLaundry: boolean,
@@ -82,33 +84,45 @@ export const Settings = () => {
 
   const rowStyle = isRtl ? styles.rowReverse : styles.row;
 
-  // LLM copy handlers (with confirmation)
-  const handleLLMButtonPress = (withImages: boolean) => {
-    setPendingWithImages(withImages);
+  const toggleLlmSection = (key: keyof LLMExportSections) => {
+    setLlmSections(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const openLlmExport = () => {
+    setLlmSections(DEFAULT_LLM_EXPORT_SECTIONS);
     setLlmConfirmVisible(true);
   };
 
-  const confirmAndCopyLLM = async () => {
-    const withImages = pendingWithImages;
+  const confirmAndCopyLLM = () => {
+    if (!hasAnyLLMExportSection(llmSections)) return;
+
     setLlmConfirmVisible(false);
+    setIsLLMGenerating(true);
 
-    if (withImages) {
-      setIsLLMGenerating(true);
-    }
-
-    try {
-      const text = await generateLLMText(withImages);
-      Clipboard.setString(text);
-      setExportOrImport(2);
-      onToggleSnackBar();
-    } catch (error) {
-      console.warn("LLM export failed:", error);
-    } finally {
-      if (withImages) {
+    // Defer so the loading overlay can paint before sync export work.
+    setTimeout(() => {
+      try {
+        Clipboard.setString(generateLLMText(llmSections));
+        setExportOrImport(2);
+        onToggleSnackBar();
+      } catch (error) {
+        console.warn("LLM export failed:", error);
+      } finally {
         setIsLLMGenerating(false);
       }
-    }
+    }, 0);
   };
+
+  const llmSectionOptions: {
+    key: keyof LLMExportSections;
+    label: string;
+  }[] = [
+    { key: "settings", label: localization.Settings[language] },
+    { key: "categories", label: localization.Categories[language] },
+    { key: "collections", label: localization.Collections[language] },
+    { key: "items", label: localization.Items[language] },
+    { key: "logs", label: localization.Outfit_Log[language] },
+  ];
 
   return (
     <ThemeView>
@@ -275,27 +289,15 @@ export const Settings = () => {
           </ThemeText>
         </View>
 
-        {/* LLM export buttons moved to the end of settings */}
         <View style={{ width: "100%" }}>
           <Button
-            onPress={() => handleLLMButtonPress(false)}
+            onPress={openLlmExport}
             mode="contained"
             style={{ width: "100%" }}
             buttonColor={colors.mainCyan}
             disabled={isLLMGenerating}
           >
-            {localization.LLMText[language]}
-          </Button>
-        </View>
-        <View style={{ width: "100%" }}>
-          <Button
-            onPress={() => handleLLMButtonPress(true)}
-            mode="contained"
-            style={{ width: "100%" }}
-            buttonColor={colors.mainGreen}
-            disabled={isLLMGenerating}
-          >
-            {localization.LLMWithImages[language]}
+            {localization.LLMExport[language]}
           </Button>
         </View>
         <View style={{ flexDirection: isRtl ? "row-reverse" : "row" }}>
@@ -306,21 +308,37 @@ export const Settings = () => {
         </View>
       </View>
 
-      <>
-        <ConfirmationDialog
-          visible={llmConfirmVisible}
-          setVisible={setLlmConfirmVisible}
-          onConfirm={confirmAndCopyLLM}
-          title={localization.LLMConfirmTitle[language]}
-          message={localization.LLMConfirmMessage[language]}
-        />
+      <ConfirmationDialog
+        visible={llmConfirmVisible}
+        setVisible={setLlmConfirmVisible}
+        onConfirm={confirmAndCopyLLM}
+        title={localization.LLMConfirmTitle[language]}
+        message={localization.LLMConfirmMessage[language]}
+        confirmDisabled={!hasAnyLLMExportSection(llmSections)}
+        confirmColor={colors.mainCyan}
+      >
+        <ThemeText customStyle={styles.llmSectionsTitle}>
+          {localization.LLMIncludeSections[language]}
+        </ThemeText>
+        {llmSectionOptions.map(({ key, label }) => (
+          <View
+            key={key}
+            style={[styles.llmSectionRow, isRtl && styles.rowReverse]}
+          >
+            <ThemeText customStyle={styles.llmSectionLabel}>{label}</ThemeText>
+            <Checkbox
+              status={llmSections[key] ? "checked" : "unchecked"}
+              onPress={() => toggleLlmSection(key)}
+            />
+          </View>
+        ))}
+      </ConfirmationDialog>
 
-        <LLMLoadingOverlay
-          visible={isLLMGenerating}
-          preparingText={localization.LLMLoadingPreparing[language]}
-          compressingText={localization.LLMLoadingCompressing[language]}
-        />
-      </>
+      <LLMLoadingOverlay
+        visible={isLLMGenerating}
+        preparingText={localization.LLMLoadingPreparing[language]}
+        statusText={localization.LLMLoadingStatus[language]}
+      />
     </ThemeView>
   );
 };
@@ -369,5 +387,23 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 12,
     marginHorizontal: 20,
+  },
+
+  llmSectionsTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  llmSectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingVertical: 2,
+  },
+  llmSectionLabel: {
+    fontSize: 14,
+    flex: 1,
   },
 });

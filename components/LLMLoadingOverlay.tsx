@@ -5,13 +5,13 @@ import { colors } from "../utils/colors";
 interface LLMLoadingOverlayProps {
   visible: boolean;
   preparingText: string;
-  compressingText: string;
+  statusText: string;
 }
 
 export const LLMLoadingOverlay = ({
   visible,
   preparingText,
-  compressingText,
+  statusText,
 }: LLMLoadingOverlayProps) => {
   if (!visible) return null;
 
@@ -30,7 +30,7 @@ export const LLMLoadingOverlay = ({
         lightColor={colors.lightGray}
         customStyle={styles.subtext}
       >
-        {compressingText}
+        {statusText}
       </ThemeText>
     </View>
   );
