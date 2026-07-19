@@ -2,6 +2,7 @@ import { View, useColorScheme, StyleSheet } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { BackButton } from "../../components/BackButton";
 import { ThemeText } from "../../components/ThemeText";
+import { LLMLoadingOverlay } from "../../components/LLMLoadingOverlay";
 import DropDownPicker, { ThemeNameType } from "react-native-dropdown-picker";
 import { useEffect, useState } from "react";
 import { languagesList } from "../../utils/data";
@@ -19,11 +20,19 @@ import {
 import { Button, Checkbox, Snackbar } from "react-native-paper";
 import { exportStoreToJson } from "../../utils/exportStoreToJson";
 import { importStoreFromJson } from "../../utils/importStoreFromJson";
+import {
+  DEFAULT_LLM_EXPORT_SECTIONS,
+  generateLLMText,
+  hasAnyLLMExportSection,
+  LLMExportSections,
+} from "../../utils/exportForLLM";
+import Clipboard from "@react-native-clipboard/clipboard";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../utils/colors";
 import { laundryRefresher } from "../../redux/itemsSlice";
 import { localization } from "../../utils/localization";
 import { handleNumberChange } from "../../utils/validators";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
 export const Settings = () => {
   const [openLang, setOpenLang] = useState(false);
@@ -57,6 +66,12 @@ export const Settings = () => {
   const [checkedRem, setCheckedRem] = useState(enableReminder);
   const [checkedHeatMap, setCheckedHeatMap] = useState(enableHeatMap);
 
+  const [llmConfirmVisible, setLlmConfirmVisible] = useState(false);
+  const [isLLMGenerating, setIsLLMGenerating] = useState(false);
+  const [llmSections, setLlmSections] = useState<LLMExportSections>(
+    DEFAULT_LLM_EXPORT_SECTIONS,
+  );
+
   const setCheckboxes = (
     newEnableLaundry: boolean,
     newEnableReminder: boolean,
@@ -69,13 +84,55 @@ export const Settings = () => {
 
   const rowStyle = isRtl ? styles.rowReverse : styles.row;
 
+  const toggleLlmSection = (key: keyof LLMExportSections) => {
+    setLlmSections(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const openLlmExport = () => {
+    setLlmSections(DEFAULT_LLM_EXPORT_SECTIONS);
+    setLlmConfirmVisible(true);
+  };
+
+  const confirmAndCopyLLM = () => {
+    if (!hasAnyLLMExportSection(llmSections)) return;
+
+    setLlmConfirmVisible(false);
+    setIsLLMGenerating(true);
+
+    // Defer so the loading overlay can paint before sync export work.
+    setTimeout(() => {
+      try {
+        Clipboard.setString(generateLLMText(llmSections));
+        setExportOrImport(2);
+        onToggleSnackBar();
+      } catch (error) {
+        console.warn("LLM export failed:", error);
+      } finally {
+        setIsLLMGenerating(false);
+      }
+    }, 0);
+  };
+
+  const llmSectionOptions: {
+    key: keyof LLMExportSections;
+    label: string;
+  }[] = [
+    { key: "settings", label: localization.Settings[language] },
+    { key: "categories", label: localization.Categories[language] },
+    { key: "collections", label: localization.Collections[language] },
+    { key: "items", label: localization.Items[language] },
+    { key: "logs", label: localization.Outfit_Log[language] },
+  ];
+
   return (
     <ThemeView>
       <BackButton pageTitle={localization.Settings[language]} />
       <Snackbar visible={visible} onDismiss={onDismissSnackBar}>
         {exportOrImport === 0
           ? "Exported to destination"
-          : "Imported successfully"}
+          : exportOrImport === 1
+          ? "Imported successfully"
+          : localization.LLMCopied[language]}
       </Snackbar>
       <View style={styles.container}>
         <View style={[rowStyle, { columnGap: 8 }]}>
@@ -152,6 +209,7 @@ export const Settings = () => {
             {localization.Import[language]}
           </Button>
         </View>
+
         <View style={rowStyle}>
           <ThemeText customStyle={styles.textLabel5}>
             {localization.Laundry_reminder[language]}
@@ -230,7 +288,57 @@ export const Settings = () => {
             {localization.HeatMap_description[language]}
           </ThemeText>
         </View>
+
+        <View style={{ width: "100%" }}>
+          <Button
+            onPress={openLlmExport}
+            mode="contained"
+            style={{ width: "100%" }}
+            buttonColor={colors.mainCyan}
+            disabled={isLLMGenerating}
+          >
+            {localization.LLMExport[language]}
+          </Button>
+        </View>
+        <View style={{ flexDirection: isRtl ? "row-reverse" : "row" }}>
+          <Icon name="info-circle" size={15} color={colors.mainCyan} />
+          <ThemeText customStyle={styles.infoText}>
+            {localization.LLM_info[language]}
+          </ThemeText>
+        </View>
       </View>
+
+      <ConfirmationDialog
+        visible={llmConfirmVisible}
+        setVisible={setLlmConfirmVisible}
+        onConfirm={confirmAndCopyLLM}
+        title={localization.LLMConfirmTitle[language]}
+        message={localization.LLMConfirmMessage[language]}
+        confirmDisabled={!hasAnyLLMExportSection(llmSections)}
+        confirmColor={colors.mainCyan}
+      >
+        <ThemeText customStyle={styles.llmSectionsTitle}>
+          {localization.LLMIncludeSections[language]}
+        </ThemeText>
+        {llmSectionOptions.map(({ key, label }) => (
+          <View
+            key={key}
+            style={[styles.llmSectionRow, isRtl && styles.rowReverse]}
+          >
+            <ThemeText customStyle={styles.llmSectionLabel}>{label}</ThemeText>
+            <Checkbox
+              status={llmSections[key] ? "checked" : "unchecked"}
+              onPress={() => toggleLlmSection(key)}
+            />
+          </View>
+        ))}
+      </ConfirmationDialog>
+
+      <LLMLoadingOverlay
+        visible={isLLMGenerating}
+        preparingText={localization.LLMLoadingPreparing[language]}
+        statusText={localization.LLMLoadingStatus[language]}
+      />
     </ThemeView>
   );
 };
@@ -279,5 +387,23 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 12,
     marginHorizontal: 20,
+  },
+
+  llmSectionsTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  llmSectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingVertical: 2,
+  },
+  llmSectionLabel: {
+    fontSize: 14,
+    flex: 1,
   },
 });

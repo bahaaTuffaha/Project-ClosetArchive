@@ -76,10 +76,14 @@ const SpriteAnimation: React.FC<Props> = ({
   return (
     <View style={[styles.container, style]}>
       <Animated.Image
-        width={sheetWidth}
-        height={sheetHeight}
         source={spriteSheet}
-        style={animatedStyle}
+        style={[
+          animatedStyle,
+          {
+            width: sheetWidth,
+            height: sheetHeight,
+          },
+        ]}
         resizeMode="stretch"
         onLoadStart={() => setLoading(true)}
         onLoadEnd={() => setLoading(false)}

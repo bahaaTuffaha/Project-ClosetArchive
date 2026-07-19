@@ -38,6 +38,10 @@ import { RandomNamesP1, fitList, sizeList, seasonList } from "../../utils/data";
 import { colors as appColors } from "./../../utils/colors";
 import ReactNativeBlobUtil from "react-native-blob-util";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
+import {
+  getCollectionSortValue,
+  getOrderedCollectionTags,
+} from "../../utils/collectionOrder";
 import { clothesList, localization } from "../../utils/localization";
 import { defaultCategories } from "./Category";
 import LaundryOptions from "../../assets/images/laundryOptions.png";
@@ -71,10 +75,12 @@ export const ItemForm = ({
   const storedCatTypes = useSelector(
     (state: RootState) => state.CategoryList.CategoryCustomTypes,
   );
-  const [name, setName] = useState(storedItems ? storedItems.name : "");
-  const [collection, setCollection] = useState(
-    storedItems?.collection ?? [],
+  const collectionOptions = getOrderedCollectionTags(
+    collectionState,
+    getCollectionSortValue(storedSettings.collectionSortValue),
   );
+  const [name, setName] = useState(storedItems ? storedItems.name : "");
+  const [collection, setCollection] = useState(storedItems?.collection ?? []);
   const [type, setType] = useState(storedItems ? storedItems.type : "");
   const [fit, setFit] = useState(storedItems ? storedItems.fit : "");
   const [season, setSeason] = useState(storedItems?.season ?? null);
@@ -552,7 +558,6 @@ export const ItemForm = ({
               maxLength={6}
             />
           </View>
-          <View></View>
           <DatePicker
             title={localization.Purchase_Date[storedSettings.language]}
             date={purchaseDate}
@@ -564,7 +569,7 @@ export const ItemForm = ({
             <DropDownPicker
               open={openCollection}
               value={collection}
-              items={collectionState}
+              items={collectionOptions}
               setOpen={setOpenCollection}
               setValue={setCollection}
               multiple={true}
@@ -573,6 +578,7 @@ export const ItemForm = ({
               showBadgeDot={false}
               badgeTextStyle={{ color: appColors.black }}
               mode="BADGE"
+              listMode="SCROLLVIEW"
               placeholder={localization.Collection[storedSettings.language]}
               style={{ borderColor: appColors.mainGreen }}
               dropDownContainerStyle={{ borderColor: appColors.mainGreen }}

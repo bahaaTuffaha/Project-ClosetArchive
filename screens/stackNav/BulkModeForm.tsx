@@ -26,6 +26,10 @@ import { defaultCategories } from "./Category";
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import ReactNativeBlobUtil from "react-native-blob-util";
 import ImageResizer from "@bam.tech/react-native-image-resizer";
+import {
+  getCollectionSortValue,
+  getOrderedCollectionTags,
+} from "../../utils/collectionOrder";
 
 export const BulkModeForm = ({
   navigation,
@@ -51,6 +55,10 @@ export const BulkModeForm = ({
   );
   const storedCatTypes = useSelector(
     (state: RootState) => state.CategoryList.CategoryCustomTypes,
+  );
+  const collectionOptions = getOrderedCollectionTags(
+    collectionState,
+    getCollectionSortValue(storedSettings.collectionSortValue),
   );
 
   const language = storedSettings.language ?? 0;
@@ -227,7 +235,7 @@ export const BulkModeForm = ({
             <DropDownPicker
               open={openCollection}
               value={collection}
-              items={collectionState}
+              items={collectionOptions}
               setOpen={setOpenCollection}
               setValue={setCollection}
               multiple={true}
@@ -235,6 +243,7 @@ export const BulkModeForm = ({
               showBadgeDot={false}
               badgeTextStyle={{ color: colors.black }}
               mode="BADGE"
+              listMode="SCROLLVIEW"
               placeholder={localization.Collection[language]}
               style={styles.picker}
               dropDownContainerStyle={styles.pickerDropdown}

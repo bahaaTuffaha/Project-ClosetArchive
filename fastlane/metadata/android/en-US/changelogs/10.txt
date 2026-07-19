@@ -1,0 +1,2 @@
+- New collection reordering: Manually reorder your collections with up/down arrows or sort them alphabetically for perfect organization.
+- Added LLM Export tool in Settings: Copy your entire wardrobe as clean Markdown text to paste into LLM. Choose "text only" or "with images".

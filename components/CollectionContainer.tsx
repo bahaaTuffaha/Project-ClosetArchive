@@ -1,5 +1,5 @@
 import { ReactElement, useState } from "react";
-import { Pressable, View, useColorScheme } from "react-native";
+import { Pressable, StyleSheet, View, useColorScheme } from "react-native";
 import { ThemeText } from "./ThemeText";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,25 +44,24 @@ export const CollectionContainer = ({
     paddingRight: 8,
   }));
   return (
-    <View
-      style={{ backgroundColor: color }}
-      className="w-full h-auto border-[0.4px]"
-    >
+    <View style={[styles.container, { backgroundColor: color }]}>
       <Pressable
         onPress={() => {
           setIsFolded(prev => !prev);
           !LaundryReminder && dispatch(toggleCollection({ name: label }));
         }}
-        className="w-full h-8 flex flex-row items-center justify-between pr-5"
-        style={{
-          backgroundColor: isDarkMode
-            ? LaundryReminder
+        style={[
+          styles.header,
+          {
+            backgroundColor: isDarkMode
+              ? LaundryReminder
+                ? colors.yellow
+                : colors.darkSurface
+              : LaundryReminder
               ? colors.yellow
-              : "#181818"
-            : LaundryReminder
-            ? colors.yellow
-            : colors.white,
-        }}
+              : colors.white,
+          },
+        ]}
       >
         <Animated.View style={animatedStyle}>
           {LaundryReminder && (
@@ -75,7 +74,7 @@ export const CollectionContainer = ({
           )}
           <ThemeText
             darkColor={LaundryReminder ? colors.gray : colors.mainCyan}
-            classNameStyle="font-medium italic"
+            customStyle={styles.headerText}
           >
             {label}
           </ThemeText>
@@ -92,9 +91,31 @@ export const CollectionContainer = ({
           size={20}
         />
       </Pressable>
-      <View className={isFolded ? "min-h-[72px]" : ""}>
+      <View style={isFolded ? styles.childrenContainer : undefined}>
         {isFolded && children}
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    borderWidth: 0.4,
+  },
+  header: {
+    width: "100%",
+    height: 32,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingRight: 20,
+  },
+  headerText: {
+    fontStyle: "italic",
+    fontWeight: "500",
+  },
+  childrenContainer: {
+    minHeight: 72,
+  },
+});

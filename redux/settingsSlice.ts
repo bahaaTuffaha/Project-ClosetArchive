@@ -1,4 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  COLLECTION_SORT_VALUES,
+  type CollectionSortValue,
+} from "../utils/collectionOrder";
 
 export type SettingsType = {
   language: number;
@@ -8,6 +12,7 @@ export type SettingsType = {
   enableReminder: boolean;
   enableHeatMap: boolean;
   appVer: string;
+  collectionSortValue: CollectionSortValue;
 };
 const initialState: SettingsType = {
   language: 0,
@@ -17,6 +22,7 @@ const initialState: SettingsType = {
   enableReminder: true,
   enableHeatMap: false,
   appVer: "1.0.1",
+  collectionSortValue: COLLECTION_SORT_VALUES.CUSTOM,
 };
 const settingsSlice = createSlice({
   name: "settings",
@@ -40,12 +46,18 @@ const settingsSlice = createSlice({
     setHeatMap: (state, action) => {
       state.enableHeatMap = action.payload.enableHeatMap;
     },
+    setCollectionSortValue: (state, action) => {
+      state.collectionSortValue =
+        action.payload.collectionSortValue ?? COLLECTION_SORT_VALUES.CUSTOM;
+    },
     importSettings: (state, action) => {
       state.language = action.payload.language;
       state.laundryNumber = action.payload.laundryNumber;
       state.name = action.payload.name;
       state.enableLaundry = action.payload.enableLaundry;
       state.enableReminder = action.payload.enableReminder;
+      state.collectionSortValue =
+        action.payload.collectionSortValue ?? COLLECTION_SORT_VALUES.CUSTOM;
     },
     setAppVer: (state, action) => {
       state.appVer = action.payload.appVer;
@@ -59,6 +71,7 @@ export const {
   setEnableLaundry,
   setReminder,
   setHeatMap,
+  setCollectionSortValue,
   importSettings,
   setAppVer,
 } = settingsSlice.actions;

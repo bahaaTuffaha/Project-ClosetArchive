@@ -1,5 +1,12 @@
-import { Image, TouchableOpacity, View } from "react-native";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Image,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
+import { Dispatch, SetStateAction, useState } from "react";
 import { CustomInput } from "../components/CustomInput";
 import { useDispatch } from "react-redux";
 import { ThemeText } from "../components/ThemeText";
@@ -27,6 +34,7 @@ export const EditItemList = ({
   ignoreNum, //for catTypes
   currentIndex, //for catTypes
   catIndex, //for catTypes
+  containerStyle,
 }: {
   item: CollectionTag;
   setRefresh: Dispatch<SetStateAction<boolean>>;
@@ -41,36 +49,38 @@ export const EditItemList = ({
   ignoreNum?: number;
   currentIndex?: number;
   catIndex?: number;
+  containerStyle?: StyleProp<ViewStyle>;
 }) => {
   const [enableEditing, setEnableEditing] = useState(false);
   const dispatch = useDispatch();
   const [newNameInput, setNewNameInput] = useState(item.label || "");
   const [iconIndex, setIconIndex] = useState((item as any)?.icon ?? 0);
-  const [updateIcon, setUpdateIcon] = useState(false);
-  const [initialRender, setInitialRender] = useState(true);
   const [isColorVisible, setIsColorVisible] = useState(false);
   const [itemColors, setItemColors] = useState([item.color || "#fff"]);
 
   const contrastColor = getContrastColor(item.color || "#fff");
 
-  useEffect(() => {
-    if (initialRender) {
-      setInitialRender(false);
-    } else {
-      dispatch(
-        changeCategoryTypesIcon({
-          index: catIndex ?? 0,
-          typeIndex: (currentIndex ?? 0) - (ignoreNum ?? 0),
-          iconIndex: iconIndex,
-        }),
-      );
-    }
-  }, [updateIcon]);
+  const handleCategoryIconChange = () => {
+    const nextIconIndex =
+      iconIndex + 1 >= categoryLayoutIcons.length ? 0 : iconIndex + 1;
+
+    setIconIndex(nextIconIndex);
+    dispatch(
+      changeCategoryTypesIcon({
+        index: catIndex ?? 0,
+        typeIndex: (currentIndex ?? 0) - (ignoreNum ?? 0),
+        iconIndex: nextIconIndex,
+      }),
+    );
+  };
 
   return (
     <View
-      style={{ backgroundColor: item.color ?? "#fff" }}
-      className="w-[80%] h-[59px] pt-0 rounded-lg self-center mb-5 relative border-mainGreen border-[1px] flex flex-row items-center justify-between"
+      style={[
+        styles.container,
+        containerStyle,
+        { backgroundColor: item.color ?? appColors.white },
+      ]}
     >
       <ColorModal
         colors={itemColors}
@@ -80,31 +90,28 @@ export const EditItemList = ({
         colorSelection={0}
       />
       {enableEditing ? (
-        <View className="flex-1 ml-5 mr-2">
+        <View style={styles.inputWrapper}>
           <CustomInput
             mode="outlined"
             outlineColor={appColors.mainGreen}
             selectionColor="#C0C0C0"
             activeOutlineColor={appColors.mainGreen}
             textContentType="name"
-            style={{ height: 40 }}
+            style={styles.editInput}
             value={newNameInput}
             onChangeText={text => setNewNameInput(text)}
           />
         </View>
       ) : (
-        <ThemeText
-          classNameStyle="font-bold ml-5 flex-1"
-          customStyle={{ color: contrastColor }}
-        >
+        <ThemeText customStyle={[styles.itemLabel, { color: contrastColor }]}>
           {item.label}
         </ThemeText>
       )}
       {enableEditing && !isCatType && (
-        <View className="mr-2">
+        <View style={styles.paletteWrapper}>
           <TouchableOpacity
             onPress={() => setIsColorVisible(true)}
-            className="w-10 h-10 flex items-center justify-center"
+            style={styles.paletteButton}
           >
             <Icon name="palette" size={30} color={contrastColor} />
           </TouchableOpacity>
@@ -114,25 +121,19 @@ export const EditItemList = ({
         (currentIndex ?? 0) >= (ignoreNum ?? 0) &&
         !enableEditing && (
           <TouchableOpacity
-            className="border-mainGreen border-[2px] border-solid rounded-lg"
-            onPress={() => {
-              setIconIndex((prev: number) =>
-                prev + 1 >= categoryLayoutIcons.length ? 0 : prev + 1,
-              );
-              // setRefresh((prev) => !prev);
-              setUpdateIcon(prev => !prev);
-            }}
+            style={styles.iconButton}
+            onPress={handleCategoryIconChange}
           >
             <Image
-              className="w-7 h-7 rounded-md"
+              style={styles.iconImage}
               source={categoryLayoutIcons[iconIndex]}
-            ></Image>
+            />
           </TouchableOpacity>
         )}
       {(currentIndex ?? 0) >= (ignoreNum ?? 0) && (
-        <View className="flex flex-row">
+        <View style={styles.actionsRow}>
           <TouchableOpacity
-            className="w-16 h-[59px] rounded-r-lg flex flex-row justify-center items-center"
+            style={styles.actionButton}
             onPress={() => {
               if (
                 (CollectionsState.filter(
@@ -171,7 +172,7 @@ export const EditItemList = ({
           </TouchableOpacity>
           {!enableEditing && (
             <TouchableOpacity
-              className="w-16 h-[59px] rounded-r-lg flex flex-row justify-center items-center"
+              style={styles.actionButton}
               onPress={() => {
                 if (!isCatType) {
                   dispatch(deleteCollection({ name: item.label }));
@@ -190,7 +191,11 @@ export const EditItemList = ({
               <Icon
                 name="delete"
                 size={30}
-                color={contrastColor === appColors.white ? "#ff4444" : "red"}
+                color={
+                  contrastColor === appColors.white
+                    ? appColors.brightRed
+                    : appColors.red
+                }
               />
             </TouchableOpacity>
           )}
@@ -199,3 +204,61 @@ export const EditItemList = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "80%",
+    minHeight: 59,
+    borderRadius: 8,
+    alignSelf: "center",
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: appColors.mainGreen,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  inputWrapper: {
+    flex: 1,
+    marginLeft: 20,
+    marginRight: 8,
+  },
+  editInput: {
+    height: 40,
+  },
+  itemLabel: {
+    fontWeight: "700",
+    marginLeft: 20,
+    flex: 1,
+  },
+  paletteWrapper: {
+    marginRight: 8,
+  },
+  paletteButton: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconButton: {
+    borderColor: appColors.mainGreen,
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderRadius: 8,
+  },
+  iconImage: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+  },
+  actionsRow: {
+    flexDirection: "row",
+  },
+  actionButton: {
+    width: 64,
+    minHeight: 59,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
